@@ -1,4 +1,26 @@
-This is your new Play application
-=================================
+This is a common project containing base views, static files and common functionality
 
-This file will be packaged with your application, when using `activator dist`.
+To include in a project, add this project as a dependency to your project:
+
+```
+lazy val common = RootProject(file("../common"))
+lazy val root = (project in file(".")).enablePlugins(PlayJava).aggregate(common).dependsOn(common)
+```
+
+Add the routes of this common project to your project routes:
+
+```
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+->      /                           common.Routes
+```
+
+And delete the public folder and the main view file

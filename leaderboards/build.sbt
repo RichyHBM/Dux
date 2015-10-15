@@ -2,7 +2,9 @@ name := """leaderboards"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava)
+lazy val common = RootProject(file("../common"))
+
+lazy val root = (project in file(".")).enablePlugins(PlayJava).aggregate(common).dependsOn(common)
 
 scalaVersion := "2.11.6"
 
