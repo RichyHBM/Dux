@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class FakeAppRunner {
     public static void runTest(ITest test) {
-        HashMap<String, String> config = new HashMap<String, String>();
+        HashMap<String, Object> config = new HashMap<String, Object>();
 
         running(fakeApplication(config), () -> {
             try{
@@ -24,7 +24,7 @@ public class FakeAppRunner {
         });
     }
 
-    public static void runTest(ITest test, HashMap<String, String> config) {
+    public static void runTest(ITest test, HashMap<String, Object> config) {
         running(fakeApplication(config), () -> {
             try{
                 test.test();
