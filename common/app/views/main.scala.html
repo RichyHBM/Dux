@@ -5,7 +5,7 @@
 <html lang="en">
     <head>
         <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/css/paper-bootstrap.min.css")">
 
         <link rel="apple-touch-icon-precomposed" sizes="57x57" href="@routes.Assets.versioned("lib/common/images/favicons/apple-touch-icon-57x57.png")" />
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="@routes.Assets.versioned("lib/common/images/favicons/apple-touch-icon-114x114.png")" />
@@ -28,9 +28,17 @@
         <meta name="msapplication-wide310x150logo" content="@routes.Assets.versioned("lib/common/images/favicons/mstile-310x150.png")" />
         <meta name="msapplication-square310x310logo" content="@routes.Assets.versioned("lib/common/images/favicons/mstile-310x310.png")" />
 
-        <script src="@routes.Assets.versioned("lib/common/javascripts/hello.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("lib/common/js/angular.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("lib/common/js/angular-animate.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("lib/common/js/ui-bootstrap-tpls-0.14.2.min.js")" type="text/javascript"></script>
     </head>
     <body>
         @content
     </body>
+    <script>
+        angular.module('@title', [
+            'ngAnimate',
+            'ui.bootstrap'
+        ]);
+    </script>
 </html>
