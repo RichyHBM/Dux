@@ -2,9 +2,12 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" ng-app="DuxApp">
     <head>
         <title>@title</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/css/paper-bootstrap.min.css")">
 
         <link rel="apple-touch-icon-precomposed" sizes="57x57" href="@routes.Assets.versioned("lib/common/images/favicons/apple-touch-icon-57x57.png")" />
@@ -36,7 +39,7 @@
         @content
     </body>
     <script>
-        angular.module('@title', [
+        angular.module('DuxApp', [
             'ngAnimate',
             'ui.bootstrap'
         ]);
