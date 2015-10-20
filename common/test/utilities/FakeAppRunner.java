@@ -14,14 +14,7 @@ import static org.junit.Assert.*;
 public class FakeAppRunner {
     public static void runTest(ITest test) {
         HashMap<String, Object> config = new HashMap<String, Object>();
-
-        running(fakeApplication(config), () -> {
-            try{
-                test.test();
-            }catch(Exception e){
-                assertTrue(e.getMessage(), false);
-            }
-        });
+        runTest(test, config);
     }
 
     public static void runTest(ITest test, HashMap<String, Object> config) {
