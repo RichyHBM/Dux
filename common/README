@@ -4,7 +4,10 @@ To include in a project, add this project as a dependency to your project:
 
 ```
 lazy val common = RootProject(file("../common"))
-lazy val root = (project in file(".")).enablePlugins(PlayJava).aggregate(common).dependsOn(common)
+lazy val root = (project in file("."))
+    .enablePlugins(PlayJava)
+    .aggregate(common)
+    .dependsOn(common)
 ```
 
 Add the routes of this common project to your project routes:
@@ -24,3 +27,14 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 ```
 
 And delete the public folder and the main view file
+
+This also contains some useful test utilities, to use them make sure you have added the dependency in tests as well:
+```
+lazy val common = RootProject(file("../common"))
+lazy val root = (project in file("."))
+    .enablePlugins(PlayJava)
+    .aggregate(common)
+    .dependsOn(common % "test->test;compile->compile")
+```
+
+The test utilites require PhantomJS to be installed on your computer for better integration testing

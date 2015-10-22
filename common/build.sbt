@@ -4,12 +4,16 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
+includeFilter in (Assets, LessKeys.less) := "*.less"
+excludeFilter in (Assets, LessKeys.less) := "_*.less"
+
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
-  javaWs
+  javaWs,
+  "com.codeborne" % "phantomjsdriver" % "1.2.1" % "test"
 )
 
 // Play provides two styles of routers, one expects its actions to be injected, the
