@@ -34,14 +34,15 @@
         <script src="@routes.Assets.versioned("lib/common/js/angular.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("lib/common/js/angular-animate.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("lib/common/js/ui-bootstrap-tpls-0.14.2.min.js")" type="text/javascript"></script>
+
+        <script>
+            angular.module('DuxApp', [
+                'ngAnimate',
+                'ui.bootstrap'
+            ]);
+        </script>
     </head>
     <body>
         @content
     </body>
-    <script>
-        angular.module('DuxApp', [
-            'ngAnimate',
-            'ui.bootstrap'
-        ]);
-    </script>
 </html>

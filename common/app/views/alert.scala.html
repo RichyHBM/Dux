@@ -1,0 +1,29 @@
+@()
+
+        <script type="text/javascript">
+            var app = angular.module('DuxApp');
+
+            app.factory('httpInterceptor', function($q, $rootScope){
+                return {
+                    'request': function(config) {
+                        $rootScope.ErrorMessage = null;
+                        return config || $q.when(config);
+                    },
+                    'response': function(response) {
+                        return response || $q.when(response);
+                    },
+                    'responseError': function(response) {
+                        $rootScope.ErrorMessage = response.data;
+                        return $q.reject(response);
+                    }
+                };
+            }).config(function($httpProvider) {
+                $httpProvider.interceptors.push('httpInterceptor');
+            });
+        </script>
+
+        <div class="col-sm-offset-1 col-sm-10" ng-show="ErrorMessage">
+            <alert id="AlertMessageArea" type="danger" close>
+                <p>{{ErrorMessage}}</p>
+            </alert>
+        </div>
