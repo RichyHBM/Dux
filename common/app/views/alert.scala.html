@@ -4,26 +4,37 @@
             var app = angular.module('DuxApp');
 
             app.factory('httpInterceptor', function($q, $rootScope){
+                $rootScope.ErrorMessages = [];
                 return {
                     'request': function(config) {
-                        $rootScope.ErrorMessage = null;
                         return config || $q.when(config);
                     },
                     'response': function(response) {
                         return response || $q.when(response);
                     },
                     'responseError': function(response) {
-                        $rootScope.ErrorMessage = response.data;
+                        $rootScope.ErrorMessages.push({
+                            status: response.status,
+                            statusText: response.statusText,
+                            message: response.data
+                        });
                         return $q.reject(response);
                     }
                 };
             }).config(function($httpProvider) {
                 $httpProvider.interceptors.push('httpInterceptor');
             });
+
+            app.controller("AlertsCtrl", function($scope, $http) {
+                $scope.closeAlert = function(index) {
+                    $scope.ErrorMessages.splice(index, 1);
+                };
+            });
         </script>
 
-        <div class="col-sm-offset-1 col-sm-10" ng-show="ErrorMessage">
-            <alert id="AlertMessageArea" type="danger" close>
-                <p>{{ErrorMessage}}</p>
-            </alert>
+        <div ng-controller="AlertsCtrl" class="col-sm-offset-1 col-sm-10" ng-show="ErrorMessages.length > 0">
+            <uib-alert ng-repeat="errorMessage in ErrorMessages track by $index" class="AlertMessage" type="danger" close="closeAlert($index)">
+                <strong>{{errorMessage.status}} : {{errorMessage.statusText}}</strong>
+                <div>{{errorMessage.message}}</div>
+            </uib-alert>
         </div>
