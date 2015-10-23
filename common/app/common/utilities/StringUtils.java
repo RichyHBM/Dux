@@ -1,4 +1,4 @@
-package utilities;
+package common.utilities;
 
 public final class StringUtils {
     public static boolean isEmpty(String str) {
