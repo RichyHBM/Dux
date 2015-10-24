@@ -1,25 +1,20 @@
-name := """leaderboards"""
+name := """auth-plugin"""
 
 version := "1.0-SNAPSHOT"
 
 lazy val common = RootProject(file("../common"))
 
-lazy val auth = RootProject(file("../auth-plugin"))
-
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
-    .aggregate(auth, common)
-    .dependsOn(auth % "test->test;compile->compile", common % "test->test;compile->compile")
+    .aggregate(common)
+    .dependsOn(common % "test->test;compile->compile")
 
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
-  javaWs,
-  "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1"
+  javaWs
 )
-
-resolvers += "google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk"
 
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
