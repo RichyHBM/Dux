@@ -6,6 +6,6 @@ public final class StringUtils {
     }
 
     public static boolean isNotEmpty(String str) {
-        return !StringUtils.isEmpty(str);
+        return str != null && !str.isEmpty();
     }
 }
