@@ -77,11 +77,11 @@ public class RedisLeaderboardProviderTest {
     }
 
     @Test
-    public void getRankedUsersTest() {
-        List<LeaderboardUser> invalidUsers = provider.getRankedUsers(GAME_ID, LB_ID, 100, 10);
+    public void getRankedUsersAscendingTest() {
+        List<LeaderboardUser> invalidUsers = provider.getRankedUsers(GAME_ID, LB_ID, false, 100, 10);
         assertEquals(0, invalidUsers.size());
 
-        List<LeaderboardUser> endUsers = provider.getRankedUsers(GAME_ID, LB_ID, -5, 2);
+        List<LeaderboardUser> endUsers = provider.getRankedUsers(GAME_ID, LB_ID, false, -5, 2);
         assertEquals(2, endUsers.size());
         for(int i = 5; i < 6; i++) {
             LeaderboardUser user = endUsers.get(i - 5);
@@ -92,7 +92,7 @@ public class RedisLeaderboardProviderTest {
             assertEquals("data" + i, user.extra());
         }
 
-        List<LeaderboardUser> smallUsers = provider.getRankedUsers(GAME_ID, LB_ID, 0, 2);
+        List<LeaderboardUser> smallUsers = provider.getRankedUsers(GAME_ID, LB_ID, false, 0, 2);
         for(int i = 0; i < 2; i++) {
             LeaderboardUser user = smallUsers.get(i);
             assertNotNull(user);
@@ -103,7 +103,7 @@ public class RedisLeaderboardProviderTest {
         }
         assertEquals(2, smallUsers.size());
 
-        List<LeaderboardUser> validUsers = provider.getRankedUsers(GAME_ID, LB_ID, 0, 10);
+        List<LeaderboardUser> validUsers = provider.getRankedUsers(GAME_ID, LB_ID, false, 0, 10);
         for(int i = 0; i < 10; i++) {
             LeaderboardUser user = validUsers.get(i);
             assertNotNull(user);
@@ -114,7 +114,7 @@ public class RedisLeaderboardProviderTest {
         }
         assertEquals(10, validUsers.size());
 
-        List<LeaderboardUser> moreThanValidUsers = provider.getRankedUsers(GAME_ID, LB_ID, 0, 15);
+        List<LeaderboardUser> moreThanValidUsers = provider.getRankedUsers(GAME_ID, LB_ID, false, 0, 15);
         for(int i = 0; i < 10; i++) {
             LeaderboardUser user = moreThanValidUsers.get(i);
             assertNotNull(user);
@@ -127,15 +127,74 @@ public class RedisLeaderboardProviderTest {
     }
 
     @Test
-    public void getUserTest() {
-        LeaderboardUser invalidUser1 = provider.getUser(GAME_ID, LB_ID, "123");
-        assertNull(invalidUser1);
+    public void getRankedUsersDescendingTest() {
+        List<LeaderboardUser> invalidUsers = provider.getRankedUsers(GAME_ID, LB_ID, true, 100, 10);
+        assertEquals(0, invalidUsers.size());
 
+        List<LeaderboardUser> endUsers = provider.getRankedUsers(GAME_ID, LB_ID, true, -5, 2);
+        assertEquals(2, endUsers.size());
+        for(int i = 5; i < 6; i++) {
+            LeaderboardUser user = endUsers.get(i - 5);
+            assertNotNull(user);
+            assertEquals("u" + (9 - i), user.userId());
+            assertEquals(i - 10, user.rank());
+            assertEquals(9 - i, user.score(), 0.0001);
+            assertEquals("data" + (9 - i), user.extra());
+        }
+
+        List<LeaderboardUser> smallUsers = provider.getRankedUsers(GAME_ID, LB_ID, true, 0, 2);
+        for(int i = 0; i < 2; i++) {
+            LeaderboardUser user = smallUsers.get(i);
+            assertNotNull(user);
+            assertEquals("u" + (9 - i), user.userId());
+            assertEquals(i, user.rank());
+            assertEquals(9 - i, user.score(), 0.0001);
+            assertEquals("data" + (9 - i), user.extra());
+        }
+        assertEquals(2, smallUsers.size());
+
+        List<LeaderboardUser> validUsers = provider.getRankedUsers(GAME_ID, LB_ID, true, 0, 10);
         for(int i = 0; i < 10; i++) {
-            LeaderboardUser user = provider.getUser(GAME_ID, LB_ID, "u" + i);
+            LeaderboardUser user = validUsers.get(i);
+            assertNotNull(user);
+            assertEquals("u" + (9 - i), user.userId());
+            assertEquals(i, user.rank());
+            assertEquals((9 - i), user.score(), 0.0001);
+            assertEquals("data" + (9 - i), user.extra());
+        }
+        assertEquals(10, validUsers.size());
+
+        List<LeaderboardUser> moreThanValidUsers = provider.getRankedUsers(GAME_ID, LB_ID, true, 0, 15);
+        for(int i = 0; i < 10; i++) {
+            LeaderboardUser user = moreThanValidUsers.get(i);
+            assertNotNull(user);
+            assertEquals("u" + (9 - i), user.userId());
+            assertEquals(i, user.rank());
+            assertEquals(9 - i, user.score(), 0.0001);
+            assertEquals("data" + (9 - i), user.extra());
+        }
+        assertEquals(10, moreThanValidUsers.size());
+    }
+
+    @Test
+    public void getUserTest() {
+        LeaderboardUser invalidUser1 = provider.getUser(GAME_ID, LB_ID, false, "123");
+        assertNull(invalidUser1);
+        //Ascending
+        for(int i = 0; i < 10; i++) {
+            LeaderboardUser user = provider.getUser(GAME_ID, LB_ID, false, "u" + i);
             assertNotNull(user);
             assertEquals("u" + i, user.userId());
             assertEquals(i, user.rank());
+            assertEquals(i, user.score(), 0.0001);
+            assertEquals("data" + i, user.extra());
+        }
+        //Descending
+        for(int i = 0; i < 10; i++) {
+            LeaderboardUser user = provider.getUser(GAME_ID, LB_ID, true, "u" + i);
+            assertNotNull(user);
+            assertEquals("u" + i, user.userId());
+            assertEquals(9 - i, user.rank());
             assertEquals(i, user.score(), 0.0001);
             assertEquals("data" + i, user.extra());
         }
@@ -143,16 +202,30 @@ public class RedisLeaderboardProviderTest {
 
     @Test
     public void getRankForUserTest() {
-        long lastRank = provider.getRankForUser(GAME_ID, LB_ID, "123");
-        assertEquals(10, lastRank);
+        //Ascending
+        long lastRankAsc = provider.getRankForUser(GAME_ID, LB_ID, false, "123");
+        assertEquals(10, lastRankAsc);
 
         for(int i = 0; i < 10; i++) {
-            long rank = provider.getRankForUser(GAME_ID, LB_ID, "u" + i);
+            long rank = provider.getRankForUser(GAME_ID, LB_ID, false, "u" + i);
             assertEquals(i, rank);
         }
 
         for(int i = 10; i < 15; i++) {
-            long rank = provider.getRankForUser(GAME_ID, LB_ID, "u" + i);
+            long rank = provider.getRankForUser(GAME_ID, LB_ID, false, "u" + i);
+            assertEquals(10, rank);
+        }
+        //Descending
+        long lastRankDesc = provider.getRankForUser(GAME_ID, LB_ID, true, "123");
+        assertEquals(10, lastRankDesc);
+
+        for(int i = 0; i < 10; i++) {
+            long rank = provider.getRankForUser(GAME_ID, LB_ID, true, "u" + i);
+            assertEquals(9 - i, rank);
+        }
+
+        for(int i = 10; i < 15; i++) {
+            long rank = provider.getRankForUser(GAME_ID, LB_ID, true, "u" + i);
             assertEquals(10, rank);
         }
     }

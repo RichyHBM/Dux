@@ -39,7 +39,7 @@ public class RedisLeaderboardProvider implements ILeaderboardProvider {
         }
     }
 
-    public List<LeaderboardUser> getRankedUsers(int gameId, String leaderboardId, long fromRank, int count) {
+    public List<LeaderboardUser> getRankedUsers(int gameId, String leaderboardId, boolean descending, long fromRank, int count) {
         Jedis j = jedisPool.getResource();
         try {
             List<LeaderboardUser> users = new ArrayList<LeaderboardUser>();
@@ -48,7 +48,12 @@ public class RedisLeaderboardProvider implements ILeaderboardProvider {
             String key = redisKey(gameId, leaderboardId);
 
             //zrangeWithScores wants both start and end ranks inclusive, so subtract 1 from count
-            Response<Set<Tuple>> rangeWithScores = t.zrangeWithScores(key, fromRank, fromRank + count - 1);
+            Response<Set<Tuple>> rangeWithScores;
+            if(!descending) {
+                rangeWithScores = t.zrangeWithScores(key, fromRank, fromRank + count - 1);
+            } else {
+                rangeWithScores = t.zrevrangeWithScores(key, fromRank, fromRank + count - 1);
+            }
             t.exec();
 
             String extraKey = redisKeyExtra(gameId, leaderboardId);
@@ -65,12 +70,19 @@ public class RedisLeaderboardProvider implements ILeaderboardProvider {
         }
     }
 
-    public LeaderboardUser getUser(int gameId, String leaderboardId, String userId) {
+    public LeaderboardUser getUser(int gameId, String leaderboardId, boolean descending, String userId) {
         Jedis j = jedisPool.getResource();
         try {
             Transaction t = j.multi();
             String key = redisKey(gameId, leaderboardId);
-            Response<Long> rank = t.zrank(key, userId);
+            Response<Long> rank;
+
+            if(!descending) {
+                rank = t.zrank(key, userId);;
+            } else {
+                rank = t.zrevrank(key, userId);;
+            }
+
             Response<Double> score = t.zscore(key, userId);
 
             String extraKey = redisKeyExtra(gameId, leaderboardId);
@@ -84,11 +96,15 @@ public class RedisLeaderboardProvider implements ILeaderboardProvider {
         }
     }
 
-    public long getRankForUser(int gameId, String leaderboardId, String userId) {
+    public long getRankForUser(int gameId, String leaderboardId, boolean descending, String userId) {
         Jedis j = jedisPool.getResource();
         String key = redisKey(gameId, leaderboardId);
         try {
-            return j.zrank(key, userId);
+            if(!descending) {
+                return j.zrank(key, userId);
+            } else {
+                return j.zrevrank(key, userId);
+            }
         } catch(Exception e) {
             try {
                 return j.zcard(key);
