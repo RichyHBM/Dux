@@ -1,11 +1,10 @@
-package providers;
+package implementors;
 
 import interfaces.ILeaderboardProvider;
 import models.LeaderboardUser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.UnsupportedOperationException;
 import java.util.Set;
 
 import javax.inject.Inject;

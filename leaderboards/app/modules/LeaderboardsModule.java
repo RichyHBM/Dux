@@ -2,7 +2,7 @@ package modules;
 
 import com.google.inject.AbstractModule;
 import interfaces.*;
-import providers.*;
+import implementors.*;
 
 public class LeaderboardsModule extends AbstractModule {
     @Override
