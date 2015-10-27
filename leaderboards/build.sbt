@@ -10,6 +10,12 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
     .aggregate(auth, common)
     .dependsOn(auth % "test->test;compile->compile", common % "test->test;compile->compile")
 
+lazy val setup = taskKey[Unit]("Setup dependencies")
+
+setup := {
+  "sh setup.sh" !
+}
+
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
