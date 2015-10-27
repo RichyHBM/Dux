@@ -5,6 +5,7 @@ import java.util.Date
 // By using a Scala class with only vals we automatically get an immutable class that can be used in Java
 
 final case class Leaderboard(gameId: Int,
-                             leaderboardId: String,
+                             leaderboardName: String,
                              startTime: Date,
-                             endTime: Date)
+                             endTime: Date,
+                             descending: Boolean)
