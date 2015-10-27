@@ -16,7 +16,8 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1"
+  "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1",
+  "org.xerial" % "sqlite-jdbc" % "3.8.11.2"
 )
 
 resolvers += "google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk"
