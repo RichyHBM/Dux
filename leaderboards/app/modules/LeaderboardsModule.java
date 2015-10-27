@@ -8,5 +8,6 @@ public class LeaderboardsModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(ILeaderboardProvider.class).to(RedisLeaderboardProvider.class);
+        bind(ILeaderboardManager.class).to(SqlLeaderboardManager.class);
     }
 }
