@@ -3,6 +3,7 @@ package utilities;
 import org.junit.*;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
+import play.Application;
 import play.mvc.*;
 import play.test.*;
 import play.libs.F.*;
@@ -16,9 +17,24 @@ import static org.junit.Assert.*;
 import org.openqa.selenium.phantomjs.*;
 
 public class FakeAppRunner {
+    public static void runTest(Application application, ITest test) {
+        HashMap<String, Object> config = new HashMap<String, Object>();
+        runTestWithApplication(application, test);
+    }
+
     public static void runTest(ITest test) {
         HashMap<String, Object> config = new HashMap<String, Object>();
         runTest(test, config);
+    }
+
+    public static void runTestWithApplication(Application application, ITest test) {
+        running(application, () -> {
+            try {
+                test.test();
+            } catch (Exception e) {
+                assertTrue(e.getMessage(), false);
+            }
+        });
     }
 
     public static void runTest(ITest test, HashMap<String, Object> config) {
