@@ -72,6 +72,24 @@ public class SqlLeaderboardManager implements ILeaderboardManager {
     }
 
     @Override
+    public List<Leaderboard> getActiveLeaderboardsForGame(int gameId) throws LoggedException {
+        try {
+            return LeaderboardRead.getActiveLeaderboardsForGame(gameId);
+        } catch (Exception e) {
+            throw new LoggedException("Error getting leaderboards for game", e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Leaderboard> getAllActiveLeaderboards() throws LoggedException {
+        try {
+            return LeaderboardRead.getAllActiveLeaderboards();
+        } catch (Exception e) {
+            throw new LoggedException("Error getting all leaderboards", e.getMessage());
+        }
+    }
+
+    @Override
     public List<Leaderboard> getLeaderboardsForGame(int gameId) throws LoggedException {
         try {
             return LeaderboardRead.getLeaderboardsForGame(gameId);
@@ -84,6 +102,42 @@ public class SqlLeaderboardManager implements ILeaderboardManager {
     public List<Leaderboard> getAllLeaderboards() throws LoggedException {
         try {
             return LeaderboardRead.getAllLeaderboards();
+        } catch (Exception e) {
+            throw new LoggedException("Error getting all leaderboards", e.getMessage());
+        }
+    }
+
+    @Override
+    public long countAllLeaderboards() throws LoggedException {
+        try {
+            return LeaderboardRead.countAllLeaderboards();
+        } catch (Exception e) {
+            throw new LoggedException("Error getting all leaderboards", e.getMessage());
+        }
+    }
+
+    @Override
+    public long countLeaderboardsForGame(int gameId) throws LoggedException {
+        try {
+            return LeaderboardRead.countLeaderboardsForGame(gameId);
+        } catch (Exception e) {
+            throw new LoggedException("Error getting all leaderboards", e.getMessage());
+        }
+    }
+
+    @Override
+    public long countActiveLeaderboards() throws LoggedException {
+        try {
+            return LeaderboardRead.countAllActiveLeaderboards();
+        } catch (Exception e) {
+            throw new LoggedException("Error getting all leaderboards", e.getMessage());
+        }
+    }
+
+    @Override
+    public long countActiveLeaderboardsForGame(int gameId) throws LoggedException {
+        try {
+            return LeaderboardRead.countActiveLeaderboardsForGame(gameId);
         } catch (Exception e) {
             throw new LoggedException("Error getting all leaderboards", e.getMessage());
         }

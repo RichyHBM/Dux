@@ -29,6 +29,45 @@ public class LeaderboardRead {
         }
     }
 
+    public static List<Leaderboard> getActiveLeaderboardsForGame(int gameId) throws Exception {
+        try (Connection conn = DB.getConnection()) {
+            PreparedStatement stm = conn.prepareStatement(LeaderboardQueries.GetLeaderboardsBetweenDateForGame);
+
+            long now = new Date().getTime();
+            stm.setLong(1, now);
+            stm.setLong(2, now);
+            stm.setInt(3, gameId);
+
+            ResultSet resultSet = stm.executeQuery();
+            List<Leaderboard> leaderboards = new ArrayList<>();
+
+            while(resultSet.next()) {
+                leaderboards.add(Parser.toLeaderboard(resultSet));
+            }
+
+            return leaderboards;
+        }
+    }
+
+    public static List<Leaderboard> getAllActiveLeaderboards() throws Exception {
+        try (Connection conn = DB.getConnection()) {
+            PreparedStatement stm = conn.prepareStatement(LeaderboardQueries.GetAllLeaderboardsBetweenDate);
+
+            long now = new Date().getTime();
+            stm.setLong(1, now);
+            stm.setLong(2, now);
+
+            ResultSet resultSet = stm.executeQuery();
+            List<Leaderboard> leaderboards = new ArrayList<>();
+
+            while(resultSet.next()) {
+                leaderboards.add(Parser.toLeaderboard(resultSet));
+            }
+
+            return leaderboards;
+        }
+    }
+
     public static List<Leaderboard> getLeaderboardsForGame(int gameId) throws Exception {
         try (Connection conn = DB.getConnection()) {
             PreparedStatement stm = conn.prepareStatement(LeaderboardQueries.GetLeaderboardsForGame);
@@ -57,6 +96,72 @@ public class LeaderboardRead {
             }
 
             return leaderboards;
+        }
+    }
+
+    public static long countAllLeaderboards() throws Exception {
+        try (Connection conn = DB.getConnection()) {
+            PreparedStatement stm = conn.prepareStatement(LeaderboardQueries.CountAllLeaderboards);
+
+            ResultSet resultSet = stm.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getLong("Count");
+            }
+
+            return 0;
+        }
+    }
+
+    public static long countLeaderboardsForGame(int gameId) throws Exception {
+        try (Connection conn = DB.getConnection()) {
+            PreparedStatement stm = conn.prepareStatement(LeaderboardQueries.CountLeaderboardsForGame);
+            stm.setInt(1, gameId);
+
+            ResultSet resultSet = stm.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getLong("Count");
+            }
+
+            return 0;
+        }
+    }
+
+    public static long countAllActiveLeaderboards() throws Exception {
+        try (Connection conn = DB.getConnection()) {
+            PreparedStatement stm = conn.prepareStatement(LeaderboardQueries.CountAllLeaderboardsBetweenDate);
+
+            long now = new Date().getTime();
+            stm.setLong(1, now);
+            stm.setLong(2, now);
+
+            ResultSet resultSet = stm.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getLong("Count");
+            }
+
+            return 0;
+        }
+    }
+
+    public static long countActiveLeaderboardsForGame(int gameId) throws Exception {
+        try (Connection conn = DB.getConnection()) {
+            PreparedStatement stm = conn.prepareStatement(LeaderboardQueries.CountLeaderboardsBetweenDateForGame);
+
+            long now = new Date().getTime();
+            stm.setLong(1, now);
+            stm.setLong(2, now);
+            stm.setInt(3, gameId);
+
+            ResultSet resultSet = stm.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getLong("Count");
+            }
+
+            return 0;
         }
     }
 }

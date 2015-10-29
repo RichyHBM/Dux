@@ -46,4 +46,45 @@ public class LeaderboardQueries {
             "SELECT * FROM %s",
             Structure.Leaderboards.Name
     );
+
+    public static String GetLeaderboardsBetweenDateForGame = String.format(
+            "SELECT * FROM %s WHERE %s <= ? AND %s > ? AND %s = ?",
+            Structure.Leaderboards.Name,
+            Structure.Leaderboards.Columns.StartTime,
+            Structure.Leaderboards.Columns.EndTime,
+            Structure.Leaderboards.Columns.GameId
+    );
+
+    public static String GetAllLeaderboardsBetweenDate = String.format(
+            "SELECT * FROM %s WHERE %s <= ? AND %s > ?",
+            Structure.Leaderboards.Name,
+            Structure.Leaderboards.Columns.StartTime,
+            Structure.Leaderboards.Columns.EndTime
+    );
+
+    public static String CountAllLeaderboards = String.format(
+            "SELECT COUNT(*) as Count FROM %s",
+            Structure.Leaderboards.Name
+    );
+
+    public static String CountLeaderboardsForGame = String.format(
+            "SELECT COUNT(*) as Count FROM %s WHERE %s = ?",
+            Structure.Leaderboards.Name,
+            Structure.Leaderboards.Columns.GameId
+    );
+
+    public static String CountAllLeaderboardsBetweenDate = String.format(
+            "SELECT COUNT(*) as Count FROM %s WHERE %s <= ? AND %s > ?",
+            Structure.Leaderboards.Name,
+            Structure.Leaderboards.Columns.StartTime,
+            Structure.Leaderboards.Columns.EndTime
+    );
+
+    public static String CountLeaderboardsBetweenDateForGame = String.format(
+            "SELECT COUNT(*) as Count FROM %s WHERE %s <= ? AND %s > ? AND %s = ?",
+            Structure.Leaderboards.Name,
+            Structure.Leaderboards.Columns.StartTime,
+            Structure.Leaderboards.Columns.EndTime,
+            Structure.Leaderboards.Columns.GameId
+    );
 }

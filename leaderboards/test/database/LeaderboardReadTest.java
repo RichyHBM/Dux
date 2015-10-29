@@ -17,10 +17,10 @@ import static org.junit.Assert.*;
 public class LeaderboardReadTest {
 
     Leaderboard[] testLeaderboards = new Leaderboard[]{
-            new Leaderboard(11, "test1", null, new Date(), true),
-            new Leaderboard(11, "test2", new Date(), new Date(), true),
+            new Leaderboard(11, "test1", null, new Date( new Date().getTime() - 500 ), true),
+            new Leaderboard(11, "test2", new Date( new Date().getTime() - 50000 ), new Date( new Date().getTime() + 50000 ), true),
             new Leaderboard(13, "test3", new Date(), null, false),
-            new Leaderboard(14, "test4", new Date(), new Date(), true),
+            new Leaderboard(14, "test4", new Date( new Date().getTime() - 1000 ), new Date( new Date().getTime() + 50000 ), true),
             new Leaderboard(15, "test5", null, null, false)
     };
 
@@ -103,6 +103,75 @@ public class LeaderboardReadTest {
             assertEquals("test4", l.get(3).leaderboardName());
             assertEquals("test5", l.get(4).leaderboardName());
             assertEquals(5, l.size());
+        });
+    }
+
+    @Test
+    public void getActiveLeaderboardsForGameTest() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            List<Leaderboard> l = LeaderboardRead.getActiveLeaderboardsForGame(11);
+            assertEquals("test2", l.get(0).leaderboardName());
+            assertEquals(1, l.size());
+        });
+    }
+
+    @Test
+    public void getNonExistentActiveLeaderboardsForGameTest() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            List<Leaderboard> l = LeaderboardRead.getActiveLeaderboardsForGame(15431);
+            assertEquals(0, l.size());
+        });
+    }
+
+    @Test
+    public void getAllActiveLeaderboardsTest() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            List<Leaderboard> l = LeaderboardRead.getAllActiveLeaderboards();
+            assertEquals("test2", l.get(0).leaderboardName());
+            assertEquals("test4", l.get(1).leaderboardName());
+            assertEquals(2, l.size());
+        });
+    }
+
+    @Test
+    public void countAllLeaderboards() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            assertEquals(testLeaderboards.length, LeaderboardRead.countAllLeaderboards());
+        });
+    }
+
+    @Test
+    public void countLeaderboardsForNonExsistentGame() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            assertEquals(0, LeaderboardRead.countLeaderboardsForGame(123));
+        });
+    }
+
+    @Test
+    public void countLeaderboardsForGame() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            assertEquals(2, LeaderboardRead.countLeaderboardsForGame(11));
+        });
+    }
+
+    @Test
+    public void countAllActiveLeaderboards() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            assertEquals(2, LeaderboardRead.countAllActiveLeaderboards());
+        });
+    }
+
+    @Test
+    public void countActiveLeaderboardsForNonExsistentGame() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            assertEquals(0, LeaderboardRead.countActiveLeaderboardsForGame(123));
+        });
+    }
+
+    @Test
+    public void countActiveLeaderboardsForGame() {
+        DatabaseRunner.runDatabaseTests( () -> {
+            assertEquals(1, LeaderboardRead.countActiveLeaderboardsForGame(11));
         });
     }
 }

@@ -17,6 +17,14 @@ public interface ILeaderboardManager {
     boolean deleteLeaderboard(Leaderboard leaderboard) throws LoggedException;
 
     Leaderboard getLeaderboard(int gameId, String leaderboardName) throws LoggedException;
+    List<Leaderboard> getActiveLeaderboardsForGame(int gameId) throws LoggedException;
+    List<Leaderboard> getAllActiveLeaderboards() throws LoggedException;
     List<Leaderboard> getLeaderboardsForGame(int gameId) throws LoggedException;
     List<Leaderboard> getAllLeaderboards() throws LoggedException;
+
+    long countAllLeaderboards() throws LoggedException;
+    long countLeaderboardsForGame(int gameId) throws LoggedException;
+
+    long countActiveLeaderboards() throws LoggedException;
+    long countActiveLeaderboardsForGame(int gameId) throws LoggedException;
 }
