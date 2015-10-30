@@ -1,0 +1,32 @@
+@(response: common.models.BasicViewResponse)(navbarElements: Html)
+
+<script type="text/javascript">
+    var app = angular.module('DuxApp');
+
+    app.controller("NavbarCtrl", function($scope, $http) {
+        $scope.isNavbarCollapsed = true;
+    });
+</script>
+
+<div ng-controller="NavbarCtrl" class="container-fluid no-padding">
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" ng-click="isNavbarCollapsed = !isNavbarCollapsed">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <img class="centered" alt="logo" src="@routes.Assets.versioned("lib/common/images/favicons/favicon-128.png")" height="24" width="24">
+                    <strong>@response.title</strong>
+                </a>
+            </div>
+
+            <div class="collapse navbar-collapse" uib-collapse="isNavbarCollapsed" >
+                @navbarElements
+            </div>
+        </div>
+    </nav>
+</div>
