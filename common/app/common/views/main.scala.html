@@ -1,14 +1,16 @@
-@(title: String)(content: Html)
+@(response: common.models.BasicViewResponse)(content: Html)
 
 <!DOCTYPE html>
 
 <html lang="en" ng-app="DuxApp">
     <head>
-        <title>@title</title>
+        <title>@response.title</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/css/font-awesome.min.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/css/paper-bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/css/common.css")">
 
         <link rel="apple-touch-icon-precomposed" sizes="57x57" href="@routes.Assets.versioned("lib/common/images/favicons/apple-touch-icon-57x57.png")" />
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="@routes.Assets.versioned("lib/common/images/favicons/apple-touch-icon-114x114.png")" />
@@ -23,7 +25,7 @@
         <link rel="icon" type="image/png" href="@routes.Assets.versioned("lib/common/images/favicons/favicon-32x32.png")" sizes="32x32" />
         <link rel="icon" type="image/png" href="@routes.Assets.versioned("lib/common/images/favicons/favicon-16x16.png")" sizes="16x16" />
         <link rel="icon" type="image/png" href="@routes.Assets.versioned("lib/common/images/favicons/favicon-128.png")" sizes="128x128" />
-        <meta name="application-name" content="@title"/>
+        <meta name="application-name" content="@response.title"/>
         <meta name="msapplication-TileColor" content="#FFFFFF" />
         <meta name="msapplication-TileImage" content="@routes.Assets.versioned("lib/common/images/favicons/mstile-144x144.png")" />
         <meta name="msapplication-square70x70logo" content="@routes.Assets.versioned("lib/common/images/favicons/mstile-70x70.png")" />

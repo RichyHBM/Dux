@@ -1,7 +1,32 @@
-@(message: String)
+@(response: auth.models.BasicAuthViewResponse)(content: Html)
 
-@common.views.html.main("Leaderboards") {
+@common.views.html.main(response) {
+    @auth.views.html.navbar(response) {
+      
+        <script type="text/javascript">
+            var app = angular.module('DuxApp');
 
-    @play20.welcome(message, style = "Java")
+            app.controller("NavbarSearchCtrl", function($scope) {
+                $scope.search = function() {
+                    if($scope.gameId) {
+                        window.location.href = "/" + $scope.gameId;
+                    }
+                };
+            });
+        </script>
 
+        <ul ng-controller="NavbarSearchCtrl" class="nav navbar-nav navbar-right">
+            <li class="navbar-form">
+                <div class="form-group">
+                    <input type="text" ng-model="gameId" class="form-control" placeholder="Search">
+                </div>
+            </li>
+            <li><a ng-click="search()" href><i class="centered fa fa-search"></i></a></li>
+        </ul>
+
+    }
+
+    @common.views.html.alert()
+
+    @content
 }

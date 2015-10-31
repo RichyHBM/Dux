@@ -16,6 +16,8 @@ setup := {
   "sh setup.sh" !
 }
 
+TwirlKeys.templateImports += "com.fasterxml.jackson.databind.node.ObjectNode"
+
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
