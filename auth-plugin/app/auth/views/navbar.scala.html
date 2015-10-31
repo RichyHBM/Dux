@@ -1,0 +1,38 @@
+@(response: auth.models.BasicAuthViewResponse)(navbarContent: Html)
+
+@common.views.html.navbar(response) {
+
+    <script type="text/javascript">
+        var app = angular.module('DuxApp');
+
+        app.controller("AuthNavbarCtrl", function($scope, $http) {
+        });
+
+    </script>
+
+    <ul class="nav navbar-nav navbar-right" ng-controller="AuthNavbarCtrl">
+        @if(response.user == null){
+            <li>
+                <a href="#"><i class="fa centered fa-sign-in fa-1-4x"></i> Sign In</a>
+            </li>
+        }else{
+            <li class="btn-group" uib-dropdown>
+                <a id="single-button" href uib-dropdown-toggle>
+                    <span>
+                        @response.user.name
+                        <i class="fa fa-user fa-1-4x"></i>
+                        <span class="caret"></span>
+                    </span>
+                </a>
+
+                <ul class="uib-dropdown-menu" role="menu" aria-labelledby="single-button">
+                    <li role="menuitem"><a href="#">Profile</a></li>
+                    <li role="menuitem"><a href="#"><i class="fa fa-sign-out"></i> Sign out</a></li>
+                </ul>
+            </li>
+        }
+    </ul>
+
+    @navbarContent
+
+}
