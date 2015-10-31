@@ -9,7 +9,7 @@ import interfaces.ILeaderboardManager;
 import views.html.*;
 import javax.inject.Inject;
 
-@auth.IsAuthenticated
+
 public class LeaderboardViews extends Controller {
     @Inject
     ILeaderboardManager manager;
