@@ -2,6 +2,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import auth.models.BasicAuthViewResponse;
+import auth.models.AuthenticatedUser;
 import play.*;
 import play.mvc.*;
 import play.libs.Json;
@@ -15,18 +16,23 @@ public class LeaderboardViews extends Controller {
     ILeaderboardManager manager;
 
     public Result index() {
-        BasicAuthViewResponse response = new BasicAuthViewResponse("Leaderboards", (auth.models.AuthenticatedUser)ctx().args.get("auth-user"));
+        BasicAuthViewResponse response = new BasicAuthViewResponse("Leaderboards", (AuthenticatedUser)ctx().args.get("auth-user"));
         ObjectNode viewData = Json.newObject();
-        viewData.put("TotalLeaderboards", manager.countAllLeaderboards() + 10);
-        viewData.put("ActiveLeaderboards", manager.countActiveLeaderboards() + 5);
+        viewData.put("TotalLeaderboards", manager.countAllLeaderboards());
+        viewData.put("ActiveLeaderboards", manager.countActiveLeaderboards());
         return ok(index.render(viewData, response));
     }
 
-    public Result game(Long gameId) {
-        return ok(gameId.toString());
+    public Result game(Integer gameId) {
+        BasicAuthViewResponse response = new BasicAuthViewResponse("Leaderboards", (AuthenticatedUser)ctx().args.get("auth-user"));
+        ObjectNode viewData = Json.newObject();
+        viewData.put("GameId", gameId);
+        viewData.put("ActiveLeaderboards", manager.countActiveLeaderboardsForGame(gameId));
+        viewData.put("TotalLeaderboards", manager.countLeaderboardsForGame(gameId));
+        return ok(game.render(viewData, response));
     }
 
-    public Result leaderboard(Long gameId, String leaderboardName) {
+    public Result leaderboard(Integer gameId, String leaderboardName) {
         return ok(gameId.toString() + " : " + leaderboardName);
     }
 

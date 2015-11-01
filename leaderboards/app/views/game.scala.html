@@ -1,0 +1,86 @@
+@(viewData: ObjectNode, response: auth.models.BasicAuthViewResponse)
+
+
+@main(response) {
+
+<script type="text/javascript">
+        var app = angular.module('DuxApp');
+
+        app.controller("GameCtrl", function($scope, $http) {
+
+            $scope.gameId = @viewData.get("GameId");
+            $scope.totalLeaderboards = @viewData.get("TotalLeaderboards");
+            $scope.activeLeaderboards = @viewData.get("ActiveLeaderboards");
+            $scope.leaderboards = [];
+
+            $scope.getLeaderboardStateClass = function(leaderboard) {
+                if(!leaderboard.startTime)
+                    return '';
+                if( !leaderboard.endTime)
+                    return 'success';
+                if( new Date(Date.now()) >= leaderboard.endTime)
+                    return 'danger';
+                if( new Date(Date.now()) < leaderboard.endTime && new Date(Date.now()) >= leaderboard.startTime)
+                    return 'success';
+                return '';
+            }
+
+            $http.post('/api/get-leaderboards-for-game', {gameId: $scope.gameId}).then(
+                function successCallback(response) {
+                    $scope.leaderboards = [];
+                    response.data.forEach(function(item){
+                        var leaderboard = {};
+                        leaderboard.leaderboardName = item.leaderboardName;
+                        leaderboard.startTime = new Date(item.startTime);
+                        leaderboard.endTime = new Date(item.endTime);
+                        leaderboard.ordering = item.descending ? 'Descending' : 'Ascending';
+
+                        $http.post('/api/get-leaderboard-count', {gameId: $scope.gameId, leaderboardName: leaderboard.leaderboardName}).then(
+                            function successCallback(response) {
+                                leaderboard.count = parseInt(response.data);
+                            });
+
+                        $scope.leaderboards.push(leaderboard);
+                    });
+                });
+
+        });
+    </script>
+
+<div ng-controller="GameCtrl" class="container">
+
+    <div class="row">
+        <div class="col-xs-2">
+            <h3>Game: {{gameId}}</h3>
+        </div>
+        <div class="pull-right col-xs-4">
+            <h3>Active: {{activeLeaderboards}} Total: {{totalLeaderboards}}</h3>
+        </div>
+    </div>
+
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Count</th>
+                <th>Start Date (UTC)</th>
+                <th>End Date (UTC)</th>
+                <th>Ordering</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="leaderboard in leaderboards"  class="{{ getLeaderboardStateClass(leaderboard) }}">
+                <td class="col-xs-2"><a href="/{{gameId}}/{{leaderboard.leaderboardName}}">{{leaderboard.leaderboardName}}</a></td>
+                <td class="col-xs-2">{{leaderboard.count}}</td>
+                <td class="col-xs-3">{{leaderboard.startTime.toUTCString()}}</td>
+                <td class="col-xs-3">{{leaderboard.endTime.toUTCString()}}</td>
+                <td class="col-xs-2">{{leaderboard.ordering}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+
+}
