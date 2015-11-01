@@ -3,12 +3,13 @@
 # ~~~~
 
 # Home page
-GET     /                              controllers.LeaderboardViews.index()
-GET     /:gameId                       controllers.LeaderboardViews.game(gameId: Int)
-GET     /:gameId/:leaderboardName      controllers.LeaderboardViews.leaderboard(gameId: Int, leaderboardName: String)
+GET     /                               controllers.LeaderboardViews.index()
+GET     /:gameId                        controllers.LeaderboardViews.game(gameId: Int)
+GET     /:gameId/:leaderboardName       controllers.LeaderboardViews.leaderboard(gameId: Int, leaderboardName: String)
 
-POST    /api/get-leaderboards-for-game controllers.LeaderboardAPI.getLeaderboardsForGame()
-POST    /api/get-leaderboard-count     controllers.LeaderboardAPI.getLeaderboardCount()
+POST    /api/get-leaderboards-for-game  controllers.LeaderboardAPI.getLeaderboardsForGame()
+POST    /api/get-leaderboard-count      controllers.LeaderboardAPI.getLeaderboardCount()
+POST    /api/edit-leaderboard           controllers.LeaderboardAPI.editLeaderboard()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
