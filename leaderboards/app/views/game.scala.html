@@ -66,7 +66,76 @@
                 }
             }
 
+            $scope.openNewModal = function () {
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'newLeaderboardModal.html',
+                    controller: 'NewLeaderboardModalCtrl',
+                    resolve: {
+                        gameId: function () {
+                            return $scope.gameId;
+                        }
+                    }
+                });
+
+                modalInstance.getLeaderboards = function() {
+                    $scope.getLeaderboards()
+                }
+            }
+
             $scope.getLeaderboards();
+        });
+
+        app.controller("NewLeaderboardModalCtrl", function($scope, $http, $modalInstance, gameId) {
+            $scope.gameId = gameId;
+            $scope.descending = false;
+            $scope.errors = {};
+
+            $scope.ok = function () {
+                if( $scope.startTime ) {
+                    $scope.errors.startTimeHasError = !date_YYYYMMDD_HHMMSS_ValidationRegex.test($scope.startTime);
+                }
+
+                if( $scope.endTime ) {
+                    $scope.errors.endTimeHasError = !date_YYYYMMDD_HHMMSS_ValidationRegex.test($scope.endTime);
+                }
+
+                $scope.errors.leaderboardNameHasError = $scope.leaderboardName ? false : true;
+
+                if( $scope.errors.startTimeHasError || $scope.errors.endTimeHasError || $scope.errors.leaderboardNameHasError ) {
+                    return;
+                }
+
+                var startDate = null;
+                var endDate = null;
+
+                if( $scope.startTime ) {
+                    var splitStart = $scope.startTime.split(' ');
+                    startDate = new Date(splitStart[0] + 'T' + splitStart[1] + 'Z');
+                }
+
+                if( $scope.endTime ) {
+                    var splitEnd = $scope.endTime.split(' ');
+                    endDate = new Date(splitEnd[0] + 'T' + splitEnd[1] + 'Z');
+                }
+
+                $http.post('/api/new-leaderboard',
+                    {
+                        gameId: $scope.gameId,
+                        leaderboardName: $scope.leaderboardName,
+                        startTime: startDate ? startDate.getTime() : -1,
+                        endTime: endDate ? endDate.getTime() : -1,
+                        descending: $scope.descending
+                    }).then(
+                        function successCallback(response) {
+                            $modalInstance.getLeaderboards();
+                            $modalInstance.close();
+                        });
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
         });
 
         app.controller("EditModalCtrl", function($scope, $http, $modalInstance, leaderboard, gameId) {
@@ -124,6 +193,35 @@
 
 <div ng-controller="GameCtrl" class="container">
 
+    <script type="text/ng-template" id="newLeaderboardModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">New leaderboard for: {{gameId}}</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group {{ errors.leaderboardNameHasError ? 'has-error' : '' }}">
+                <label class="control-label" for="nameNewInput">Leaderboard Name</label>
+                <input type="text" class="form-control" id="nameNewInput" ng-model="leaderboardName">
+            </div>
+            <div class="form-group {{ errors.startTimeHasError ? 'has-error' : '' }}">
+                <label class="control-label" for="startTimeNewInput">Start Time (UTC)</label>
+                <input type="text" class="form-control" id="startTimeNewInput" ng-model="startTime" uib-tooltip="YYYY-MM-DD HH:MM:SS" tooltip-trigger="focus">
+            </div>
+            <div class="form-group {{ errors.endTimeHasError ? 'has-error' : '' }}">
+                <label class="control-label" for="endTimeNewInput">End Time (UTC)</label>
+                <input type="text" class="form-control" id="endTimeNewInput" ng-model="endTime" uib-tooltip="YYYY-MM-DD HH:MM:SS" tooltip-trigger="focus">
+            </div>
+            <div class="form-group">
+                <label class="control-label">
+                    <input type="checkbox" ng-model="descending"> {{ descending ? 'Descending' : 'Ascending' }}
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+
     <script type="text/ng-template" id="editLeaderboardModal.html">
         <div class="modal-header">
             <h3 class="modal-title">Edit: {{leaderboard.leaderboardName}}</h3>
@@ -148,8 +246,13 @@
         <div class="col-xs-2">
             <h3>Game: {{gameId}}</h3>
         </div>
-        <div class="pull-right col-xs-4">
-            <h3>Active: {{activeLeaderboards}} Total: {{totalLeaderboards}}</h3>
+        <div class="col-xs-offset-7 col-xs-3">
+            <h3 class="pull-right">Active: {{activeLeaderboards}} Total: {{totalLeaderboards}}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-offset-6 col-xs-6">
+            <button class="pull-right btn btn-default" ng-click="openNewModal()">New Leaderboard</button>
         </div>
     </div>
 

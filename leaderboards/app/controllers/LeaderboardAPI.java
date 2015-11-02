@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import common.utilities.StringUtils;
 
 public class LeaderboardAPI extends Controller {
     @Inject
@@ -61,6 +62,29 @@ public class LeaderboardAPI extends Controller {
         Date endDate = endTime == -1 ? null : new Date(endTime);
 
         Boolean success = manager.editLeaderboard(gameId, leaderboardName, startDate, endDate);
+
+        return ok(Json.toJson(success));
+    }
+
+    public Result newLeaderboard() {
+        JsonNode json = request().body().asJson();
+        if (json == null)
+            return badRequest("Game ID and Leaderboard data required");
+
+        int gameId = json.findPath("gameId").asInt(-1);
+        String leaderboardName = json.findPath("leaderboardName").asText("");
+
+        if(gameId == -1 || StringUtils.isEmpty(leaderboardName))
+            return badRequest("Bad Game ID or Leaderboard name");
+
+        long startTime = json.findPath("startTime").asLong(-1);
+        long endTime = json.findPath("endTime").asLong(-1);
+        boolean descending = json.findPath("descending").asBoolean(false);
+
+        Date startDate = startTime == -1 ? null : new Date(startTime);
+        Date endDate = endTime == -1 ? null : new Date(endTime);
+
+        Boolean success = manager.createLeaderboard(gameId, leaderboardName, startDate, endDate, descending);
 
         return ok(Json.toJson(success));
     }
