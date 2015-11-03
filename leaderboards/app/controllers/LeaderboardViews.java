@@ -32,8 +32,14 @@ public class LeaderboardViews extends Controller {
         return ok(game.render(viewData, response));
     }
 
-    public Result leaderboard(Integer gameId, String leaderboardName) {
-        return ok(gameId.toString() + " : " + leaderboardName);
+    public Result leaderboard(Integer gameId, String leaderboardName, Integer startRank, Integer count) {
+        BasicAuthViewResponse response = new BasicAuthViewResponse("Leaderboards", (AuthenticatedUser)ctx().args.get("auth-user"));
+        ObjectNode viewData = Json.newObject();
+        viewData.put("GameId", gameId);
+        viewData.put("LeaderboardName", leaderboardName);
+        viewData.put("StartRank", startRank);
+        viewData.put("Count", count);
+        return ok(leaderboard.render(viewData, response));
     }
 
 }

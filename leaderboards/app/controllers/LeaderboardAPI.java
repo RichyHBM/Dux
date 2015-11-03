@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import interfaces.ILeaderboardManager;
 import interfaces.ILeaderboardProvider;
 import models.Leaderboard;
+import models.LeaderboardUser;
 import play.Logger;
+import play.cache.CacheApi;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -22,6 +24,23 @@ public class LeaderboardAPI extends Controller {
 
     @Inject
     ILeaderboardProvider provider;
+
+    @Inject
+    CacheApi cache;
+
+    final int CacheExpirationTime = 60 * 2;
+
+    private Leaderboard getCachedLeaderboard(int gameId, String leaderboardName) {
+        String gameLeaderboardName = gameId + "_" + leaderboardName;
+        Leaderboard leaderboard = cache.get(gameLeaderboardName);
+
+        if(leaderboard == null) {
+            leaderboard = manager.getLeaderboard(gameId, leaderboardName);
+            cache.set(gameLeaderboardName, leaderboard, CacheExpirationTime);
+        }
+        
+        return leaderboard;
+    }
 
     public Result getLeaderboardsForGame() {
         JsonNode json = request().body().asJson();
@@ -87,5 +106,24 @@ public class LeaderboardAPI extends Controller {
         Boolean success = manager.createLeaderboard(gameId, leaderboardName, startDate, endDate, descending);
 
         return ok(Json.toJson(success));
+    }
+
+    public Result getRankedUsers() {
+        JsonNode json = request().body().asJson();
+        if (json == null)
+            return badRequest("Game ID and Leaderboard data required");
+
+        int gameId = json.findPath("gameId").asInt(-1);
+        String leaderboardName = json.findPath("leaderboardName").asText("");
+        int startRank = json.findPath("startRank").asInt(-1);
+        int count = json.findPath("count").asInt(-1);
+
+        if(gameId == -1 || StringUtils.isEmpty(leaderboardName) || startRank == -1 || count == -1)
+            return badRequest("Bad request body");
+
+        boolean descending = getCachedLeaderboard(gameId, leaderboardName).descending();
+
+        List<LeaderboardUser> users = provider.getRankedUsers(gameId, leaderboardName, descending, startRank, count);
+        return ok(Json.toJson(users));
     }
 }
