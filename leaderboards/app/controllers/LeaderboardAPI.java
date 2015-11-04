@@ -124,6 +124,43 @@ public class LeaderboardAPI extends Controller {
         boolean descending = getCachedLeaderboard(gameId, leaderboardName).descending();
 
         List<LeaderboardUser> users = provider.getRankedUsers(gameId, leaderboardName, descending, startRank, count);
+
         return ok(Json.toJson(users));
+    }
+
+    public Result deleteUser() {
+        JsonNode json = request().body().asJson();
+        if (json == null)
+            return badRequest("Game ID and Leaderboard data required");
+
+        int gameId = json.findPath("gameId").asInt(-1);
+        String leaderboardName = json.findPath("leaderboardName").asText("");
+        String userId = json.findPath("userId").asText();
+
+        if(gameId == -1 || StringUtils.isEmpty(leaderboardName) || StringUtils.isEmpty(userId))
+            return badRequest("Bad request body");
+
+        boolean success = provider.removeUser(gameId, leaderboardName, userId);
+
+        return ok(Json.toJson(success));
+    }
+
+    public Result setUserScore() {
+        JsonNode json = request().body().asJson();
+        if (json == null)
+            return badRequest("Game ID and Leaderboard data required");
+
+        int gameId = json.findPath("gameId").asInt(-1);
+        String leaderboardName = json.findPath("leaderboardName").asText("");
+        String userId = json.findPath("userId").asText();
+        String userExtraData = json.findPath("userExtraData").asText("");
+        double newScore = json.findPath("newUserScore").asDouble(-1.0);
+
+        if(gameId == -1 || StringUtils.isEmpty(leaderboardName) || StringUtils.isEmpty(userId) || newScore < 0 || StringUtils.isEmpty(userExtraData))
+            return badRequest("Bad request body");
+
+        boolean success = provider.setScoreForUser(gameId, leaderboardName, userId, newScore, userExtraData);
+
+        return ok(Json.toJson(success));
     }
 }
