@@ -27,10 +27,16 @@
                         <h3 class="panel-title">Find Game</h3>
                     </div>
                     <div class="panel-body">
-                        <div class="input-group">
-                            <input type="text" ng-model="gameId" class="form-control" placeholder="Game ID">
-                            <span class="input-group-addon"><a ng-click="search()" href><i class="centered fa fa-search fa-2x"></i></a></span>
-                        </div>
+                        <form class="form-inline">
+                            <div class="inline-group">
+                                <button class="input-group-addon pull-right" ng-click="search()">
+                                    <i class="centered fa fa-search fa-2x"></i>
+                                </button>
+                                <span class="inline-input-wrapper">
+                                    <input type="text" ng-model="gameId" class="full-width form-control" placeholder="Game ID">
+                                </span>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
