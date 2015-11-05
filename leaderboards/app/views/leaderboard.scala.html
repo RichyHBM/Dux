@@ -14,7 +14,7 @@
             $scope.users = [];
 
             $scope.getUsers = function() {
-                $http.post('/api/get-ranked-users', {
+                $http.post('/view-api/get-ranked-users', {
                         gameId: $scope.gameId,
                         leaderboardName: $scope.leaderboardName,
                         startRank: $scope.startRank,
@@ -26,7 +26,7 @@
             }
 
             $scope.deleteUser = function(userId) {
-                $http.post('/api/delete-user', {
+                $http.post('/view-api/delete-user', {
                         gameId: $scope.gameId,
                         leaderboardName: $scope.leaderboardName,
                         userId: userId
@@ -70,7 +70,7 @@
             $scope.userExtraData = user.extra;
 
             $scope.ok = function () {
-                $http.post('/api/set-user-score', {
+                $http.post('/view-api/set-user-score', {
                         gameId: $scope.gameId,
                         leaderboardName: $scope.leaderboardName,
                         userId: $scope.userId,

@@ -25,7 +25,7 @@
             }
 
             $scope.getLeaderboards = function() {
-                $http.post('/api/get-leaderboards-for-game', {gameId: $scope.gameId}).then(
+                $http.post('/view-api/get-leaderboards-for-game', {gameId: $scope.gameId}).then(
                     function successCallback(response) {
                         $scope.leaderboards = [];
                         response.data.forEach(function(item){
@@ -35,7 +35,7 @@
                             leaderboard.endTime = item.endTime ? new Date(item.endTime) : null;
                             leaderboard.ordering = item.descending ? 'Descending' : 'Ascending';
 
-                            $http.post('/api/get-leaderboard-count', {gameId: $scope.gameId, leaderboardName: leaderboard.leaderboardName}).then(
+                            $http.post('/view-api/get-leaderboard-count', {gameId: $scope.gameId, leaderboardName: leaderboard.leaderboardName}).then(
                                 function successCallback(response) {
                                     leaderboard.count = parseInt(response.data);
                                 });
@@ -118,7 +118,7 @@
                     endDate = new Date(splitEnd[0] + 'T' + splitEnd[1] + 'Z');
                 }
 
-                $http.post('/api/new-leaderboard',
+                $http.post('/view-api/new-leaderboard',
                     {
                         gameId: $scope.gameId,
                         leaderboardName: $scope.leaderboardName,
@@ -171,7 +171,7 @@
                     endDate = new Date(splitEnd[0] + 'T' + splitEnd[1] + 'Z');
                 }
 
-                $http.post('/api/edit-leaderboard',
+                $http.post('/view-api/edit-leaderboard',
                     {
                         gameId: $scope.gameId,
                         leaderboardName: $scope.leaderboard.leaderboardName,
