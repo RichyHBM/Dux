@@ -18,29 +18,12 @@ import java.util.Date;
 import java.util.List;
 import common.utilities.StringUtils;
 
-public class LeaderboardAPI extends Controller {
+public class LeaderboardViewAPI extends Controller {
     @Inject
     ILeaderboardManager manager;
 
     @Inject
     ILeaderboardProvider provider;
-
-    @Inject
-    CacheApi cache;
-
-    final int CacheExpirationTime = 60 * 2;
-
-    private Leaderboard getCachedLeaderboard(int gameId, String leaderboardName) {
-        String gameLeaderboardName = gameId + "_" + leaderboardName;
-        Leaderboard leaderboard = cache.get(gameLeaderboardName);
-
-        if(leaderboard == null) {
-            leaderboard = manager.getLeaderboard(gameId, leaderboardName);
-            cache.set(gameLeaderboardName, leaderboard, CacheExpirationTime);
-        }
-        
-        return leaderboard;
-    }
 
     public Result getLeaderboardsForGame() {
         JsonNode json = request().body().asJson();
@@ -121,7 +104,7 @@ public class LeaderboardAPI extends Controller {
         if(gameId == -1 || StringUtils.isEmpty(leaderboardName) || startRank == -1 || count == -1)
             return badRequest("Bad request body");
 
-        boolean descending = getCachedLeaderboard(gameId, leaderboardName).descending();
+        boolean descending = manager.getLeaderboard(gameId, leaderboardName).descending();
 
         List<LeaderboardUser> users = provider.getRankedUsers(gameId, leaderboardName, descending, startRank, count);
 

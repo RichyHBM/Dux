@@ -7,14 +7,13 @@ GET     /                               controllers.LeaderboardViews.index()
 GET     /:gameId                        controllers.LeaderboardViews.game(gameId: Int)
 GET     /:gameId/:leaderboardName       controllers.LeaderboardViews.leaderboard(gameId: Int, leaderboardName: String, startRank: Integer ?= 0, count: Integer ?= 100)
 
-POST    /api/get-leaderboards-for-game  controllers.LeaderboardAPI.getLeaderboardsForGame()
-POST    /api/edit-leaderboard           controllers.LeaderboardAPI.editLeaderboard()
-POST    /api/new-leaderboard            controllers.LeaderboardAPI.newLeaderboard()
-
-POST    /api/get-leaderboard-count      controllers.LeaderboardAPI.getLeaderboardCount()
-POST    /api/get-ranked-users           controllers.LeaderboardAPI.getRankedUsers()
-POST    /api/delete-user                controllers.LeaderboardAPI.deleteUser()
-POST    /api/set-user-score             controllers.LeaderboardAPI.setUserScore()
+POST    /api/get-leaderboards-for-game  controllers.LeaderboardViewAPI.getLeaderboardsForGame()
+POST    /api/edit-leaderboard           controllers.LeaderboardViewAPI.editLeaderboard()
+POST    /api/new-leaderboard            controllers.LeaderboardViewAPI.newLeaderboard()
+POST    /api/get-leaderboard-count      controllers.LeaderboardViewAPI.getLeaderboardCount()
+POST    /api/get-ranked-users           controllers.LeaderboardViewAPI.getRankedUsers()
+POST    /api/delete-user                controllers.LeaderboardViewAPI.deleteUser()
+POST    /api/set-user-score             controllers.LeaderboardViewAPI.setUserScore()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
