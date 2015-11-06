@@ -31,7 +31,7 @@ public class PlayAuthCacheTest {
 
     @Test
     public void addUserToCache() {
-        FakeAppRunner.runTest(application, () -> {
+        FakeAppRunner.runTestWithApplication(application, () -> {
             IAuthCache authCache = application.injector().instanceOf(PlayAuthCache.class);
             AuthenticatedUser user = new AuthenticatedUser(1, "test", "test@test");
             HashSet<String> sessionSet = new HashSet<String>();
@@ -46,7 +46,7 @@ public class PlayAuthCacheTest {
 
     @Test
     public void randomUserShouldNotBeInCache() {
-        FakeAppRunner.runTest(application, () -> {
+        FakeAppRunner.runTestWithApplication(application, () -> {
             IAuthCache authCache = application.injector().instanceOf(PlayAuthCache.class);
 
             assertFalse(authCache.isUserInCache("randomSessionKey"));
@@ -55,7 +55,7 @@ public class PlayAuthCacheTest {
 
     @Test
     public void userShouldNotBeInCache() {
-        FakeAppRunner.runTest(application, () -> {
+        FakeAppRunner.runTestWithApplication(application, () -> {
             IAuthCache authCache = application.injector().instanceOf(PlayAuthCache.class);
             AuthenticatedUser user = new AuthenticatedUser(1, "test", "test@test");
             String session = authCache.storeUserInCache(user);
@@ -67,7 +67,7 @@ public class PlayAuthCacheTest {
 
     @Test
     public void randomUserShouldNotReturnFromCache() {
-        FakeAppRunner.runTest(application, () -> {
+        FakeAppRunner.runTestWithApplication(application, () -> {
             IAuthCache authCache = application.injector().instanceOf(PlayAuthCache.class);
 
             assertNull(authCache.getUserFromCache("randomSessionKey"));
@@ -76,7 +76,7 @@ public class PlayAuthCacheTest {
 
     @Test
     public void userShouldReturnFromCache() {
-        FakeAppRunner.runTest(application, () -> {
+        FakeAppRunner.runTestWithApplication(application, () -> {
             IAuthCache authCache = application.injector().instanceOf(PlayAuthCache.class);
             AuthenticatedUser user = new AuthenticatedUser(1, "test", "test@test");
             String session = authCache.storeUserInCache(user);
@@ -93,7 +93,7 @@ public class PlayAuthCacheTest {
 
     @Test
     public void removeUserFromCache() {
-        FakeAppRunner.runTest(application, () -> {
+        FakeAppRunner.runTestWithApplication(application, () -> {
             IAuthCache authCache = application.injector().instanceOf(PlayAuthCache.class);
             AuthenticatedUser user = new AuthenticatedUser(1, "test", "test@test");
             String session = authCache.storeUserInCache(user);
@@ -106,7 +106,7 @@ public class PlayAuthCacheTest {
 
     @Test
     public void refreshRandomUserInCacheCache() {
-        FakeAppRunner.runTest(application, () -> {
+        FakeAppRunner.runTestWithApplication(application, () -> {
             IAuthCache authCache = application.injector().instanceOf(PlayAuthCache.class);
 
             assertFalse(authCache.refreshUserAuthenticationSession("randomSessionKey"));
@@ -115,7 +115,7 @@ public class PlayAuthCacheTest {
 
     @Test
     public void refreshUserInCacheCache() {
-        FakeAppRunner.runTest(application, () -> {
+        FakeAppRunner.runTestWithApplication(application, () -> {
             IAuthCache authCache = application.injector().instanceOf(PlayAuthCache.class);
             AuthenticatedUser user = new AuthenticatedUser(1, "test", "test@test");
             String session = authCache.storeUserInCache(user);

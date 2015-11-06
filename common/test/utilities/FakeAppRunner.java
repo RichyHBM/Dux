@@ -9,6 +9,7 @@ import play.test.*;
 import play.libs.F.*;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,13 +18,9 @@ import static org.junit.Assert.*;
 import org.openqa.selenium.phantomjs.*;
 
 public class FakeAppRunner {
-    public static void runTest(Application application, ITest test) {
-        HashMap<String, Object> config = new HashMap<String, Object>();
-        runTestWithApplication(application, test);
-    }
 
     public static void runTest(ITest test) {
-        HashMap<String, Object> config = new HashMap<String, Object>();
+        Map<String, Object> config = new HashMap<String, Object>();
         runTest(test, config);
     }
 
@@ -37,7 +34,7 @@ public class FakeAppRunner {
         });
     }
 
-    public static void runTest(ITest test, HashMap<String, Object> config) {
+    public static void runTest(ITest test, Map<String, Object> config) {
         running(fakeApplication(config), () -> {
             try {
                 test.test();
