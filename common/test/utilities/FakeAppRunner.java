@@ -45,6 +45,10 @@ public class FakeAppRunner {
     }
 
     public static void runBrowserTest(ITestBrowser test) {
+        FakeAppRunner.runBrowserTestWithApplication(fakeApplication(inMemoryDatabase()), test);
+    }
+
+    public static void runBrowserTestWithApplication(Application application, ITestBrowser test) {
         //Turn off PhantomJS Info logs
         Logger.getLogger(PhantomJSDriverService.class.getName()).setLevel(Level.WARNING);
 
@@ -55,7 +59,7 @@ public class FakeAppRunner {
         desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, phantomArgs);
         PhantomJSDriver phantomDriver = new PhantomJSDriver(desiredCapabilities);
 
-        running(testServer(3333,fakeApplication(inMemoryDatabase())), phantomDriver, new Callback<TestBrowser>() {
+        running(testServer(3333, application), phantomDriver, new Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 try {
                     test.test(browser);
