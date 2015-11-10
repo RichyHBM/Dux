@@ -2,11 +2,12 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# View endpoints
 GET     /                               controllers.LeaderboardViews.index()
 GET     /:gameId                        controllers.LeaderboardViews.game(gameId: Int)
 GET     /:gameId/:leaderboardName       controllers.LeaderboardViews.leaderboard(gameId: Int, leaderboardName: String, startRank: Integer ?= 0, count: Integer ?= 100)
 
+#API's used by the views
 POST    /view-api/get-leaderboards-for-game  controllers.LeaderboardViewAPI.getLeaderboardsForGame()
 POST    /view-api/edit-leaderboard           controllers.LeaderboardViewAPI.editLeaderboard()
 POST    /view-api/new-leaderboard            controllers.LeaderboardViewAPI.newLeaderboard()
@@ -14,6 +15,15 @@ POST    /view-api/get-leaderboard-count      controllers.LeaderboardViewAPI.getL
 POST    /view-api/get-ranked-users           controllers.LeaderboardViewAPI.getRankedUsers()
 POST    /view-api/delete-user                controllers.LeaderboardViewAPI.deleteUser()
 POST    /view-api/set-user-score             controllers.LeaderboardViewAPI.setUserScore()
+
+#Leaderboard API v1 endpoints
+POST    /api/v1/get-leaderboard-count       controllers.LeaderboardAPIv1.getUserCountInLeaderboard()
+POST    /api/v1/set-score                   controllers.LeaderboardAPIv1.setScoreForUser()
+POST    /api/v1/increment-score             controllers.LeaderboardAPIv1.incrementScoreForUser()
+POST    /api/v1/get-ranked-users            controllers.LeaderboardAPIv1.getRankedUsers()
+POST    /api/v1/get-user                    controllers.LeaderboardAPIv1.getUser()
+POST    /api/v1/get-user-score              controllers.LeaderboardAPIv1.getScoreForUser()
+POST    /api/v1/get-user-rank               controllers.LeaderboardAPIv1.getRankForUser()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
