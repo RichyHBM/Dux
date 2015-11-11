@@ -44,6 +44,23 @@ public class LeaderboardAPIv1 extends Controller {
         return leaderboard;
     }
 
+    private List<Leaderboard> getAllCachedActiveLeaderboards(int gameId) throws LoggedException {
+        String cacheKey = "AllActiveFor_" + gameId;
+
+        List<Leaderboard> leaderboards = cache.get(cacheKey);
+
+        if(leaderboards == null) {
+            leaderboards = manager.getActiveLeaderboardsForGame(gameId);
+            if(leaderboards == null)
+                throw new LoggedException("Invalid leaderboard given",
+                        String.format("Leaderboard for game %s doesnt exist", gameId));
+
+            cache.set(cacheKey, leaderboards, CacheExpirationTime);
+        }
+
+        return leaderboards;
+    }
+
     private boolean isLeaderboardActive(int gameId, String leaderboardName) throws LoggedException {
         Leaderboard leaderboard = getCachedLeaderboard(gameId, leaderboardName);
 
@@ -53,6 +70,20 @@ public class LeaderboardAPIv1 extends Controller {
         Date now = new Date();
 
         return leaderboard.startTime().before(now) && leaderboard.endTime().after(now);
+    }
+
+    public Result getAllActiveLeaderboardsForGame() {
+        JsonNode json = request().body().asJson();
+        if (json == null)
+            return badRequest("Game ID required");
+
+        int gameId = json.findPath("gameId").asInt(-1);
+
+        if(gameId == -1)
+            return badRequest("Bad request body");
+
+        List<Leaderboard> leaderboards = getAllCachedActiveLeaderboards(gameId);
+        return ok(Json.toJson(leaderboards));
     }
 
     public Result getUserCountInLeaderboard() {
