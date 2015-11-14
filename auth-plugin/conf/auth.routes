@@ -2,5 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /auth/signin                auth.controllers.AuthViews.signin()
+GET     /auth/logout                auth.controllers.AuthAPI.logout()
+
+POST    /auth/signin                auth.controllers.AuthAPI.signin()
