@@ -1,7 +1,16 @@
-@(message: String)
+@(viewData: ObjectNode, response: common.models.BasicViewResponse)
 
-@main("Welcome to Play") {
 
-    @play20.welcome(message, style = "Java")
+@main(response) {
 
+    <script type="text/javascript">
+        var app = angular.module('DuxApp');
+
+        app.controller("IndexCtrl", function($scope, $http) {
+
+        });
+    </script>
+
+    <div ng-controller="IndexCtrl" class="container">
+    </div>
 }

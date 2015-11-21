@@ -1,15 +1,11 @@
-@(title: String)(content: Html)
+@(response: common.models.BasicViewResponse)(content: Html)
 
-<!DOCTYPE html>
+@common.views.html.main(response) {
+    @common.views.html.navbar(response) {
 
-<html lang="en">
-    <head>
-        <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-        <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
-    </head>
-    <body>
-        @content
-    </body>
-</html>
+    }
+
+    @common.views.html.alert()
+
+    @content
+}
