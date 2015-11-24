@@ -11,9 +11,9 @@ import play.api.test.Helpers._
  * For more information, consult the wiki.
  */
 @RunWith(classOf[JUnitRunner])
-class ApplicationSpec extends Specification {
+class DataStoreViewsSpec extends Specification {
 
-  "Application" should {
+  "DataStoreView" should {
 
     "send 404 on a bad request" in new WithApplication{
       route(FakeRequest(GET, "/boum")) must beSome.which (status(_) == NOT_FOUND)

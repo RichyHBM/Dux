@@ -9,7 +9,7 @@ import views.html._
 
 import common.models.BasicViewResponse
 
-class Application extends Controller {
+class DataStoreViews extends Controller {
 
   def index = Action {
     val response = new BasicViewResponse("Data Store")
