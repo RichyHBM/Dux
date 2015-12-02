@@ -2,13 +2,14 @@ package auth.java;
 
 import auth.interfaces.IAuthCache;
 import auth.AuthenticationType;
-import auth.models.AuthenticatedUser;
+import auth.models.*;
 import com.google.inject.Inject;
 import play.Configuration;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Result;
 import play.mvc.Http;
+import auth.Authenticator;
 
 import java.lang.Throwable;
 
@@ -26,13 +27,12 @@ public class AuthenticatedAction extends Action<IsAuthenticated> {
 
         if(authType == AuthenticationType.Session ||
             authType == AuthenticationType.Either) {
-            // Verify Session
             Http.Cookie cookie = ctx.request().cookie("session");
             if(cookie != null) {
-                AuthenticatedUser user = authCache.getUserFromCache(cookie.value());
-                if(user != null) {
-                    ctx.args.put("auth-session", cookie.value());
-                    ctx.args.put("auth-user", user);
+                SessionUser sessionUser = Authenticator.checkSession(cookie.value(), authCache);
+                if(sessionUser != null) {
+                    ctx.args.put("auth-session", sessionUser.sessionKey());
+                    ctx.args.put("auth-user", sessionUser.user());
                     return delegate.call(ctx);
                 }
             }
