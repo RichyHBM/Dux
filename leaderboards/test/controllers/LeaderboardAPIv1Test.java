@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import play.db.DB;
+import play.Logger;
 import play.test.TestBrowser;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -104,6 +105,7 @@ public class LeaderboardAPIv1Test {
                 request.put("userExtraData", "userDataNew");
 
                 try {
+                    Logger.debug("Expected exception");
                     WebRequest.jsonPost(url + "/api/v1/set-score", request.toString());
                     assertTrue("Non active leaderboard should throw exception", false);
                 }catch(Exception e) {
@@ -166,6 +168,7 @@ public class LeaderboardAPIv1Test {
                 request.put("userExtraData", "userDataNew");
 
                 try {
+                    Logger.debug("Expected exception");
                     WebRequest.jsonPost(url + "/api/v1/increment-score", request.toString());
                     assertTrue("Non active leaderboard should throw exception", false);
                 }catch(Exception e) {
@@ -289,6 +292,7 @@ public class LeaderboardAPIv1Test {
             request.put("userId", "u12345");
 
             try {
+                Logger.debug("Expected exception");
                 WebRequest.jsonPost(url + "/api/v1/get-user", request.toString());
                 assertTrue("Invalid user should throw exception", false);
             }catch(Exception e) {
