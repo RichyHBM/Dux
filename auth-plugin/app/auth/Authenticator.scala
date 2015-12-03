@@ -14,4 +14,9 @@ object Authenticator {
     }
     case _ => null
   }
+
+  def checkApiKey(apiKey: String): AuthenticatedUser = apiKey match {
+    case apiKey: String => null
+    case _ => null
+  }
 }
