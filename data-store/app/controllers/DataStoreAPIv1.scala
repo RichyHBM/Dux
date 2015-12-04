@@ -2,7 +2,7 @@ package controllers
 
 import com.google.inject.Inject
 import play.Logger
-import play.cache.CacheApi
+import play.api.cache.CacheApi
 import play.api.mvc._
 import common.utilities._
 import auth.scala._
@@ -24,10 +24,9 @@ class DataStoreAPIv1 @Inject() (cacheApi: CacheApi) extends Controller with Auth
   def get(name: String) = AuthenticatedAction(auth.AuthenticationType.None) {
     name match {
       case name if(StringUtils isNotEmpty name) => {
-        val data: String = cacheApi.get(name)
-        data match {
-          case s:String => Ok(s)
-          case null => Ok("")
+        cacheApi.get[String](name) match {
+          case Some(data) => Ok(data)
+          case None => Ok("")
         }
       }
       case _ => BadRequest

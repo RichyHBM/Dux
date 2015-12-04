@@ -14,7 +14,7 @@ import scala.concurrent.Future
 
 
 trait AuthenticatedActionBuilder {
-  def cache: play.cache.CacheApi
+  def cache: CacheApi
 
   def AuthenticatedAction(authType: AuthenticationType) = new ActionBuilder[AuthenticatedRequest] {
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]) = {
