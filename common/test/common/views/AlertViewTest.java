@@ -11,9 +11,6 @@ import org.junit.*;
 
 import play.mvc.*;
 import play.test.*;
-import play.data.DynamicForm;
-import play.data.validation.ValidationError;
-import play.data.validation.Constraints.RequiredValidator;
 import play.i18n.Lang;
 import play.libs.F;
 import play.libs.F.*;
