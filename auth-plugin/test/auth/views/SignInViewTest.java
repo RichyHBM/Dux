@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import auth.models.AuthenticatedUser;
-import auth.models.BasicAuthViewResponse;
+import common.models.BasicViewResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.*;
 
@@ -26,23 +26,12 @@ import static org.junit.Assert.*;
  * These tests make sure all the views compile as expected
  */
 public class SignInViewTest {
-
     @Test
     public void signinViewNullUserTest() {
-        BasicAuthViewResponse response = new BasicAuthViewResponse("Test", null);
+        BasicViewResponse response = new BasicViewResponse("Sign In");
 
         Content html = auth.views.html.signin.render(response);
 
         assertTrue(contentAsString(html).contains("Sign In"));
     }
-
-    @Test
-    public void signinViewWithUserTest() {
-        BasicAuthViewResponse response = new BasicAuthViewResponse("Test", new AuthenticatedUser(1, "test", "test@test"));
-
-        Content html = auth.views.html.signin.render(response);
-
-        assertTrue(contentAsString(html).contains("test"));
-    }
-
 }
