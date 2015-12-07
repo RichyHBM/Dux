@@ -7,7 +7,7 @@ import play.api.cache.CacheApi
 import play.api.libs.json._
 import play.mvc.Http
 import views.html._
-import com.google.inject._
+import javax.inject._
 import auth.scala._
 import auth.models._
 

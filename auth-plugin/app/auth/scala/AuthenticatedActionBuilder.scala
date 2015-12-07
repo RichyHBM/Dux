@@ -2,7 +2,7 @@ package auth.scala
 
 import auth.implementors.PlayAuthCache
 import auth.interfaces.IAuthCache
-import com.google.inject.Inject
+import javax.inject.Inject
 import play.api.Logger
 import play.api.cache.CacheApi
 import play.api.mvc.Results._

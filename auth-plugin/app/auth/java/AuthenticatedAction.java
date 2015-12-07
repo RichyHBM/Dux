@@ -3,7 +3,7 @@ package auth.java;
 import auth.interfaces.IAuthCache;
 import auth.AuthenticationType;
 import auth.models.*;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import play.Configuration;
 import play.libs.F;
 import play.mvc.Action;

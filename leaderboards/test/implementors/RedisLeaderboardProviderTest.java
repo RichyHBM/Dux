@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import javax.inject.*;
 import interfaces.ILeaderboardProvider;
 import models.LeaderboardUser;
 import org.junit.*;

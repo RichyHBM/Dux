@@ -2,7 +2,7 @@ package auth.controllers;
 
 import auth.interfaces.IAuthCache;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import play.*;
 import play.mvc.*;
 

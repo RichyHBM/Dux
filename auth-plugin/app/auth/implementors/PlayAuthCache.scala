@@ -2,7 +2,7 @@ package auth.implementors
 
 import auth.interfaces.IAuthCache
 import auth.models.AuthenticatedUser
-import com.google.inject.Inject
+import javax.inject.Inject
 import play.api.Logger
 import play.api.cache.CacheApi
 import play.libs.Json

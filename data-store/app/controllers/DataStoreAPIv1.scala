@@ -1,6 +1,6 @@
 package controllers
 
-import com.google.inject.Inject
+import javax.inject.Inject
 import play.Logger
 import play.api.cache.CacheApi
 import play.api.mvc._
