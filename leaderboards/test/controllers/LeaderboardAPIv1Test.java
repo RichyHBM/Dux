@@ -1,5 +1,6 @@
 package controllers;
 
+import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import database.LeaderboardModify;
@@ -18,7 +19,7 @@ import play.Logger;
 import play.test.TestBrowser;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-
+import common.utilities.LogbackUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
@@ -104,13 +105,23 @@ public class LeaderboardAPIv1Test {
                 request.put("newUserScore", 500.0);
                 request.put("userExtraData", "userDataNew");
 
+                //Expecting exception from the server, turn logging off for this test to stop log spam on the CLI
+                Level playLevel = LogbackUtils.setLevel("play", Level.OFF);
+                Level applicationLevel = LogbackUtils.setLevel("application", Level.OFF);
+
                 try {
-                    Logger.debug("Expected exception");
                     WebRequest.jsonPost(url + "/api/v1/set-score", request.toString());
+
+                    LogbackUtils.setLevel("play", playLevel);
+                    LogbackUtils.setLevel("application", applicationLevel);
+                    
                     assertTrue("Non active leaderboard should throw exception", false);
                 }catch(Exception e) {
                     assertTrue(true);
                 }
+
+                LogbackUtils.setLevel("play", playLevel);
+                LogbackUtils.setLevel("application", applicationLevel);
 
             } finally {
                 jedisPool.returnResource(j);
@@ -167,13 +178,23 @@ public class LeaderboardAPIv1Test {
                 request.put("increment", 500.0);
                 request.put("userExtraData", "userDataNew");
 
+                //Expecting exception from the server, turn logging off for this test to stop log spam on the CLI
+                Level playLevel = LogbackUtils.setLevel("play", Level.OFF);
+                Level applicationLevel = LogbackUtils.setLevel("application", Level.OFF);
+
                 try {
-                    Logger.debug("Expected exception");
                     WebRequest.jsonPost(url + "/api/v1/increment-score", request.toString());
+
+                    LogbackUtils.setLevel("play", playLevel);
+                    LogbackUtils.setLevel("application", applicationLevel);
+
                     assertTrue("Non active leaderboard should throw exception", false);
                 }catch(Exception e) {
                     assertTrue(true);
                 }
+
+                LogbackUtils.setLevel("play", playLevel);
+                LogbackUtils.setLevel("application", applicationLevel);
 
             } finally {
                 jedisPool.returnResource(j);
@@ -291,13 +312,24 @@ public class LeaderboardAPIv1Test {
             request.put("leaderboardName", "lbTest");
             request.put("userId", "u12345");
 
+            //Expecting exception from the server, turn logging off for this test to stop log spam on the CLI
+            Level playLevel = LogbackUtils.setLevel("play", Level.OFF);
+            Level applicationLevel = LogbackUtils.setLevel("application", Level.OFF);
+
             try {
-                Logger.debug("Expected exception");
                 WebRequest.jsonPost(url + "/api/v1/get-user", request.toString());
+
+                LogbackUtils.setLevel("play", playLevel);
+                LogbackUtils.setLevel("application", applicationLevel);
+
                 assertTrue("Invalid user should throw exception", false);
             }catch(Exception e) {
                 assertTrue(true);
             }
+
+            LogbackUtils.setLevel("play", playLevel);
+            LogbackUtils.setLevel("application", applicationLevel);
+
         });
     }
 
