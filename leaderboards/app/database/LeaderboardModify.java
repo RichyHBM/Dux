@@ -1,6 +1,5 @@
 package database;
 
-import database.queries.LeaderboardQueries;
 import play.db.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

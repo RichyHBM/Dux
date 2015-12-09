@@ -1,6 +1,4 @@
-package database.queries;
-
-import database.Structure;
+package database;
 
 public class LeaderboardQueries {
     public static String InsertLeaderboard = String.format(

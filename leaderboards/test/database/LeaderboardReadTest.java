@@ -1,6 +1,5 @@
 package database;
 
-import database.queries.LeaderboardQueries;
 import models.Leaderboard;
 import org.junit.Before;
 import org.junit.Test;
