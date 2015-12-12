@@ -11,14 +11,13 @@ import javax.inject._
 import auth.scala._
 import auth.models._
 import database.models._
+
 import common.models.BasicViewResponse
 
-class AuthenticationViews @Inject()(cacheApi: CacheApi) extends Controller with AuthenticatedActionBuilder {
+class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi) extends Controller with AuthenticatedActionBuilder {
   def cache = cacheApi
 
-  def index = AuthenticatedAction(auth.AuthenticationType.None) { request =>
-    val response = new BasicAuthViewResponse("Authentication", request.user)
-    val viewData: ObjectNode = play.libs.Json.newObject()
-    Ok(views.html.index.render(viewData, response))
+  def index = AuthenticatedAction(auth.AuthenticationType.None) {
+    Ok( "" )
   }
 }

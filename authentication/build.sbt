@@ -7,8 +7,8 @@ lazy val common = RootProject(file("../common"))
 lazy val auth = RootProject(file("../auth-plugin"))
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
-    .aggregate(auth, common)
-    .dependsOn(auth % "test->test;compile->compile", common % "test->test;compile->compile")
+  .aggregate(auth, common)
+  .dependsOn(auth % "test->test;compile->compile", common % "test->test;compile->compile")
 
 lazy val setup = taskKey[Unit]("Setup dependencies")
 
