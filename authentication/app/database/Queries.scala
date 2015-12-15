@@ -1,0 +1,5 @@
+package database
+
+object Queries {
+  
+}

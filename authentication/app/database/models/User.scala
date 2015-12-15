@@ -8,6 +8,6 @@ case class User(Id: Int,
   Password: List[Byte],
   Salt: List[Byte],
   ApiKey: String,
-  Created: Date,
+  CreatedOn: Date,
   FailedAttempts: Int,
   Blocked: Boolean)
