@@ -10,7 +10,6 @@ excludeFilter in (Assets, LessKeys.less) := "_*.less"
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
-  jdbc,
   cache,
   ws,
   specs2 % Test,
