@@ -1,5 +1,6 @@
 package database
 
+import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import scala.concurrent.Future
 import slick.driver.JdbcProfile
@@ -25,25 +26,23 @@ class AppTableDef(tag: Tag) extends Table[App](tag, Structure.Apps.Name) {
 object Apps {
   val apps = TableQuery[AppTableDef]
 
-  def add(dbConfigProvider: DatabaseConfigProvider, app: App): Future[Option[Exception]] = {
-    val dbConfig = dbConfigProvider.get[JdbcProfile]
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+
+  def add(app: App): Future[Option[Exception]] = {
     dbConfig.db.run(apps += app).map(res => None).recover {
       case ex: Exception => Some(ex)
     }
   }
 
-  def delete(dbConfigProvider: DatabaseConfigProvider, id: Long): Future[Int] = {
-    val dbConfig = dbConfigProvider.get[JdbcProfile]
+  def delete(id: Long): Future[Int] = {
     dbConfig.db.run(apps.filter(_.Id === id).delete)
   }
 
-  def get(dbConfigProvider: DatabaseConfigProvider, id: Long): Future[Option[App]] = {
-    val dbConfig = dbConfigProvider.get[JdbcProfile]
+  def get(id: Long): Future[Option[App]] = {
     dbConfig.db.run(apps.filter(_.Id === id).result.headOption)
   }
 
-  def listAll(dbConfigProvider: DatabaseConfigProvider): Future[Seq[App]] = {
-    val dbConfig = dbConfigProvider.get[JdbcProfile]
+  def listAll(): Future[Seq[App]] = {
     dbConfig.db.run(apps.result)
   }
 }
