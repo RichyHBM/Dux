@@ -1,5 +1,0 @@
-package database
-
-object Queries {
-  
-}
