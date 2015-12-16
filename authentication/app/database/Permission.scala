@@ -1,4 +1,4 @@
-package database.models
+package database
 
 case class Permission(Id: Int,
   Name: String,

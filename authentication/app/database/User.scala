@@ -1,4 +1,4 @@
-package database.models
+package database
 
 import java.util.Date
 

@@ -21,12 +21,12 @@ TwirlKeys.templateImports += "com.fasterxml.jackson.databind.node.ObjectNode"
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
-  jdbc,
   cache,
   ws,
   specs2 % Test,
+  "com.h2database" % "h2" % "1.4.190",
   "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1",
-  "org.xerial" % "sqlite-jdbc" % "3.8.11.2"
+  "com.typesafe.play" %% "play-slick" % "1.1.1"
 )
 
 resolvers += "google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk"

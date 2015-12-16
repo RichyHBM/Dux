@@ -10,7 +10,7 @@ import views.html._
 import javax.inject._
 import auth.scala._
 import auth.models._
-import database.models._
+import database._
 
 import common.models.BasicViewResponse
 
