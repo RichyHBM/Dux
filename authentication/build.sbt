@@ -26,7 +26,8 @@ libraryDependencies ++= Seq(
   specs2 % Test,
   "com.h2database" % "h2" % "1.4.190",
   "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1",
-  "com.typesafe.play" %% "play-slick" % "1.1.1"
+  "com.typesafe.play" %% "play-slick" % "1.1.1",
+  "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1"
 )
 
 resolvers += "google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk"

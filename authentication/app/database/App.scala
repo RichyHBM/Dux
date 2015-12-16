@@ -8,19 +8,17 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 case class App(Id: Long,
-               AppIdentifier: String,
-               FullName: String,
+               Name: String,
                Description: String)
 
 class AppTableDef(tag: Tag) extends Table[App](tag, Structure.Apps.Name) {
   def Id = column[Long](Structure.Apps.Columns.Id, O.PrimaryKey, O.AutoInc)
-  def AppIdentifier = column[String](Structure.Apps.Columns.AppIdentifier)
-  def FullName = column[String](Structure.Apps.Columns.FullName)
+  def Name = column[String](Structure.Apps.Columns.Name)
   def Description = column[String](Structure.Apps.Columns.Description)
 
-  override def * = (Id, AppIdentifier, FullName, Description) <>(App.tupled, App.unapply)
+  override def * = (Id, Name, Description) <>(App.tupled, App.unapply)
 
-  def appIdentifierIndex = index(Structure.Apps.Columns.AppIdentifier + "_IDX", AppIdentifier, unique = true)
+  def appIdentifierIndex = index(Structure.Apps.Columns.Name + "_IDX", Name, unique = true)
 }
 
 object Apps {

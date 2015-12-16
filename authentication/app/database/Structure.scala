@@ -38,8 +38,7 @@ object Structure {
     val Name = "Apps"
     object Columns {
       val Id = "Id"
-      val AppIdentifier = "AppIdentifier"
-      val FullName = "FullName"
+      val Name = "Name"
       val Description = "Description"
     }
   }
