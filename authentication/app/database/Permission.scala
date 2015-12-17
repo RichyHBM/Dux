@@ -26,18 +26,25 @@ object Permissions {
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
-  def add(permission: Permission): Future[Option[Exception]] = {
-    dbConfig.db.run(permissions += permission).map(res => None).recover {
-      case ex: Exception => Some(ex)
-    }
+  def add(permission: Permission): Future[Int] = {
+    dbConfig.db.run(permissions += permission)
   }
 
   def delete(id: Long): Future[Int] = {
     dbConfig.db.run(permissions.filter(_.Id === id).delete)
   }
 
+  def setDescription(id: Long, description: String): Future[Int] = {
+    val q = for { p <- permissions if p.Id === id } yield p.Description
+    dbConfig.db.run(q.update(description))
+  }
+
   def get(id: Long): Future[Option[Permission]] = {
     dbConfig.db.run(permissions.filter(_.Id === id).result.headOption)
+  }
+
+  def get(name: String): Future[Option[Permission]] = {
+    dbConfig.db.run(permissions.filter(_.Name === name).result.headOption)
   }
 
   def listAll(): Future[Seq[Permission]] = {

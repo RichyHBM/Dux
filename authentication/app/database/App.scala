@@ -18,7 +18,7 @@ class AppTableDef(tag: Tag) extends Table[App](tag, Structure.Apps.Name) {
 
   override def * = (Id, Name, Description) <>(App.tupled, App.unapply)
 
-  def appIdentifierIndex = index(Structure.Apps.Columns.Name + "_IDX", Name, unique = true)
+  def nameIndex = index(Structure.Apps.Columns.Name + "_IDX", Name, unique = true)
 }
 
 object Apps {
@@ -26,18 +26,25 @@ object Apps {
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
-  def add(app: App): Future[Option[Exception]] = {
-    dbConfig.db.run(apps += app).map(res => None).recover {
-      case ex: Exception => Some(ex)
-    }
+  def add(app: App): Future[Int] = {
+    dbConfig.db.run(apps += app)
   }
 
   def delete(id: Long): Future[Int] = {
     dbConfig.db.run(apps.filter(_.Id === id).delete)
   }
 
+  def setDescription(id: Long, description: String): Future[Int] = {
+    val q = for { a <- apps if a.Id === id } yield a.Description
+    dbConfig.db.run(q.update(description))
+  }
+
   def get(id: Long): Future[Option[App]] = {
     dbConfig.db.run(apps.filter(_.Id === id).result.headOption)
+  }
+
+  def get(name: String): Future[Option[App]] = {
+    dbConfig.db.run(apps.filter(_.Name === name).result.headOption)
   }
 
   def listAll(): Future[Seq[App]] = {

@@ -26,18 +26,25 @@ object Groups {
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
-  def add(group: Group): Future[Option[Exception]] = {
-    dbConfig.db.run(groups += group).map(res => None).recover {
-      case ex: Exception => Some(ex)
-    }
+  def add(group: Group): Future[Int] = {
+    dbConfig.db.run(groups += group)
   }
 
   def delete(id: Long): Future[Int] = {
     dbConfig.db.run(groups.filter(_.Id === id).delete)
   }
 
+  def setDescription(id: Long, description: String): Future[Int] = {
+    val q = for { g <- groups if g.Id === id } yield g.Description
+    dbConfig.db.run(q.update(description))
+  }
+
   def get(id: Long): Future[Option[Group]] = {
     dbConfig.db.run(groups.filter(_.Id === id).result.headOption)
+  }
+
+  def get(name: String): Future[Option[Group]] = {
+    dbConfig.db.run(groups.filter(_.Name === name).result.headOption)
   }
 
   def listAll(): Future[Seq[Group]] = {

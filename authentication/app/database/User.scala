@@ -40,18 +40,34 @@ object Users {
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
-  def add(user: User): Future[Option[Exception]] = {
-    dbConfig.db.run(users += user).map(res => None).recover {
-      case ex: Exception => Some(ex)
-    }
+  def add(user: User): Future[Int] = {
+    dbConfig.db.run(users += user)
   }
 
   def delete(id: Long): Future[Int] = {
     dbConfig.db.run(users.filter(_.Id === id).delete)
   }
 
+  def updateUser(id: Long, user: User): Future[Int] = {
+    val q = for { u <- users if u.Id === id } yield u
+    dbConfig.db.run(q.update(user))
+  }
+
+  def setBlock(id: Long, blocked: Boolean): Future[Int] = {
+    val q = for { u <- users if u.Id === id } yield u.Blocked
+    dbConfig.db.run(q.update(blocked))
+  }
+
   def get(id: Long): Future[Option[User]] = {
     dbConfig.db.run(users.filter(_.Id === id).result.headOption)
+  }
+
+  def getFromEmail(email: String): Future[Option[User]] = {
+    dbConfig.db.run(users.filter(_.Email === email).result.headOption)
+  }
+
+  def getFromApiKey(apiKey: String): Future[Option[User]] = {
+    dbConfig.db.run(users.filter(_.ApiKey === apiKey).result.headOption)
   }
 
   def listAll(): Future[Seq[User]] = {

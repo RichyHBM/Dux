@@ -11,7 +11,7 @@ import javax.inject._
 import auth.scala._
 import auth.models._
 import database._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import common.models.BasicViewResponse
 
 class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi) extends Controller with AuthenticatedActionBuilder {
