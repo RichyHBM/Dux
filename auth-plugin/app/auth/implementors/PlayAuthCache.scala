@@ -11,7 +11,9 @@ import java.util.UUID
 
 case class PlayAuthCache @Inject()(cache: CacheApi) extends IAuthCache {
 
-  val expiryTimeAmount:Int = 60 * 60 * 24 * 7;
+  //By having an internal cache, we limit the amount of calls to the Authentication API
+  //If this is not an issue then turn this cache off
+  val expiryTimeAmount:Int = 60;
 
   override def isUserInCache(session: String):Boolean = {
     cache.get[String](session) match {
