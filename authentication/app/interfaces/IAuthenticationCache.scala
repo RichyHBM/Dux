@@ -10,6 +10,9 @@ trait IAuthenticationCache {
   def getSession(sessionKey: String) : Option[(String, UserSession)]
   def getSessionFromEmail(email: String): Option[(String, UserSession)]
 
+  def renewSession(sessionKey: String, session: UserSession)
+  def renewSessionFromEmail(email: String, session: UserSession)
+
   def removeSession(sessionKey: String)
   def removeSessionWithEmail(email: String)
 

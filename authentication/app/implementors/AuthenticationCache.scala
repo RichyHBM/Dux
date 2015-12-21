@@ -42,6 +42,17 @@ class AuthenticationCache @Inject()(cache: Pool) extends IAuthenticationCache {
     }
   }
 
+  override def renewSession(sessionKey: String, session: UserSession): Unit = {
+    cache.withJedisClient(c => c.hset(sessionCache, sessionKey, session.toJson()))
+  }
+
+  override def renewSessionFromEmail(email: String, session: UserSession): Unit = {
+    getSessionFromEmail(email) match {
+      case Some(user) => cache.withJedisClient(c => c.hset(sessionCache, user._1, session.toJson()))
+      case None => {}
+    }
+  }
+
   override def removeSession(sessionKey: String): Unit = {
     getSession(sessionKey) match {
       case Some(user) => cache.withJedisClient(c => c.hdel(emailToSessionKeyCache, user._2.email))

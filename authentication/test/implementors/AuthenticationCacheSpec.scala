@@ -22,7 +22,7 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
     .bindings(new AuthenticationModule)
     .injector
 
-  val user = new UserSession(0, "test", "test@test", new Date(), new Date())
+  val user = new UserSession(0, "test", "test@test", new Date(), new Date(), "test")
 
   def before = {
     val pool = new GuiceApplicationBuilder().injector.instanceOf[Pool]
@@ -62,7 +62,6 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       cache.createSession(user) mustNotEqual ""
       cache.getAllLoggedIn().length must equalTo(1)
       val u = cache.getSessionFromEmail(user.email)
-      u mustNotEqual null
       u mustNotEqual None
       u match {
         case Some(u) => u._2.toJson() must equalTo(user.toJson())
@@ -80,6 +79,45 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       val cache = injector.instanceOf[AuthenticationCache]
       val u = cache.getSessionFromEmail("abc")
       u mustEqual None
+    }
+
+    "Renew a user session" in new WithApplication{
+      val cache = injector.instanceOf[AuthenticationCache]
+      cache.getAllLoggedIn().length must equalTo(0)
+      val session = cache.createSession(user)
+      session mustNotEqual ""
+      cache.getAllLoggedIn().length must equalTo(1)
+      cache.renewSession(session, new UserSession(0, "test", "test@test", new Date(), new Date(), "different service"))
+
+      val u = cache.getSession(session)
+      u mustNotEqual None
+      u match {
+        case Some(u) => u._2.lastUsing must equalTo("different service")
+        case None => { false mustEqual(true) }
+      }
+    }
+
+    "Renew a user session from email" in new WithApplication{
+      val cache = injector.instanceOf[AuthenticationCache]
+      cache.getAllLoggedIn().length must equalTo(0)
+      val session = cache.createSession(user)
+      session mustNotEqual ""
+      cache.getAllLoggedIn().length must equalTo(1)
+      cache.renewSessionFromEmail(user.email, new UserSession(0, "test", "test@test", new Date(), new Date(), "different service"))
+
+      val u = cache.getSession(session)
+      u mustNotEqual None
+      u match {
+        case Some(u) => u._2.lastUsing must equalTo("different service")
+        case None => { false mustEqual(true) }
+      }
+    }
+
+    "Renew a user session from email should do nothing with invalid email" in new WithApplication{
+      val cache = injector.instanceOf[AuthenticationCache]
+      cache.getAllLoggedIn().length must equalTo(0)
+      cache.renewSessionFromEmail(user.email, user)
+      cache.getAllLoggedIn().length must equalTo(0)
     }
 
     "Remove user session from the session key" in new WithApplication{

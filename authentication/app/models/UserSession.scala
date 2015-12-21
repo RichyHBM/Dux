@@ -9,7 +9,8 @@ case class UserSession(id: Long,
                        name: String,
                        email: String,
                        loggedInAt: Date,
-                       lastSeen: Date) {
+                       lastSeen: Date,
+                       lastUsing: String) {
 
   def toJson(): String = Json.stringify(Json.toJson(this))
 }
@@ -22,7 +23,8 @@ object UserSession {
       (JsPath \ "name").read[String] and
       (JsPath \ "email").read[String] and
       (JsPath \ "loggedInAt").read[Date] and
-      (JsPath \ "lastSeen").read[Date]
+      (JsPath \ "lastSeen").read[Date] and
+      (JsPath \ "lastUsing").read[String]
     )(UserSession.apply _)
 
   implicit val userSessionWrites: Writes[UserSession] = (
@@ -30,7 +32,8 @@ object UserSession {
       (JsPath \ "name").write[String] and
       (JsPath \ "email").write[String] and
       (JsPath \ "loggedInAt").write[Date] and
-      (JsPath \ "lastSeen").write[Date]
+      (JsPath \ "lastSeen").write[Date] and
+      (JsPath \ "lastUsing").write[String]
     )(unlift(UserSession.unapply))
 
 }
