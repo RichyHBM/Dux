@@ -49,8 +49,11 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       session mustNotEqual ""
       cache.getAllLoggedIn().length must equalTo(1)
       val u = cache.getSession(session)
-      u mustNotEqual null
-      u._2.toJson() must equalTo( user.toJson() )
+      u mustNotEqual None
+      u match {
+        case Some(u) => u._2.toJson() must equalTo(user.toJson())
+        case None => { false mustEqual(true) }
+      }
     }
 
     "Get a user session from the user email" in new WithApplication{
@@ -60,7 +63,23 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       cache.getAllLoggedIn().length must equalTo(1)
       val u = cache.getSessionFromEmail(user.email)
       u mustNotEqual null
-      u._2.toJson() must equalTo( user.toJson() )
+      u mustNotEqual None
+      u match {
+        case Some(u) => u._2.toJson() must equalTo(user.toJson())
+        case None => { false mustEqual(true) }
+      }
+    }
+
+    "Do nothing when getting a user session from the session key" in new WithApplication{
+      val cache = injector.instanceOf[AuthenticationCache]
+      val u = cache.getSession("abc")
+      u mustEqual None
+    }
+
+    "Do nothing when getting a user session from the user email" in new WithApplication{
+      val cache = injector.instanceOf[AuthenticationCache]
+      val u = cache.getSessionFromEmail("abc")
+      u mustEqual None
     }
 
     "Remove user session from the session key" in new WithApplication{
@@ -82,6 +101,22 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       cache.getAllLoggedIn().length must equalTo(0)
     }
 
+    "Do nothing removing invalid user session from the session key" in new WithApplication{
+      val cache = injector.instanceOf[AuthenticationCache]
+      cache.createSession(user)
+      cache.getAllLoggedIn().length must equalTo(1)
+      cache.removeSession("abc")
+      cache.getAllLoggedIn().length must equalTo(1)
+    }
+
+    "Do nothing removing invalid  user session from the user email" in new WithApplication{
+      val cache = injector.instanceOf[AuthenticationCache]
+      cache.createSession(user)
+      cache.getAllLoggedIn().length must equalTo(1)
+      cache.removeSessionWithEmail("abc")
+      cache.getAllLoggedIn().length must equalTo(1)
+    }
+
     "Add email token" in new WithApplication{
       val cache = injector.instanceOf[AuthenticationCache]
       cache.createToken(user.email) mustNotEqual ""
@@ -91,7 +126,10 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       val cache = injector.instanceOf[AuthenticationCache]
       val token = cache.createToken(user.email)
       token mustNotEqual ""
-      cache.getEmailFromToken(token) must equalTo(user.email)
+      cache.getEmailFromToken(token) match {
+        case Some(s) => s must equalTo(user.email)
+        case None => { false mustEqual(true) }
+      }
     }
 
     "Remove email from token" in new WithApplication{
@@ -99,7 +137,7 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       val token = cache.createToken(user.email)
       token mustNotEqual ""
       cache.removeEmailFromToken(token)
-      cache.getEmailFromToken(token) must equalTo(null)
+      cache.getEmailFromToken(token) must equalTo(None)
     }
 
   }

@@ -28,24 +28,33 @@ class AuthenticationCache @Inject()(cache: Pool) extends IAuthenticationCache {
     sessionToken
   }
 
-  override def getSession(sessionKey: String): (String, UserSession) = {
-    (sessionKey, UserSession.fromJson(cache.withJedisClient(c => c.hget(sessionCache, sessionKey))))
+  override def getSession(sessionKey: String): Option[(String, UserSession)] = {
+    cache.withJedisClient(c => c.hget(sessionCache, sessionKey)) match {
+      case null => None
+      case json => Some((sessionKey, UserSession.fromJson(json)))
+    }
   }
 
-  override def getSessionFromEmail(email: String): (String, UserSession) = {
-    val sessionToken = cache.withJedisClient(c => c.hget(emailToSessionKeyCache, email))
-    getSession(sessionToken)
+  override def getSessionFromEmail(email: String): Option[(String, UserSession)] = {
+    cache.withJedisClient(c => c.hget(emailToSessionKeyCache, email)) match {
+      case null => None
+      case sessionToken => getSession(sessionToken)
+    }
   }
 
   override def removeSession(sessionKey: String): Unit = {
-    val user = getSession(sessionKey)
+    getSession(sessionKey) match {
+      case Some(user) => cache.withJedisClient(c => c.hdel(emailToSessionKeyCache, user._2.email))
+      case None => {}
+    }
     cache.withJedisClient(c => c.hdel(sessionCache, sessionKey))
-    cache.withJedisClient(c => c.hdel(emailToSessionKeyCache, user._2.email))
   }
 
   override def removeSessionWithEmail(email: String): Unit = {
-    val sessionUser = getSessionFromEmail(email)
-    cache.withJedisClient(c => c.hdel(sessionCache, sessionUser._1))
+    getSessionFromEmail(email) match {
+      case Some(user) => cache.withJedisClient(c => c.hdel(sessionCache, user._1))
+      case None => {}
+    }
     cache.withJedisClient(c => c.hdel(emailToSessionKeyCache, email))
   }
 
@@ -55,8 +64,11 @@ class AuthenticationCache @Inject()(cache: Pool) extends IAuthenticationCache {
     sessionToken
   }
 
-  override def getEmailFromToken(token: String): String = {
-    cache.withJedisClient(c => c.hget(tokenCache, token))
+  override def getEmailFromToken(token: String): Option[String] = {
+    cache.withJedisClient(c => c.hget(tokenCache, token)) match {
+      case null => None
+      case s => Some(s)
+    }
   }
 
   override def removeEmailFromToken(token: String): Unit = {
