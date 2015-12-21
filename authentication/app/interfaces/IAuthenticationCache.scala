@@ -15,4 +15,5 @@ trait IAuthenticationCache {
 
   def createToken(email: String): String
   def getEmailFromToken(token: String): String
+  def removeEmailFromToken(token: String)
 }
