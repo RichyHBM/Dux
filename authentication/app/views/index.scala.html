@@ -7,11 +7,49 @@
         var app = angular.module('DuxApp');
 
         app.controller("IndexCtrl", function($scope, $http) {
-          
+
+          $scope.Users = [];
+
+          $scope.refresh = function() {
+              $http.post('/view-api/get-logged-in-users').then(
+                function successCallback(response) {
+                    $scope.Users = response.data;
+                });
+          }
+
+          $scope.deleteSession = function(sessionUser) {
+                $http.post('/view-api/delete-session', sessionUser ).then(
+                    function successCallback(response) {
+                        $scope.refresh();
+                    });
+          }
+
+          $scope.refresh();
         });
     </script>
 
     <div ng-controller="IndexCtrl" class="container">
+
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th class="col-sm-1">ID</th>
+                <th class="col-sm-2">Name</th>
+                <th class="col-sm-2">Email</th>
+                <th class="col-sm-2">Logged in at</th>
+                <th class="col-sm-2">Last seen at</th>
+                <th class="col-sm-2">Last using</th>
+                <th class="col-sm-1"></th>
+            </tr>
+            <tr ng-repeat="user in Users">
+                <td>{{user.id}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.loggedInAt | date: 'dd-MMM-yyyy, HH:mm:ss'}}</td>
+                <td>{{user.lastSeen | date: 'dd-MMM-yyyy, HH:mm:ss'}}</td>
+                <td>{{user.lastUsing}}</td>
+                <td><i class="fa fa-1-4x fa-trash" ng-click="deleteSession(user)" uib-tooltip="Remove session"></i></td>
+            </tr>
+        </table>
 
     </div>
 }

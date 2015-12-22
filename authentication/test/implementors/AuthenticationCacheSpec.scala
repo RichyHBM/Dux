@@ -89,6 +89,7 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       cache.getAllLoggedIn().length must equalTo(1)
       cache.renewSession(session, new UserSession(0, "test", "test@test", new Date(), new Date(), "different service"))
 
+      cache.getAllLoggedIn().length must equalTo(1)
       val u = cache.getSession(session)
       u mustNotEqual None
       u match {
@@ -105,6 +106,7 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       cache.getAllLoggedIn().length must equalTo(1)
       cache.renewSessionFromEmail(user.email, new UserSession(0, "test", "test@test", new Date(), new Date(), "different service"))
 
+      cache.getAllLoggedIn().length must equalTo(1)
       val u = cache.getSession(session)
       u mustNotEqual None
       u match {

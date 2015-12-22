@@ -2,11 +2,14 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-->      /                           auth.Routes
-->      /                           common.Routes
+->      /                                 auth.Routes
+->      /                                 common.Routes
 
 # Home page
-GET     /                           controllers.AuthenticationViews.index
+GET     /                                 controllers.AuthenticationViews.index
+
+POST    /view-api/get-logged-in-users     controllers.AuthenticationAPIv1.listAllLoggedIn
+POST    /view-api/delete-session          controllers.AuthenticationAPIv1.removeSession
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
