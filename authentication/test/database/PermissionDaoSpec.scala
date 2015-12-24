@@ -14,6 +14,10 @@ class PermissionDaoSpec extends Specification {
     "Add permission" in new WithApplication(FakeApp.fakeApp){
       Permissions.add(new Permission(0, "TEST", "Description")).map(r => r must equalTo(1))
     }
+    "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
+      Permissions.add(new Permission(0, "TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission(0, "TEST", "Description")).map(r => r must equalTo(0))
+    }
     "Delete added group" in new WithApplication(FakeApp.fakeApp){
       Permissions.add(new Permission(1, "TEST", "Description")).map(r => r must equalTo(1))
       Permissions.delete(1).map(r => r  must equalTo(1))

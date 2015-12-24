@@ -15,6 +15,11 @@ class GroupDaoSpec extends Specification {
       Groups.add(new Group(0, "TEST", "Description")).map(r => r must equalTo(1))
     }
 
+    "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
+      Groups.add(new Group(0, "TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group(0, "TEST", "Description")).map(r => r must equalTo(0))
+    }
+
     "Delete added group" in new WithApplication(FakeApp.fakeApp){
       Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
       Groups.delete(1).map(r => r  must equalTo(1))

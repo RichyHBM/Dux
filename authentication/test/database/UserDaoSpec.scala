@@ -27,6 +27,11 @@ class UserDaoSpec extends Specification {
       Users.add(user).map(r => r must equalTo(1))
     }
 
+    "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
+      Users.add(user).map(r => r must equalTo(1))
+      Users.add(user).map(r => r must equalTo(0))
+    }
+
     "Delete added user" in new WithApplication(FakeApp.fakeApp){
       Users.add(user).map(r => r must equalTo(1))
       Users.delete(1).map(r => r must equalTo(1))

@@ -16,6 +16,11 @@ class AppDaoSpec extends Specification {
       Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
     }
 
+    "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
+      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(0))
+    }
+
     "Delete added app" in new WithApplication(FakeApp.fakeApp){
       Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
       Apps.delete(1).map(r => r  must equalTo(1))
