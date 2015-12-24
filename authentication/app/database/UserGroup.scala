@@ -21,3 +21,33 @@ class UserGroupTableDef(tag: Tag) extends Table[UserGroup](tag, Structure.UserGr
   def group = foreignKey(Structure.Groups.Name, GroupId, Groups.groups)(_.Id)
   def userGroupIndex = index(Structure.Users.Name + "_" + Structure.Groups.Name + "_IDX", (UserId, GroupId), unique = true)
 }
+
+object UserGroups {
+  val userGroups = TableQuery[UserGroupTableDef]
+
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+
+  def add(userGroup: UserGroup): Future[Int] = {
+    dbConfig.db.run(userGroups += userGroup)
+  }
+
+  def add(userId: Long, groupId: Long): Future[Int] = {
+    dbConfig.db.run(userGroups += UserGroup(0, userId, groupId))
+  }
+
+  def delete(id: Long): Future[Int] = {
+    dbConfig.db.run(userGroups.filter(_.Id === id).delete)
+  }
+
+  def deleteAllFromUserId(userId: Long): Future[Int] = {
+    dbConfig.db.run(userGroups.filter(_.UserId === userId).delete)
+  }
+
+  def deleteAllFromGroupId(groupId: Long): Future[Int] = {
+    dbConfig.db.run(userGroups.filter(_.GroupId === groupId).delete)
+  }
+
+  def listAll(): Future[Seq[UserGroup]] = {
+    dbConfig.db.run(userGroups.result)
+  }
+}

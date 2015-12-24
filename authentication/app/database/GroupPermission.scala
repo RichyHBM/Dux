@@ -21,3 +21,29 @@ class GroupPermissionTableDef(tag: Tag) extends Table[GroupPermission](tag, Stru
   def permission = foreignKey(Structure.Permissions.Name, PermissionId, Permissions.permissions)(_.Id)
   def groupPermissionIndex = index(Structure.Groups.Name + "_" + Structure.Permissions.Name + "_IDX", (GroupId, PermissionId), unique = true)
 }
+
+object GroupPermissions {
+  val groupPermissions = TableQuery[GroupPermissionTableDef]
+
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+
+  def add(groupPermission: GroupPermission): Future[Int] = {
+    dbConfig.db.run(groupPermissions += groupPermission)
+  }
+
+  def add(groupId: Long, permissionId: Long): Future[Int] = {
+    dbConfig.db.run(groupPermissions += GroupPermission(0, groupId, permissionId))
+  }
+
+  def delete(id: Long): Future[Int] = {
+    dbConfig.db.run(groupPermissions.filter(_.Id === id).delete)
+  }
+
+  def deleteAllFromGroupId(groupId: Long): Future[Int] = {
+    dbConfig.db.run(groupPermissions.filter(_.GroupId === groupId).delete)
+  }
+
+  def deleteAllFromPermissionId(permissionId: Long): Future[Int] = {
+    dbConfig.db.run(groupPermissions.filter(_.PermissionId === permissionId).delete)
+  }
+}
