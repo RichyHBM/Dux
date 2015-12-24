@@ -46,4 +46,8 @@ object AppPermissions {
   def deleteAllFromPermissionId(permissionId: Long): Future[Int] = {
     dbConfig.db.run(appPermissions.filter(_.PermissionId === permissionId).delete)
   }
+
+  def listAll(): Future[Seq[AppPermission]] = {
+    dbConfig.db.run(appPermissions.result)
+  }
 }
