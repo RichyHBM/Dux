@@ -61,12 +61,12 @@ object Structure {
     }
   }
 
-  object PermissionApp {
-    val Name = "PermissionsApps"
+  object AppPermission {
+    val Name = "AppsPermissions"
     object Columns {
       val Id = "Id"
-      val PermissionId = "PermissionId"
       val AppId = "AppId"
+      val PermissionId = "PermissionId"
     }
   }
 }
