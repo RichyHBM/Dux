@@ -1,0 +1,46 @@
+@(viewData: ObjectNode, response: auth.models.BasicAuthViewResponse)
+
+
+@main(response) {
+
+<script type="text/javascript">
+        var app = angular.module('DuxApp');
+
+        app.controller("UsersCtrl", function($scope, $http) {
+
+          $scope.Users = [];
+
+          $scope.refresh = function() {
+          }
+
+          $scope.refresh();
+        });
+    </script>
+
+<div ng-controller="UsersCtrl" class="container">
+
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th class="col-sm-1">ID</th>
+            <th class="col-sm-2">Name</th>
+            <th class="col-sm-2">Email</th>
+            <th class="col-sm-2">Api Key</th>
+            <th class="col-sm-2">Created</th>
+            <th class="col-sm-1">Failed Attempts</th>
+            <th class="col-sm-1">Blocked</th>
+            <th class="col-sm-1"></th>
+        </tr>
+        <tr ng-repeat="user in Users">
+            <td>{{user.Id}}</td>
+            <td>{{user.Name}}</td>
+            <td>{{user.Email}}</td>
+            <td>{{user.ApiKey}}</td>
+            <td>{{user.CreatedOn}}</td>
+            <td>{{user.FailedAttempts}}</td>
+            <td>{{user.Blocked}}</td>
+            <td><i class="fa fa-1-4x fa-trash"></i></td>
+        </tr>
+    </table>
+
+</div>
+}
