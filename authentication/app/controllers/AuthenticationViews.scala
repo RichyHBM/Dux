@@ -21,4 +21,28 @@ class AuthenticationViews @Inject()(cacheApi: CacheApi) extends Controller with 
     val viewData: ObjectNode = play.libs.Json.newObject()
     Ok(views.html.index.render(viewData, response))
   }
+
+  def apps = AuthenticatedAction(auth.AuthenticationType.None) { request =>
+    val response = new BasicAuthViewResponse("Authentication", request.user)
+    val viewData: ObjectNode = play.libs.Json.newObject()
+    Ok(views.html.apps.render(viewData, response))
+  }
+
+  def groups = AuthenticatedAction(auth.AuthenticationType.None) { request =>
+    val response = new BasicAuthViewResponse("Authentication", request.user)
+    val viewData: ObjectNode = play.libs.Json.newObject()
+    Ok(views.html.groups.render(viewData, response))
+  }
+
+  def permissions = AuthenticatedAction(auth.AuthenticationType.None) { request =>
+    val response = new BasicAuthViewResponse("Authentication", request.user)
+    val viewData: ObjectNode = play.libs.Json.newObject()
+    Ok(views.html.permissions.render(viewData, response))
+  }
+
+  def users = AuthenticatedAction(auth.AuthenticationType.None) { request =>
+    val response = new BasicAuthViewResponse("Authentication", request.user)
+    val viewData: ObjectNode = play.libs.Json.newObject()
+    Ok(views.html.users.render(viewData, response))
+  }
 }

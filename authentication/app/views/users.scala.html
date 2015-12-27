@@ -11,6 +11,10 @@
           $scope.Users = [];
 
           $scope.refresh = function() {
+            $http.post('/view-api/get-all-users').then(
+                function successCallback(response) {
+                    $scope.Users = response.data;
+                });
           }
 
           $scope.refresh();

@@ -26,5 +26,37 @@ class AuthenticationViewsSpec extends Specification {
       contentType(home) must beSome.which(_ == "text/html")
       contentAsString(home) must contain ("Authentication")
     }
+
+    "render the apps page" in new WithApplication{
+      val home = route(FakeRequest(GET, "/apps")).get
+
+      status(home) must equalTo(OK)
+      contentType(home) must beSome.which(_ == "text/html")
+      contentAsString(home) must contain ("Authentication")
+    }
+
+    "render the groups page" in new WithApplication{
+      val home = route(FakeRequest(GET, "/groups")).get
+
+      status(home) must equalTo(OK)
+      contentType(home) must beSome.which(_ == "text/html")
+      contentAsString(home) must contain ("Authentication")
+    }
+
+    "render the permissions page" in new WithApplication{
+      val home = route(FakeRequest(GET, "/permissions")).get
+
+      status(home) must equalTo(OK)
+      contentType(home) must beSome.which(_ == "text/html")
+      contentAsString(home) must contain ("Authentication")
+    }
+
+    "render the users page" in new WithApplication{
+      val home = route(FakeRequest(GET, "/users")).get
+
+      status(home) must equalTo(OK)
+      contentType(home) must beSome.which(_ == "text/html")
+      contentAsString(home) must contain ("Authentication")
+    }
   }
 }

@@ -11,6 +11,10 @@
           $scope.Groups = [];
 
           $scope.refresh = function() {
+            $http.post('/view-api/get-all-groups').then(
+                function successCallback(response) {
+                    $scope.Groups = response.data;
+                });
           }
 
           $scope.refresh();

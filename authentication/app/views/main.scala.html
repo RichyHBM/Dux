@@ -2,7 +2,13 @@
 
 @common.views.html.main(response) {
     @auth.views.html.navbar(response) {
-
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Online</a></li>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/groups">Groups</a></li>
+            <li><a href="/apps">Apps</a></li>
+            <li><a href="/permissions">Permissions</a></li>
+        </ul>
     }
 
     @common.views.html.alert()

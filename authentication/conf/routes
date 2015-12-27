@@ -7,9 +7,17 @@
 
 # Home page
 GET     /                                 controllers.AuthenticationViews.index
+GET     /apps                             controllers.AuthenticationViews.apps
+GET     /groups                           controllers.AuthenticationViews.groups
+GET     /permissions                      controllers.AuthenticationViews.permissions
+GET     /users                            controllers.AuthenticationViews.users
 
 POST    /view-api/get-logged-in-users     controllers.AuthenticationAPIv1.listAllLoggedIn
 POST    /view-api/delete-session          controllers.AuthenticationAPIv1.removeSession
+POST    /view-api/get-all-apps            controllers.AuthenticationAPIv1.getAllApps
+POST    /view-api/get-all-groups          controllers.AuthenticationAPIv1.getAllGroups
+POST    /view-api/get-all-permissions     controllers.AuthenticationAPIv1.getAllPermissions
+POST    /view-api/get-all-users           controllers.AuthenticationAPIv1.getAllUsers
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)

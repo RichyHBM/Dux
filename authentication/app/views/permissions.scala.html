@@ -11,6 +11,10 @@
           $scope.Permissions = [];
 
           $scope.refresh = function() {
+            $http.post('/view-api/get-all-permissions').then(
+                function successCallback(response) {
+                    $scope.Permissions = response.data;
+                });
           }
 
           $scope.refresh();

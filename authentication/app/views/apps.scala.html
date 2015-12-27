@@ -11,6 +11,10 @@
           $scope.Apps = [];
 
           $scope.refresh = function() {
+            $http.post('/view-api/get-all-apps').then(
+                function successCallback(response) {
+                    $scope.Apps = response.data;
+                });
           }
 
           $scope.refresh();
