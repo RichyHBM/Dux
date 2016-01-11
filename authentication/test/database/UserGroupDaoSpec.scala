@@ -89,6 +89,40 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.deleteAllFromGroupId(2).map(r => r must equalTo(1))
     }
 
+    "List all users in group" in new WithApplication(FakeApp.fakeApp){
+      Users.add(user1).map(r => r must equalTo(1))
+      Users.add(user2).map(r => r must equalTo(1))
+      Users.add(user3).map(r => r must equalTo(1))
+      Groups.add(group1).map(r => r must equalTo(1))
+      Groups.add(group2).map(r => r must equalTo(1))
+
+      UserGroups.add(1, 1).map(r => r must equalTo(1))
+      UserGroups.add(2, 1).map(r => r must equalTo(1))
+      UserGroups.add(2, 2).map(r => r must equalTo(1))
+      UserGroups.add(3, 2).map(r => r must equalTo(1))
+
+      UserGroups.getAllUserIdsFromGroupId(1).map(r => r must contain(1))
+      UserGroups.getAllUserIdsFromGroupId(1).map(r => r must contain(2))
+      UserGroups.getAllUserIdsFromGroupId(1).map(r => r must not contain(3))
+    }
+
+    "List all groups for user" in new WithApplication(FakeApp.fakeApp){
+      Users.add(user1).map(r => r must equalTo(1))
+      Users.add(user2).map(r => r must equalTo(1))
+      Users.add(user3).map(r => r must equalTo(1))
+      Groups.add(group1).map(r => r must equalTo(1))
+      Groups.add(group2).map(r => r must equalTo(1))
+
+      UserGroups.add(1, 1).map(r => r must equalTo(1))
+      UserGroups.add(2, 1).map(r => r must equalTo(1))
+      UserGroups.add(2, 2).map(r => r must equalTo(1))
+      UserGroups.add(3, 2).map(r => r must equalTo(1))
+
+      UserGroups.getAllGroupIdsForUserId(2).map(r => r must contain(1))
+      UserGroups.getAllGroupIdsForUserId(2).map(r => r must contain(2))
+      UserGroups.getAllGroupIdsForUserId(1).map(r => r must not contain(2))
+    }
+
     "List all user groups" in new WithApplication(FakeApp.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))

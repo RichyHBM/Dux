@@ -35,6 +35,14 @@ object UserGroups {
     dbConfig.db.run(userGroups += UserGroup(0, userId, groupId))
   }
 
+  def getAllUserIdsFromGroupId(groupId: Long): Future[Seq[Long]] = {
+    dbConfig.db.run(userGroups.filter(_.GroupId === groupId).map(ug => ug.UserId).result)
+  }
+
+  def getAllGroupIdsForUserId(userId: Long): Future[Seq[Long]] = {
+    dbConfig.db.run(userGroups.filter(_.UserId === userId).map(ug => ug.GroupId).result)
+  }
+
   def delete(id: Long): Future[Int] = {
     dbConfig.db.run(userGroups.filter(_.Id === id).delete)
   }
