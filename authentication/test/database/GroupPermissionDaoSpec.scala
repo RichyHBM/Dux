@@ -90,6 +90,45 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.deleteAllFromPermissionId(1).map(r => r must equalTo(2))
     }
 
+    "List all permissions for group" in new WithApplication(FakeApp.fakeApp){
+      Groups.add(group1).map(r => r must equalTo(1))
+      Groups.add(group2).map(r => r must equalTo(1))
+      Groups.add(group3).map(r => r must equalTo(1))
+
+      Permissions.add(permission1).map(r => r must equalTo(1))
+      Permissions.add(permission2).map(r => r must equalTo(1))
+      Permissions.add(permission3).map(r => r must equalTo(1))
+
+      GroupPermissions.add(1, 1).map(r => r must equalTo(1))
+      GroupPermissions.add(1, 2).map(r => r must equalTo(1))
+      GroupPermissions.add(2, 1).map(r => r must equalTo(1))
+      GroupPermissions.add(2, 3).map(r => r must equalTo(1))
+
+      GroupPermissions.getAllPermissionIdsFromGroupId(1).map(r => r must contain(1))
+      GroupPermissions.getAllPermissionIdsFromGroupId(1).map(r => r must contain(2))
+      GroupPermissions.getAllPermissionIdsFromGroupId(1).map(r => r must not contain(3))
+    }
+
+    "List all groups from permission" in new WithApplication(FakeApp.fakeApp){
+      Groups.add(group1).map(r => r must equalTo(1))
+      Groups.add(group2).map(r => r must equalTo(1))
+      Groups.add(group3).map(r => r must equalTo(1))
+
+      Permissions.add(permission1).map(r => r must equalTo(1))
+      Permissions.add(permission2).map(r => r must equalTo(1))
+      Permissions.add(permission3).map(r => r must equalTo(1))
+
+      GroupPermissions.add(1, 1).map(r => r must equalTo(1))
+      GroupPermissions.add(1, 2).map(r => r must equalTo(1))
+      GroupPermissions.add(2, 1).map(r => r must equalTo(1))
+      GroupPermissions.add(2, 3).map(r => r must equalTo(1))
+      GroupPermissions.add(3, 3).map(r => r must equalTo(1))
+
+      GroupPermissions.getAllGroupIdsFromPermissionId(1).map(r => r must contain(1))
+      GroupPermissions.getAllGroupIdsFromPermissionId(1).map(r => r must contain(2))
+      GroupPermissions.getAllGroupIdsFromPermissionId(1).map(r => r must not contain(3))
+    }
+
     "List all" in new WithApplication(FakeApp.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Groups.add(group2).map(r => r must equalTo(1))
