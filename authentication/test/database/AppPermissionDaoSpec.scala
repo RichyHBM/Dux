@@ -89,6 +89,45 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.deleteAllFromPermissionId(1).map(r => r must equalTo(2))
     }
 
+    "List all permissions for app" in new WithApplication(FakeApp.fakeApp){
+      Apps.add(app1).map(r => r must equalTo(1))
+      Apps.add(app2).map(r => r must equalTo(1))
+      Apps.add(app3).map(r => r must equalTo(1))
+
+      Permissions.add(permission1).map(r => r must equalTo(1))
+      Permissions.add(permission2).map(r => r must equalTo(1))
+      Permissions.add(permission3).map(r => r must equalTo(1))
+
+      AppPermissions.add(1, 1).map(r => r must equalTo(1))
+      AppPermissions.add(1, 2).map(r => r must equalTo(1))
+      AppPermissions.add(2, 1).map(r => r must equalTo(1))
+      AppPermissions.add(2, 3).map(r => r must equalTo(1))
+      AppPermissions.add(3, 3).map(r => r must equalTo(1))
+
+      AppPermissions.getAllPermissionIdsFromAppId(1).map(r => r must contain(1))
+      AppPermissions.getAllPermissionIdsFromAppId(1).map(r => r must contain(2))
+      AppPermissions.getAllPermissionIdsFromAppId(1).map(r => r must not contain(3))
+    }
+
+    "List all apps with permission" in new WithApplication(FakeApp.fakeApp){
+      Apps.add(app1).map(r => r must equalTo(1))
+      Apps.add(app2).map(r => r must equalTo(1))
+      Apps.add(app3).map(r => r must equalTo(1))
+
+      Permissions.add(permission1).map(r => r must equalTo(1))
+      Permissions.add(permission2).map(r => r must equalTo(1))
+      Permissions.add(permission3).map(r => r must equalTo(1))
+
+      AppPermissions.add(1, 1).map(r => r must equalTo(1))
+      AppPermissions.add(1, 2).map(r => r must equalTo(1))
+      AppPermissions.add(2, 1).map(r => r must equalTo(1))
+      AppPermissions.add(2, 3).map(r => r must equalTo(1))
+
+      AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must contain(1))
+      AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must contain(2))
+      AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must not contain(3))
+    }
+
     "List all" in new WithApplication(FakeApp.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Apps.add(app2).map(r => r must equalTo(1))
