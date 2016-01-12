@@ -56,6 +56,18 @@ class GroupDaoSpec extends Specification {
       Groups.get("TEST").map(r => r must equalTo(None))
     }
 
+    "Get by list" in new WithApplication(FakeApp.fakeApp){
+      Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group(1, "TEST2", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group(1, "TEST3", "Description")).map(r => r must equalTo(1))
+
+      Groups.get( List[Long](2, 3) ).map(r => {
+        r.length must equalTo(2)
+        r(0).Name must equalTo("TEST2")
+        r(1).Name must equalTo("TEST3")
+      })
+    }
+
     "List all groups" in new WithApplication(FakeApp.fakeApp){
       Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
       Groups.add(new Group(1, "TEST2", "Description")).map(r => r must equalTo(1))

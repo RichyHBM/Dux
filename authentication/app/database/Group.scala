@@ -47,6 +47,10 @@ object Groups {
     dbConfig.db.run(groups.filter(_.Name === name).result.headOption)
   }
 
+  def get(ids: List[Long]): Future[Seq[Group]] = {
+    dbConfig.db.run(groups.withFilter(g => ids.contains( g.Id )).result)
+  }
+
   def listAll(): Future[Seq[Group]] = {
     dbConfig.db.run(groups.result)
   }

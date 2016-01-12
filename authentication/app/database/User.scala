@@ -70,6 +70,10 @@ object Users {
     dbConfig.db.run(users.filter(_.ApiKey === apiKey).result.headOption)
   }
 
+  def get(ids: List[Long]): Future[Seq[User]] = {
+    dbConfig.db.run(users.withFilter(u => ids.contains( u.Id )).result)
+  }
+
   def listAll(): Future[Seq[User]] = {
     dbConfig.db.run(users.result)
   }

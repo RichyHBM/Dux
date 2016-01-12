@@ -86,6 +86,24 @@ class UserDaoSpec extends Specification {
       Users.getFromApiKey(user.ApiKey).map(r => r must equalTo(None))
     }
 
+    "Get by list" in new WithApplication(FakeApp.fakeApp){
+      val timeStamp = new Timestamp(new Date().getTime())
+      val bytes = Array.fill[Byte](5)(0)
+      val user1 = new User(0, "Test User", "test1@test.com", bytes, bytes, "test_api_key_1", timeStamp, 0, false)
+      val user2 = new User(0, "Test User", "test2@test.com", bytes, bytes, "test_api_key_2", timeStamp, 0, false)
+      val user3 = new User(0, "Test User", "test3@test.com", bytes, bytes, "test_api_key_3", timeStamp, 0, false)
+
+      Users.add(user1).map(r => r must equalTo(1))
+      Users.add(user2).map(r => r must equalTo(1))
+      Users.add(user3).map(r => r must equalTo(1))
+
+      Users.get( List[Long](2, 3) ).map(r => {
+        r.length must equalTo(2)
+        r(0).Email must equalTo("test2@test.com")
+        r(1).Email must equalTo("test3@test.com")
+      })
+    }
+
     "List all apps" in new WithApplication(FakeApp.fakeApp){
       val timeStamp = new Timestamp(new Date().getTime())
       val bytes = Array.fill[Byte](5)(0)

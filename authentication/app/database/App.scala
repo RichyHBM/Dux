@@ -47,6 +47,10 @@ object Apps {
     dbConfig.db.run(apps.filter(_.Name === name).result.headOption)
   }
 
+  def get(ids: List[Long]): Future[Seq[App]] = {
+    dbConfig.db.run(apps.withFilter(a => ids.contains( a.Id )).result)
+  }
+
   def listAll(): Future[Seq[App]] = {
     dbConfig.db.run(apps.result)
   }
