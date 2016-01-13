@@ -12,14 +12,14 @@ class PermissionDaoSpec extends Specification {
 
   "PermissionDao" should {
     "Add permission" in new WithApplication(FakeApp.fakeApp){
-      Permissions.add(new Permission(0, "TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
     }
     "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
-      Permissions.add(new Permission(0, "TEST", "Description")).map(r => r must equalTo(1))
-      Permissions.add(new Permission(0, "TEST", "Description")).map(r => r must equalTo(0))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(0))
     }
     "Delete added group" in new WithApplication(FakeApp.fakeApp){
-      Permissions.add(new Permission(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
       Permissions.delete(1).map(r => r  must equalTo(1))
     }
 
@@ -28,7 +28,7 @@ class PermissionDaoSpec extends Specification {
     }
 
     "Set description" in new WithApplication(FakeApp.fakeApp){
-      Permissions.add(new Permission(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
       Permissions.setDescription(1, "New description").map(r => r must equalTo(1))
     }
 
@@ -37,12 +37,12 @@ class PermissionDaoSpec extends Specification {
     }
 
     "Get by id" in new WithApplication(FakeApp.fakeApp){
-      Permissions.add(new Permission(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
       Permissions.get(1).map(r => r must equalTo(Some))
     }
 
     "Get by name" in new WithApplication(FakeApp.fakeApp){
-      Permissions.add(new Permission(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
       Permissions.get("TEST").map(r => r must equalTo(Some))
     }
 
@@ -55,9 +55,9 @@ class PermissionDaoSpec extends Specification {
     }
 
     "Get by list" in new WithApplication(FakeApp.fakeApp){
-      Permissions.add(new Permission(1, "TEST", "Description")).map(r => r must equalTo(1))
-      Permissions.add(new Permission(1, "TEST2", "Description")).map(r => r must equalTo(1))
-      Permissions.add(new Permission(1, "TEST3", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST2", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST3", "Description")).map(r => r must equalTo(1))
 
       Permissions.get( List[Long](2, 3) ).map(r => {
         r.length must equalTo(2)
@@ -67,9 +67,9 @@ class PermissionDaoSpec extends Specification {
     }
 
     "List all permissions" in new WithApplication(FakeApp.fakeApp){
-      Permissions.add(new Permission(1, "TEST", "Description")).map(r => r must equalTo(1))
-      Permissions.add(new Permission(1, "TEST2", "Description")).map(r => r must equalTo(1))
-      Permissions.add(new Permission(1, "TEST3", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST2", "Description")).map(r => r must equalTo(1))
+      Permissions.add(new Permission("TEST3", "Description")).map(r => r must equalTo(1))
       Permissions.listAll.map(r => r.length must equalTo(3))
     }
   }

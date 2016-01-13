@@ -18,8 +18,8 @@ class UserGroupDaoSpec extends Specification {
   def user2 = User(2, "User2", "user2@test.com", bytes, bytes, "api2", timestamp, 0, false)
   def user3 = User(3, "User3", "user3@test.com", bytes, bytes, "api3", timestamp, 0, false)
 
-  def group1 = Group(1, "Group1", "Group 1 Description")
-  def group2 = Group(2, "Group2", "Group 2 Description")
+  def group1 = new Group("Group1", "Group 1 Description")
+  def group2 = new Group("Group2", "Group 2 Description")
 
   "UserGroupDaoSpec" should {
     "Add user group" in new WithApplication(FakeApp.fakeApp){

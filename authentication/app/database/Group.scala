@@ -9,7 +9,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Group(Id: Long,
   Name: String,
-  Description: String)
+  Description: String) {
+
+  def this(Name: String, Description: String) = this(0, Name, Description)
+}
 
 class GroupTableDef(tag: Tag) extends Table[Group](tag, Structure.Groups.Name) {
   def Id = column[Long](Structure.Groups.Columns.Id, O.PrimaryKey, O.AutoInc)

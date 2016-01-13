@@ -12,16 +12,16 @@ class GroupDaoSpec extends Specification {
 
   "GroupDao" should {
     "Add group" in new WithApplication(FakeApp.fakeApp){
-      Groups.add(new Group(0, "TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
     }
 
     "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
-      Groups.add(new Group(0, "TEST", "Description")).map(r => r must equalTo(1))
-      Groups.add(new Group(0, "TEST", "Description")).map(r => r must equalTo(0))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(0))
     }
 
     "Delete added group" in new WithApplication(FakeApp.fakeApp){
-      Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
       Groups.delete(1).map(r => r  must equalTo(1))
     }
 
@@ -30,7 +30,7 @@ class GroupDaoSpec extends Specification {
     }
 
     "Set description" in new WithApplication(FakeApp.fakeApp){
-      Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
       Groups.setDescription(1, "New description").map(r => r must equalTo(1))
     }
 
@@ -39,12 +39,12 @@ class GroupDaoSpec extends Specification {
     }
 
     "Get by id" in new WithApplication(FakeApp.fakeApp){
-      Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
       Groups.get(1).map(r => r must equalTo(Some))
     }
 
     "Get by name" in new WithApplication(FakeApp.fakeApp){
-      Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
       Groups.get("TEST").map(r => r must equalTo(Some))
     }
 
@@ -57,9 +57,9 @@ class GroupDaoSpec extends Specification {
     }
 
     "Get by list" in new WithApplication(FakeApp.fakeApp){
-      Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
-      Groups.add(new Group(1, "TEST2", "Description")).map(r => r must equalTo(1))
-      Groups.add(new Group(1, "TEST3", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST2", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST3", "Description")).map(r => r must equalTo(1))
 
       Groups.get( List[Long](2, 3) ).map(r => {
         r.length must equalTo(2)
@@ -69,9 +69,9 @@ class GroupDaoSpec extends Specification {
     }
 
     "List all groups" in new WithApplication(FakeApp.fakeApp){
-      Groups.add(new Group(1, "TEST", "Description")).map(r => r must equalTo(1))
-      Groups.add(new Group(1, "TEST2", "Description")).map(r => r must equalTo(1))
-      Groups.add(new Group(1, "TEST3", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST2", "Description")).map(r => r must equalTo(1))
+      Groups.add(new Group("TEST3", "Description")).map(r => r must equalTo(1))
       Groups.listAll.map(r => r.length must equalTo(3))
     }
   }

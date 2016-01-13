@@ -9,7 +9,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Permission(Id: Long,
   Name: String,
-  Description: String)
+  Description: String) {
+
+  def this(Name: String, Description: String) = this(0, Name, Description)
+}
 
 class PermissionTableDef(tag: Tag) extends Table[Permission](tag, Structure.Permissions.Name) {
   def Id = column[Long](Structure.Permissions.Columns.Id, O.PrimaryKey, O.AutoInc)

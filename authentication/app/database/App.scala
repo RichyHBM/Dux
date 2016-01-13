@@ -9,7 +9,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 case class App(Id: Long,
                Name: String,
-               Description: String)
+               Description: String) {
+
+  def this(Name: String, Description: String) = this(0, Name, Description)
+}
 
 class AppTableDef(tag: Tag) extends Table[App](tag, Structure.Apps.Name) {
   def Id = column[Long](Structure.Apps.Columns.Id, O.PrimaryKey, O.AutoInc)

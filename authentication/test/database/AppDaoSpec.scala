@@ -13,16 +13,16 @@ class AppDaoSpec extends Specification {
   "AppDAO" should {
 
     "Add app" in new WithApplication(FakeApp.fakeApp){
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
     }
 
     "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(0))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(0))
     }
 
     "Delete added app" in new WithApplication(FakeApp.fakeApp){
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
       Apps.delete(1).map(r => r  must equalTo(1))
     }
 
@@ -31,7 +31,7 @@ class AppDaoSpec extends Specification {
     }
 
     "Set description" in new WithApplication(FakeApp.fakeApp){
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
       Apps.setDescription(1, "New description").map(r => r must equalTo(1))
     }
 
@@ -40,12 +40,12 @@ class AppDaoSpec extends Specification {
     }
 
     "Get by id" in new WithApplication(FakeApp.fakeApp){
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
       Apps.get(1).map(r => r must equalTo(Some))
     }
 
     "Get by name" in new WithApplication(FakeApp.fakeApp){
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
       Apps.get("TEST").map(r => r must equalTo(Some))
     }
 
@@ -58,9 +58,9 @@ class AppDaoSpec extends Specification {
     }
 
     "Get by list" in new WithApplication(FakeApp.fakeApp){
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
-      Apps.add(new App(1, "TEST2", "Description")).map(r => r must equalTo(1))
-      Apps.add(new App(1, "TEST3", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST2", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST3", "Description")).map(r => r must equalTo(1))
 
       Apps.get( List[Long](2, 3) ).map(r => {
         r.length must equalTo(2)
@@ -70,9 +70,9 @@ class AppDaoSpec extends Specification {
     }
 
     "List all apps" in new WithApplication(FakeApp.fakeApp){
-      Apps.add(new App(1, "TEST", "Description")).map(r => r must equalTo(1))
-      Apps.add(new App(1, "TEST2", "Description")).map(r => r must equalTo(1))
-      Apps.add(new App(1, "TEST3", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST2", "Description")).map(r => r must equalTo(1))
+      Apps.add(new App("TEST3", "Description")).map(r => r must equalTo(1))
       Apps.listAll.map(r => r.length must equalTo(3))
     }
   }

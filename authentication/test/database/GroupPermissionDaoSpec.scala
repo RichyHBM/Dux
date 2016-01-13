@@ -9,13 +9,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @RunWith(classOf[JUnitRunner])
 class GroupPermissionDaoSpec extends Specification {
 
-  def group1 = Group(1, "Group1", "Group 1 Description")
-  def group2 = Group(2, "Group2", "Group 2 Description")
-  def group3 = Group(3, "Group3", "Group 3 Description")
+  def group1 = new Group("Group1", "Group 1 Description")
+  def group2 = new Group("Group2", "Group 2 Description")
+  def group3 = new Group("Group3", "Group 3 Description")
 
-  def permission1 = Permission(1, "Permission1", "Permission 1 Description")
-  def permission2 = Permission(2, "Permission2", "Permission 2 Description")
-  def permission3 = Permission(3, "Permission3", "Permission 3 Description")
+  def permission1 = new Permission("Permission1", "Permission 1 Description")
+  def permission2 = new Permission("Permission2", "Permission 2 Description")
+  def permission3 = new Permission("Permission3", "Permission 3 Description")
 
   "GroupPermissionDaoSpec" should {
     "Add group permission" in new WithApplication(FakeApp.fakeApp){
