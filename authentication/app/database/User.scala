@@ -1,5 +1,7 @@
 package database
 
+import java.util.Date
+
 import play.api.Play
 import play.api.db.slick.DatabaseConfigProvider
 import scala.concurrent.Future
@@ -16,7 +18,14 @@ case class User(Id: Long,
   ApiKey: String,
   CreatedOn: Timestamp,
   FailedAttempts: Int,
-  Blocked: Boolean)
+  Blocked: Boolean) {
+
+  def this(Name: String,
+           Email: String,
+           Password: Array[Byte],
+           Salt: Array[Byte],
+           ApiKey: String) = this(0, Name, Email, Password, Salt, ApiKey, new Timestamp(new Date().getTime()), 0, false)
+}
 
 class UserTableDef(tag: Tag) extends Table[User](tag, Structure.Users.Name) {
   def Id = column[Long](Structure.Users.Columns.Id, O.PrimaryKey, O.AutoInc)

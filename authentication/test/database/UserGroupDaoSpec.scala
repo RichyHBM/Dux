@@ -12,11 +12,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserGroupDaoSpec extends Specification {
 
   val bytes = Array.fill[Byte](5)(0)
-  val timestamp = new Timestamp(new Date().getTime())
 
-  def user1 = User(1, "User1", "user1@test.com", bytes, bytes, "api1", timestamp, 0, false)
-  def user2 = User(2, "User2", "user2@test.com", bytes, bytes, "api2", timestamp, 0, false)
-  def user3 = User(3, "User3", "user3@test.com", bytes, bytes, "api3", timestamp, 0, false)
+  def user1 = new User("User1", "user1@test.com", bytes, bytes, "api1")
+  def user2 = new User("User2", "user2@test.com", bytes, bytes, "api2")
+  def user3 = new User("User3", "user3@test.com", bytes, bytes, "api3")
 
   def group1 = new Group("Group1", "Group 1 Description")
   def group2 = new Group("Group2", "Group 2 Description")

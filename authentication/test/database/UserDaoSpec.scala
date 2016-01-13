@@ -12,15 +12,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserDaoSpec extends Specification {
 
   def user = new User(
-    0,
     "Test User",
     "test@test.com",
     Array.fill[Byte](5)(0),
     Array.fill[Byte](5)(0),
-    "test_api_key",
-    new Timestamp(new Date().getTime()),
-    0,
-    false)
+    "test_api_key")
 
   "UserDao" should {
     "Add user" in new WithApplication(FakeApp.fakeApp){
@@ -87,11 +83,10 @@ class UserDaoSpec extends Specification {
     }
 
     "Get by list" in new WithApplication(FakeApp.fakeApp){
-      val timeStamp = new Timestamp(new Date().getTime())
       val bytes = Array.fill[Byte](5)(0)
-      val user1 = new User(0, "Test User", "test1@test.com", bytes, bytes, "test_api_key_1", timeStamp, 0, false)
-      val user2 = new User(0, "Test User", "test2@test.com", bytes, bytes, "test_api_key_2", timeStamp, 0, false)
-      val user3 = new User(0, "Test User", "test3@test.com", bytes, bytes, "test_api_key_3", timeStamp, 0, false)
+      val user1 = new User("Test User", "test1@test.com", bytes, bytes, "test_api_key_1")
+      val user2 = new User("Test User", "test2@test.com", bytes, bytes, "test_api_key_2")
+      val user3 = new User("Test User", "test3@test.com", bytes, bytes, "test_api_key_3")
 
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
@@ -105,11 +100,10 @@ class UserDaoSpec extends Specification {
     }
 
     "List all apps" in new WithApplication(FakeApp.fakeApp){
-      val timeStamp = new Timestamp(new Date().getTime())
       val bytes = Array.fill[Byte](5)(0)
-      val user1 = new User(0, "Test User", "test1@test.com", bytes, bytes, "test_api_key_1", timeStamp, 0, false)
-      val user2 = new User(0, "Test User", "test2@test.com", bytes, bytes, "test_api_key_2", timeStamp, 0, false)
-      val user3 = new User(0, "Test User", "test3@test.com", bytes, bytes, "test_api_key_3", timeStamp, 0, false)
+      val user1 = new User("Test User", "test1@test.com", bytes, bytes, "test_api_key_1")
+      val user2 = new User("Test User", "test2@test.com", bytes, bytes, "test_api_key_2")
+      val user3 = new User("Test User", "test3@test.com", bytes, bytes, "test_api_key_3")
 
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
