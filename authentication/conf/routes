@@ -19,6 +19,7 @@ POST    /view-api/get-all-groups          controllers.AuthenticationAPIv1.getAll
 POST    /view-api/get-all-permissions     controllers.AuthenticationAPIv1.getAllPermissions
 POST    /view-api/get-all-users           controllers.AuthenticationAPIv1.getAllUsers
 
+POST    /view-api/new-user                controllers.AuthenticationAPIv1.newUser
 POST    /view-api/new-group               controllers.AuthenticationAPIv1.newGroup
 POST    /view-api/new-app                 controllers.AuthenticationAPIv1.newApp
 POST    /view-api/new-permission          controllers.AuthenticationAPIv1.newPermission

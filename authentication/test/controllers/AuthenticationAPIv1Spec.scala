@@ -3,7 +3,7 @@ package controllers
 import java.util.Date
 
 import database.FakeApp
-import models.UserSession
+import models.{NewUser, UserSession}
 import models.view._
 import org.specs2.mutable._
 import org.specs2.runner._
@@ -37,6 +37,32 @@ class AuthenticationAPIv1Spec extends Specification {
       val remove = route(FakeRequest(POST, "/view-api/delete-session")).get
 
       status(remove) must equalTo(BAD_REQUEST)
+    }
+
+    "Fail to add new user for invalid json" in new WithApplication{
+      val add = route(FakeRequest(POST, "/view-api/new-user", jsonHeaders, "{}")).get
+      status(add) must equalTo(BAD_REQUEST)
+    }
+
+    "Fail to add new user for invalid password" in new WithApplication{
+      val u = new NewUser("John Doe", "test@test.test", "Password", "OtherPassword")
+      val add = route(FakeRequest(POST, "/view-api/new-user", jsonHeaders, u.toJson())).get
+      status(add) must equalTo(BAD_REQUEST)
+    }
+
+    "Fail to add new group for invalid json" in new WithApplication{
+      val add = route(FakeRequest(POST, "/view-api/new-group", jsonHeaders, "{}")).get
+      status(add) must equalTo(BAD_REQUEST)
+    }
+
+    "Fail to add new app for invalid json" in new WithApplication{
+      val add = route(FakeRequest(POST, "/view-api/new-app", jsonHeaders, "{}")).get
+      status(add) must equalTo(BAD_REQUEST)
+    }
+
+    "Fail to add new permission for invalid json" in new WithApplication{
+      val add = route(FakeRequest(POST, "/view-api/new-permission", jsonHeaders, "{}")).get
+      status(add) must equalTo(BAD_REQUEST)
     }
   }
 }
