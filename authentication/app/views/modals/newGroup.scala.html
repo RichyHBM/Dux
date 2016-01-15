@@ -1,0 +1,52 @@
+@()
+
+<script type="text/javascript">
+var app = angular.module('DuxApp');
+
+app.controller("newGroupModalCtrl", function($scope, $http, $modalInstance) {
+    $scope.newGroupName = '';
+    $scope.newGroupDescription = '';
+    $scope.errors = {};
+
+    $scope.ok = function () {
+        if($scope.newGroupName == ''){
+            $scope.errors.newGroupName = true;
+            return;
+        }
+
+        $http.post('/view-api/new-group', {
+            Id: -1,
+            Name: $scope.newGroupName,
+            Description: $scope.newGroupDescription
+        }).then( function successCallback(response) {
+            $modalInstance.refresh();
+            $modalInstance.close();
+        });
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+});
+</script>
+
+<script type="text/ng-template" id="newGroupModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">New Group</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group {{ errors.newGroupName ? 'has-error' : '' }}">
+            <label class="control-label" for="newGroupName">Name</label>
+            <input type="text" class="form-control" id="newGroupName" ng-model="newGroupName" tooltip-trigger="focus">
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="newGroupDescription">Description</label>
+                <textarea type="text" class="form-control" rows="3" id="newGroupDescription" ng-model="newGroupDescription" tooltip-trigger="focus">
+                </textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
