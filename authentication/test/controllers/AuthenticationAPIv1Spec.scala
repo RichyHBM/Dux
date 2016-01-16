@@ -21,47 +21,47 @@ class AuthenticationAPIv1Spec extends Specification {
   "AuthenticationAPIv1Spec" should {
 
     "List all logged-in users" in new WithApplication{
-      val list = route(FakeRequest(POST, "/view-api/get-logged-in-users")).get
+      val list = route(FakeRequest(POST, routes.AuthenticationAPIv1.listAllLoggedIn().url)).get
       status(list) must equalTo(OK)
       contentType(list) must beSome.which(_ == MimeTypes.JSON)
     }
 
     "Remove a logged-in user" in new WithApplication{
       val user = new UserSession(0, "test", "test@test", new Date(), new Date(), "test")
-      val remove = route(FakeRequest(POST, "/view-api/delete-session", jsonHeaders, user.toJson())).get
+      val remove = route(FakeRequest(POST, routes.AuthenticationAPIv1.removeSession().url, jsonHeaders, user.toJson())).get
 
       status(remove) must equalTo(OK)
     }
 
     "Be bad request with bad data" in new WithApplication{
-      val remove = route(FakeRequest(POST, "/view-api/delete-session")).get
+      val remove = route(FakeRequest(POST, routes.AuthenticationAPIv1.removeSession().url)).get
 
       status(remove) must equalTo(BAD_REQUEST)
     }
 
     "Fail to add new user for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, "/view-api/new-user", jsonHeaders, "{}")).get
+      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newUser().url, jsonHeaders, "{}")).get
       status(add) must equalTo(BAD_REQUEST)
     }
 
     "Fail to add new user for invalid password" in new WithApplication{
       val u = new NewUser("John Doe", "test@test.test", "Password", "OtherPassword")
-      val add = route(FakeRequest(POST, "/view-api/new-user", jsonHeaders, u.toJson())).get
+      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newUser().url, jsonHeaders, u.toJson())).get
       status(add) must equalTo(BAD_REQUEST)
     }
 
     "Fail to add new group for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, "/view-api/new-group", jsonHeaders, "{}")).get
+      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newGroup().url, jsonHeaders, "{}")).get
       status(add) must equalTo(BAD_REQUEST)
     }
 
     "Fail to add new app for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, "/view-api/new-app", jsonHeaders, "{}")).get
+      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newApp().url, jsonHeaders, "{}")).get
       status(add) must equalTo(BAD_REQUEST)
     }
 
     "Fail to add new permission for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, "/view-api/new-permission", jsonHeaders, "{}")).get
+      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newPermission().url, jsonHeaders, "{}")).get
       status(add) must equalTo(BAD_REQUEST)
     }
   }
