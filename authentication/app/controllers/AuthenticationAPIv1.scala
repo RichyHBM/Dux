@@ -10,7 +10,7 @@ import play.api.mvc._
 import play.api.cache.CacheApi
 import play.api.libs.json._
 import play.mvc.Http
-import utilities.Passwords
+import utilities.{RequestParser, Passwords}
 import views.html._
 import javax.inject._
 import auth.scala._
@@ -67,14 +67,10 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
     })
   }
 
-  def newUser = AuthenticatedAction(authType).async(parse.json) { request =>
-    request.body.validate[NewUser].fold(
-      errors => {
-        Future {
-          BadRequest(JsError.toJson(errors))
-        }
-      }, newUser => {
 
+  def newUser = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseNewUser(request) {
+      newUser => {
         newUser.Password match {
           case p if p != newUser.Confirmation => Future {
             BadRequest("Password and confirmation does not match!")
@@ -88,42 +84,30 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
           }
         }
       }
-    )
+    }
   }
 
   def newGroup = AuthenticatedAction(authType).async(parse.json) { request =>
-    request.body.validate[ViewGroup].fold(
-      errors => {
-        Future {
-          BadRequest(JsError.toJson(errors))
-        }
-      }, viewGroup => {
+    RequestParser.parseViewGroup(request) {
+      viewGroup => {
         Groups.add(new Group(viewGroup.Name, viewGroup.Description)).map(i => Ok(i.toString))
       }
-    )
+    }
   }
 
   def newApp = AuthenticatedAction(authType).async(parse.json) { request =>
-    request.body.validate[ViewApp].fold(
-      errors => {
-        Future {
-          BadRequest(JsError.toJson(errors))
-        }
-      }, viewApp => {
+    RequestParser.parseViewApp(request) {
+      viewApp => {
         Apps.add(new App(viewApp.Name, viewApp.Description)).map(i => Ok(i.toString))
       }
-    )
+    }
   }
 
   def newPermission = AuthenticatedAction(authType).async(parse.json) { request =>
-    request.body.validate[ViewPermission].fold(
-      errors => {
-        Future {
-          BadRequest(JsError.toJson(errors))
-        }
-      }, viewPermission => {
+    RequestParser.parseViewPermission(request) {
+      viewPermission => {
         Permissions.add(new Permission(viewPermission.Name, viewPermission.Description)).map(i => Ok(i.toString))
       }
-    )
+    }
   }
 }
