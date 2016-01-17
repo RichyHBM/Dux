@@ -39,6 +39,7 @@ class GroupDaoSpec extends Specification {
             r.Name must equalTo("GROUP")
             r.Description must equalTo("New description")
           }
+          case None => {}
         }
       })
     }

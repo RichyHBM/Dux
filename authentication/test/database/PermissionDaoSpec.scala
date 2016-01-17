@@ -37,6 +37,7 @@ class PermissionDaoSpec extends Specification {
             r.Name must equalTo("PERMISSION")
             r.Description must equalTo("New description")
           }
+          case None => {}
         }
       })
     }

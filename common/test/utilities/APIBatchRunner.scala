@@ -15,8 +15,6 @@ abstract class APIBatchRunner[T](fakeApp: FakeApplication = FakeApplication()) e
 
   def getThis: T = this.asInstanceOf[T]
 
-  println(getThis.toString())
-
   getThis.getClass.getSimpleName should {
     "run all batched tests" in new WithApplication(fakeApp) {
       val methods = getThis.getClass.getDeclaredMethods

@@ -12,12 +12,11 @@ import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
 import play.mvc.Http.MimeTypes
+import utilities.Statics
 
 
 @RunWith(classOf[JUnitRunner])
 class AuthenticationAPIv1Spec extends Specification {
-  val jsonHeaders = FakeHeaders(Seq((CONTENT_TYPE, MimeTypes.JSON)))
-
   "AuthenticationAPIv1Spec" should {
 
     "List all logged-in users" in new WithApplication{
@@ -28,7 +27,7 @@ class AuthenticationAPIv1Spec extends Specification {
 
     "Remove a logged-in user" in new WithApplication{
       val user = new UserSession(0, "test", "test@test", new Date(), new Date(), "test")
-      val remove = route(FakeRequest(POST, routes.AuthenticationAPIv1.removeSession().url, jsonHeaders, user.toJson())).get
+      val remove = route(FakeRequest(POST, routes.AuthenticationAPIv1.removeSession().url, Statics.jsonHeaders, user.toJson())).get
 
       status(remove) must equalTo(OK)
     }

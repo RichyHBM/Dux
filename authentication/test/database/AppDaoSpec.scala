@@ -40,6 +40,7 @@ class AppDaoSpec extends Specification {
             r.Name must equalTo("APP")
             r.Description must equalTo("New description")
           }
+          case None => {}
         }
       })
     }
