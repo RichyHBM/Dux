@@ -27,13 +27,22 @@ class PermissionDaoSpec extends Specification {
       Permissions.delete(1).map(r => r  must equalTo(0))
     }
 
-    "Set description" in new WithApplication(FakeApp.fakeApp){
+    "Edit permission" in new WithApplication(FakeApp.fakeApp){
       Permissions.add(new Permission("TEST", "Description")).map(r => r must equalTo(1))
-      Permissions.setDescription(1, "New description").map(r => r must equalTo(1))
+      Permissions.edit(1, "PERMISSION", "New description").map(r => r must equalTo(1))
+      Permissions.get(1).map(r => {
+        r must equalTo(Some)
+        r match {
+          case Some(r) => {
+            r.Name must equalTo("PERMISSION")
+            r.Description must equalTo("New description")
+          }
+        }
+      })
     }
 
-    "Not set invalid description" in new WithApplication(FakeApp.fakeApp){
-      Permissions.setDescription(1, "New description").map(r => r must equalTo(0))
+    "Not edit invalid permission" in new WithApplication(FakeApp.fakeApp){
+      Permissions.edit(1, "PERMISSION", "New description").map(r => r must equalTo(0))
     }
 
     "Get by id" in new WithApplication(FakeApp.fakeApp){

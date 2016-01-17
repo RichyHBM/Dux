@@ -37,9 +37,9 @@ object Groups {
     dbConfig.db.run(groups.filter(_.Id === id).delete)
   }
 
-  def setDescription(id: Long, description: String): Future[Int] = {
-    val q = for { g <- groups if g.Id === id } yield g.Description
-    dbConfig.db.run(q.update(description))
+  def edit(id: Long, name: String, description: String): Future[Int] = {
+    val q = for { g <- groups if g.Id === id } yield (g.Name, g.Description)
+    dbConfig.db.run(q.update(name, description))
   }
 
   def get(id: Long): Future[Option[Group]] = {

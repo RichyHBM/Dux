@@ -30,13 +30,22 @@ class AppDaoSpec extends Specification {
       Apps.delete(1).map(r => r  must equalTo(0))
     }
 
-    "Set description" in new WithApplication(FakeApp.fakeApp){
+    "Edit app" in new WithApplication(FakeApp.fakeApp){
       Apps.add(new App("TEST", "Description")).map(r => r must equalTo(1))
-      Apps.setDescription(1, "New description").map(r => r must equalTo(1))
+      Apps.edit(1, "APP", "New description").map(r => r must equalTo(1))
+      Apps.get(1).map(r => {
+        r must equalTo(Some)
+        r match {
+          case Some(r) => {
+            r.Name must equalTo("APP")
+            r.Description must equalTo("New description")
+          }
+        }
+      })
     }
 
-    "Not set invalid description" in new WithApplication(FakeApp.fakeApp){
-      Apps.setDescription(1, "New description").map(r => r must equalTo(0))
+    "Not edit invalid app" in new WithApplication(FakeApp.fakeApp){
+      Apps.edit(1, "APP", "New description").map(r => r must equalTo(0))
     }
 
     "Get by id" in new WithApplication(FakeApp.fakeApp){

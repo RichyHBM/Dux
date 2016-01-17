@@ -29,13 +29,22 @@ class GroupDaoSpec extends Specification {
       Groups.delete(1).map(r => r  must equalTo(0))
     }
 
-    "Set description" in new WithApplication(FakeApp.fakeApp){
+    "Edit group" in new WithApplication(FakeApp.fakeApp){
       Groups.add(new Group("TEST", "Description")).map(r => r must equalTo(1))
-      Groups.setDescription(1, "New description").map(r => r must equalTo(1))
+      Groups.edit(1, "GROUP", "New description").map(r => r must equalTo(1))
+      Groups.get(1).map(r => {
+        r must equalTo(Some)
+        r match {
+          case Some(r) => {
+            r.Name must equalTo("GROUP")
+            r.Description must equalTo("New description")
+          }
+        }
+      })
     }
 
-    "Not set invalid description" in new WithApplication(FakeApp.fakeApp){
-      Groups.setDescription(1, "New description").map(r => r must equalTo(0))
+    "Not edit invalid group" in new WithApplication(FakeApp.fakeApp){
+      Groups.edit(1, "GROUP", "New description").map(r => r must equalTo(0))
     }
 
     "Get by id" in new WithApplication(FakeApp.fakeApp){
