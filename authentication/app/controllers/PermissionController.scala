@@ -31,4 +31,12 @@ class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticat
       }
     }
   }
+
+  def editPermission = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewApp(request) {
+      viewPermission => {
+        Permissions.edit(viewPermission.Id, viewPermission.Name, viewPermission.Description).map(i => Ok(i.toString))
+      }
+    }
+  }
 }

@@ -32,4 +32,11 @@ class AppController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCach
     }
   }
 
+  def editApp = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewApp(request) {
+      viewApp => {
+        Apps.edit(viewApp.Id, viewApp.Name, viewApp.Description).map(i => Ok(i.toString))
+      }
+    }
+  }
 }

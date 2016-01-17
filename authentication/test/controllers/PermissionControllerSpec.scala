@@ -16,5 +16,10 @@ class PermissionControllerSpec extends Specification {
       val add = route(FakeRequest(POST, routes.PermissionController.newPermission().url, jsonHeaders, "{}")).get
       status(add) must equalTo(BAD_REQUEST)
     }
+
+    "Fail to edit permission for invalid json" in new WithApplication{
+      val add = route(FakeRequest(POST, routes.PermissionController.editPermission().url, jsonHeaders, "{}")).get
+      status(add) must equalTo(BAD_REQUEST)
+    }
   }
 }

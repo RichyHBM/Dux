@@ -16,5 +16,10 @@ class AppControllerSpec extends Specification {
       val add = route(FakeRequest(POST, routes.AppController.newApp().url, jsonHeaders, "{}")).get
       status(add) must equalTo(BAD_REQUEST)
     }
+
+    "Fail to edit app for invalid json" in new WithApplication{
+      val add = route(FakeRequest(POST, routes.AppController.editApp().url, jsonHeaders, "{}")).get
+      status(add) must equalTo(BAD_REQUEST)
+    }
   }
 }

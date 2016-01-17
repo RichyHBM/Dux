@@ -16,5 +16,10 @@ class GroupControllerSpec extends Specification {
       val add = route(FakeRequest(POST, routes.GroupController.newGroup().url, jsonHeaders, "{}")).get
       status(add) must equalTo(BAD_REQUEST)
     }
+
+    "Fail to edit group for invalid json" in new WithApplication{
+      val add = route(FakeRequest(POST, routes.GroupController.editGroup().url, jsonHeaders, "{}")).get
+      status(add) must equalTo(BAD_REQUEST)
+    }
   }
 }

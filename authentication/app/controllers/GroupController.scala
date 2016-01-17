@@ -35,7 +35,7 @@ class GroupController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCa
   def editGroup = AuthenticatedAction(authType).async(parse.json) { request =>
     RequestParser.parseViewGroup(request) {
       viewGroup => {
-        Groups.add(new Group(viewGroup.Name, viewGroup.Description)).map(i => Ok(i.toString))
+        Groups.edit(viewGroup.Id, viewGroup.Name, viewGroup.Description).map(i => Ok(i.toString))
       }
     }
   }
