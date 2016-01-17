@@ -38,32 +38,6 @@ class AuthenticationAPIv1Spec extends Specification {
 
       status(remove) must equalTo(BAD_REQUEST)
     }
-
-    "Fail to add new user for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newUser().url, jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
-    }
-
-    "Fail to add new user for invalid password" in new WithApplication{
-      val u = new NewUser("John Doe", "test@test.test", "Password", "OtherPassword")
-      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newUser().url, jsonHeaders, u.toJson())).get
-      status(add) must equalTo(BAD_REQUEST)
-    }
-
-    "Fail to add new group for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newGroup().url, jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
-    }
-
-    "Fail to add new app for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newApp().url, jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
-    }
-
-    "Fail to add new permission for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.AuthenticationAPIv1.newPermission().url, jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
-    }
   }
 }
 
