@@ -16,16 +16,34 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
     status(add) must equalTo(OK)
   }
 
+  def EditNewApp = {
+    val e = new ViewApp(1, "Test2", "Description2")
+    val edit = route(FakeRequest(POST, routes.AppController.editApp().url, Statics.jsonHeaders, e.toJson())).get
+    status(edit) must equalTo(OK)
+  }
+
   def AddNewGroup = {
-    val v = new ViewGroup(0, "Test1", "Description1")
+    val v = new ViewGroup(0, "Test", "Description")
     val add = route(FakeRequest(POST, routes.GroupController.newGroup().url, Statics.jsonHeaders, v.toJson())).get
     status(add) must equalTo(OK)
+  }
+
+  def EditNewGroup = {
+    val e = new ViewGroup(1, "Test2", "Description2")
+    val edit = route(FakeRequest(POST, routes.GroupController.editGroup().url, Statics.jsonHeaders, e.toJson())).get
+    status(edit) must equalTo(OK)
   }
 
   def AddNewPermission = {
     val v = new ViewPermission(0, "Test", "Description")
     val add = route(FakeRequest(POST, routes.PermissionController.newPermission().url, Statics.jsonHeaders, v.toJson())).get
     status(add) must equalTo(OK)
+  }
+
+  def EditNewPermission = {
+    val e = new ViewPermission(1, "Test2", "Description2")
+    val edit = route(FakeRequest(POST, routes.PermissionController.editPermission().url, Statics.jsonHeaders, e.toJson())).get
+    status(edit) must equalTo(OK)
   }
 
   def AddNewUser = {
