@@ -16,6 +16,17 @@ setup := {
   "sh setup.sh" !
 }
 
+//Put all tests into a single Group so that SBT reports correct number of tests, but order them by test name
+testGrouping in Test <<= definedTests in Test map { tests => {
+    val sortedTests = tests map {
+      test => new Tests.Group(test.name, Seq(test), Tests.InProcess)
+    } sortBy (_.name.toLowerCase) flatMap {
+      _.tests
+    }
+    Seq(new Tests.Group("Tests", sortedTests, Tests.InProcess))
+  }
+}
+
 TwirlKeys.templateImports += "com.fasterxml.jackson.databind.node.ObjectNode"
 
 scalaVersion := "2.11.6"
