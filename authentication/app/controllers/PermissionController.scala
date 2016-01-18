@@ -5,6 +5,7 @@ import javax.inject.Inject
 import database.{Permission, Permissions}
 import interfaces.IAuthenticationCache
 import models.view
+import play.api.Logger
 import play.api.cache.CacheApi
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -43,6 +44,10 @@ class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticat
   def deletePermission = AuthenticatedAction(authType).async(parse.json) { request =>
     RequestParser.parseViewApp(request) {
       viewPermission => {
+        Logger.info("Deleting permission %d: '%s' with description: %s".format(
+            viewPermission.Id,
+            viewPermission.Name,
+            viewPermission.Description))
         Permissions.delete(viewPermission.Id).map(i => Ok(i.toString))
       }
     }

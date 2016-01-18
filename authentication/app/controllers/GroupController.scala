@@ -5,6 +5,7 @@ import javax.inject.Inject
 import database.{Group, Groups}
 import interfaces.IAuthenticationCache
 import models.view
+import play.api.Logger
 import play.api.cache.CacheApi
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -43,6 +44,10 @@ class GroupController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCa
   def deleteGroup = AuthenticatedAction(authType).async(parse.json) { request =>
     RequestParser.parseViewGroup(request) {
       viewGroup => {
+        Logger.info("Deleting group %d: '%s' with description: %s".format(
+          viewGroup.Id,
+          viewGroup.Name,
+          viewGroup.Description))
         Groups.delete(viewGroup.Id).map(i => Ok(i.toString))
       }
     }

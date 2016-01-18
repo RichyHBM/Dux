@@ -17,6 +17,16 @@
                 });
           }
 
+          $scope.delete = function(app) {
+            if(!confirm("Are you sure you want to delete '" + app.Name + "'?"))
+                return;
+
+            $http.post('/view-api/delete-app', app).then(
+                function successCallback(response) {
+                    $scope.refresh();
+                });
+          }
+
           $scope.refresh();
 
           $scope.openNewModal = function () {
@@ -54,7 +64,7 @@
                 <td>{{app.Id}}</td>
                 <td>{{app.Name}}</td>
                 <td>{{app.Description}}</td>
-                <td><i class="fa fa-1-4x fa-trash"></i></td>
+                <td><i class="fa fa-1-4x fa-trash" ng-click="delete(app)"></i></td>
             </tr>
         </table>
     </div>

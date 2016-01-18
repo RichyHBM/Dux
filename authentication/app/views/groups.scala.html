@@ -17,6 +17,16 @@
                 });
           }
 
+          $scope.delete = function(group) {
+            if(!confirm("Are you sure you want to delete '" + group.Name + "'?"))
+                return;
+
+            $http.post('/view-api/delete-group', group).then(
+                function successCallback(response) {
+                    $scope.refresh();
+                });
+          }
+
           $scope.refresh();
 
           $scope.openNewModal = function () {
@@ -54,7 +64,7 @@
                 <td>{{group.Id}}</td>
                 <td>{{group.Name}}</td>
                 <td>{{group.Description}}</td>
-                <td><i class="fa fa-1-4x fa-trash"></i></td>
+                <td><i class="fa fa-1-4x fa-trash" ng-click="delete(group)"></i></td>
             </tr>
         </table>
     </div>

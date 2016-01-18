@@ -17,6 +17,16 @@
                 });
           }
 
+          $scope.delete = function(permission) {
+            if(!confirm("Are you sure you want to delete '" + permission.Name + "'?"))
+                return;
+
+            $http.post('/view-api/delete-permission', permission).then(
+                function successCallback(response) {
+                    $scope.refresh();
+                });
+          }
+
           $scope.refresh();
 
           $scope.openNewModal = function () {
@@ -53,7 +63,7 @@
                 <td>{{permission.Id}}</td>
                 <td>{{permission.Name}}</td>
                 <td>{{permission.Description}}</td>
-                <td><i class="fa fa-1-4x fa-trash"></i></td>
+                <td><i class="fa fa-1-4x fa-trash" ng-click="delete(permission)"></i></td>
             </tr>
         </table>
     </div>

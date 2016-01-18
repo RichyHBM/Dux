@@ -5,6 +5,7 @@ import javax.inject.Inject
 import database.{App, Apps}
 import interfaces.IAuthenticationCache
 import models.view
+import play.api.Logger
 import play.api.cache.CacheApi
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -43,6 +44,10 @@ class AppController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCach
   def deleteApp = AuthenticatedAction(authType).async(parse.json) { request =>
     RequestParser.parseViewApp(request) {
       viewApp => {
+        Logger.info("Deleting app %d: '%s' with description: %s".format(
+          viewApp.Id,
+          viewApp.Name,
+          viewApp.Description))
         Apps.delete(viewApp.Id).map(i => Ok(i.toString))
       }
     }
