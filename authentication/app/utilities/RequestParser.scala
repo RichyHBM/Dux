@@ -24,6 +24,18 @@ object RequestParser {
     )
   }
 
+  def parseViewUser(request: Request[JsValue])(block: (ViewUser) => Future[Result] ):Future[Result] = {
+    request.body.validate[ViewUser].fold(
+      errors => {
+        Future {
+          BadRequest(JsError.toJson(errors))
+        }
+      }, viewUser => {
+        block(viewUser)
+      }
+    )
+  }
+
   def parseViewGroup(request: Request[JsValue])(block: (ViewGroup) => Future[Result] ):Future[Result] = {
     request.body.validate[ViewGroup].fold(
       errors => {

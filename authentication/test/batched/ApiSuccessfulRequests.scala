@@ -1,5 +1,7 @@
 package batched
 
+import java.util.Date
+
 import controllers.routes
 import models.NewUser
 import models.view._
@@ -17,14 +19,14 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
 
   def AddNewApp = {
     val v = new ViewApp(0, "Test", "Description")
-    val add = route(FakeRequest(POST, routes.AppController.newApp().url, Statics.jsonHeaders, v.toJson())).get
-    status(add) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.AppController.newApp().url, Statics.jsonHeaders, v.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   def EditNewApp = {
     val e = new ViewApp(1, "Test2", "Description2")
-    val edit = route(FakeRequest(POST, routes.AppController.editApp().url, Statics.jsonHeaders, e.toJson())).get
-    status(edit) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.AppController.editApp().url, Statics.jsonHeaders, e.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   def GetAllApps = {
@@ -38,8 +40,8 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
 
   def DeleteApp = {
     val e = new ViewApp(1, "Test2", "Description2")
-    val edit = route(FakeRequest(POST, routes.AppController.deleteApp().url, Statics.jsonHeaders, e.toJson())).get
-    status(edit) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.AppController.deleteApp().url, Statics.jsonHeaders, e.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   //</editor-fold>
@@ -48,14 +50,14 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
 
   def AddNewGroup = {
     val v = new ViewGroup(0, "Test", "Description")
-    val add = route(FakeRequest(POST, routes.GroupController.newGroup().url, Statics.jsonHeaders, v.toJson())).get
-    status(add) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.GroupController.newGroup().url, Statics.jsonHeaders, v.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   def EditNewGroup = {
     val e = new ViewGroup(1, "Test2", "Description2")
-    val edit = route(FakeRequest(POST, routes.GroupController.editGroup().url, Statics.jsonHeaders, e.toJson())).get
-    status(edit) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.GroupController.editGroup().url, Statics.jsonHeaders, e.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   def GetAllGroups = {
@@ -69,8 +71,8 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
 
   def DeleteGroup = {
     val e = new ViewGroup(1, "Test2", "Description2")
-    val edit = route(FakeRequest(POST, routes.GroupController.deleteGroup().url, Statics.jsonHeaders, e.toJson())).get
-    status(edit) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.GroupController.deleteGroup().url, Statics.jsonHeaders, e.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   //</editor-fold>
@@ -79,14 +81,14 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
 
   def AddNewPermission = {
     val v = new ViewPermission(0, "Test", "Description")
-    val add = route(FakeRequest(POST, routes.PermissionController.newPermission().url, Statics.jsonHeaders, v.toJson())).get
-    status(add) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.PermissionController.newPermission().url, Statics.jsonHeaders, v.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   def EditNewPermission = {
     val e = new ViewPermission(1, "Test2", "Description2")
-    val edit = route(FakeRequest(POST, routes.PermissionController.editPermission().url, Statics.jsonHeaders, e.toJson())).get
-    status(edit) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.PermissionController.editPermission().url, Statics.jsonHeaders, e.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   def GetAllPermissions = {
@@ -100,8 +102,8 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
 
   def DeletePermission = {
     val e = new ViewPermission(1, "Test2", "Description2")
-    val edit = route(FakeRequest(POST, routes.PermissionController.deletePermission().url, Statics.jsonHeaders, e.toJson())).get
-    status(edit) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.PermissionController.deletePermission().url, Statics.jsonHeaders, e.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   //</editor-fold>
@@ -110,8 +112,8 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
 
   def AddNewUser = {
     val u = new NewUser("John Doe", "test@test.test", "Password", "Password")
-    val add = route(FakeRequest(POST, routes.UserController.newUser().url, Statics.jsonHeaders, u.toJson())).get
-    status(add) must equalTo(OK)
+    val response = route(FakeRequest(POST, routes.UserController.newUser().url, Statics.jsonHeaders, u.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   def GetAllUsers = {
@@ -121,6 +123,12 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
       e => 1 must equalTo(0),
       ar => ar.length must equalTo(1)
     )
+  }
+
+  def DeleteUser = {
+    val e = new ViewUser(1, "Test2", "email@email","apikey", new Date(), 0, false)
+    val response = route(FakeRequest(POST, routes.UserController.deleteUser().url, Statics.jsonHeaders, e.toJson())).get
+    status(response) must equalTo(OK)
   }
 
   //</editor-fold>

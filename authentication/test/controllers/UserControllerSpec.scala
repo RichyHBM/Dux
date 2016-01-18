@@ -23,5 +23,10 @@ class UserControllerSpec extends Specification {
       val response = route(FakeRequest(POST, routes.UserController.newUser().url, Statics.jsonHeaders, u.toJson())).get
       status(response) must equalTo(BAD_REQUEST)
     }
+
+    "Fail to delete user for invalid password" in new WithApplication{
+      val response = route(FakeRequest(POST, routes.UserController.deleteUser().url, Statics.jsonHeaders, "{}")).get
+      status(response) must equalTo(BAD_REQUEST)
+    }
   }
 }

@@ -6,6 +6,7 @@ import javax.inject.Inject
 import database.{User, Users}
 import interfaces.IAuthenticationCache
 import models.view
+import play.api.Logger
 import play.api.cache.CacheApi
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -42,6 +43,19 @@ class UserController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCac
             Users.add(new User(newUser.Name, newUser.Email, password, salt, apiKey)).map(i => Ok(i.toString))
           }
         }
+      }
+    }
+  }
+
+  def deleteUser = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewUser(request) {
+      viewUser => {
+        Logger.info("Deleting user %d: '%s' with email: %s".format(
+          viewUser.Id,
+          viewUser.Name,
+          viewUser.Email))
+
+        Users.delete(viewUser.Id).map(i => Ok(i.toString))
       }
     }
   }
