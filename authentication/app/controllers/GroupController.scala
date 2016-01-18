@@ -39,4 +39,12 @@ class GroupController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCa
       }
     }
   }
+
+  def deleteGroup = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewGroup(request) {
+      viewGroup => {
+        Groups.delete(viewGroup.Id).map(i => Ok(i.toString))
+      }
+    }
+  }
 }

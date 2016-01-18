@@ -39,4 +39,12 @@ class AppController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCach
       }
     }
   }
+
+  def deleteApp = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewApp(request) {
+      viewApp => {
+        Apps.delete(viewApp.Id).map(i => Ok(i.toString))
+      }
+    }
+  }
 }

@@ -14,14 +14,14 @@ class UserControllerSpec extends Specification {
   "UserControllerSpec" should {
 
     "Fail to add new user for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.UserController.newUser().url, Statics.jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
+      val response = route(FakeRequest(POST, routes.UserController.newUser().url, Statics.jsonHeaders, "{}")).get
+      status(response) must equalTo(BAD_REQUEST)
     }
 
     "Fail to add new user for invalid password" in new WithApplication{
       val u = new NewUser("John Doe", "test@test.test", "Password", "OtherPassword")
-      val add = route(FakeRequest(POST, routes.UserController.newUser().url, Statics.jsonHeaders, u.toJson())).get
-      status(add) must equalTo(BAD_REQUEST)
+      val response = route(FakeRequest(POST, routes.UserController.newUser().url, Statics.jsonHeaders, u.toJson())).get
+      status(response) must equalTo(BAD_REQUEST)
     }
   }
 }

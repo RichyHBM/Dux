@@ -36,6 +36,12 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
     )
   }
 
+  def DeleteApp = {
+    val e = new ViewApp(1, "Test2", "Description2")
+    val edit = route(FakeRequest(POST, routes.AppController.deleteApp().url, Statics.jsonHeaders, e.toJson())).get
+    status(edit) must equalTo(OK)
+  }
+
   //</editor-fold>
 
   //<editor-fold desc="Group Tests">
@@ -61,6 +67,12 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
     )
   }
 
+  def DeleteGroup = {
+    val e = new ViewGroup(1, "Test2", "Description2")
+    val edit = route(FakeRequest(POST, routes.GroupController.deleteGroup().url, Statics.jsonHeaders, e.toJson())).get
+    status(edit) must equalTo(OK)
+  }
+
   //</editor-fold>
 
   //<editor-fold desc="Permission Tests">
@@ -84,6 +96,12 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
       e => 1 must equalTo(0),
       ar => ar.length must equalTo(1)
     )
+  }
+
+  def DeletePermission = {
+    val e = new ViewPermission(1, "Test2", "Description2")
+    val edit = route(FakeRequest(POST, routes.PermissionController.deletePermission().url, Statics.jsonHeaders, e.toJson())).get
+    status(edit) must equalTo(OK)
   }
 
   //</editor-fold>

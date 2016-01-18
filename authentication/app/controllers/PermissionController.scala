@@ -39,4 +39,12 @@ class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticat
       }
     }
   }
+
+  def deletePermission = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewApp(request) {
+      viewPermission => {
+        Permissions.delete(viewPermission.Id).map(i => Ok(i.toString))
+      }
+    }
+  }
 }

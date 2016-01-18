@@ -13,13 +13,18 @@ class GroupControllerSpec extends Specification {
   "GroupControllerSpec" should {
 
     "Fail to add new group for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.GroupController.newGroup().url, Statics.jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
+      val response = route(FakeRequest(POST, routes.GroupController.newGroup().url, Statics.jsonHeaders, "{}")).get
+      status(response) must equalTo(BAD_REQUEST)
     }
 
     "Fail to edit group for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.GroupController.editGroup().url, Statics.jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
+      val response = route(FakeRequest(POST, routes.GroupController.editGroup().url, Statics.jsonHeaders, "{}")).get
+      status(response) must equalTo(BAD_REQUEST)
+    }
+
+    "Fail to delete group for invalid json" in new WithApplication{
+      val response = route(FakeRequest(POST, routes.GroupController.deleteGroup().url, Statics.jsonHeaders, "{}")).get
+      status(response) must equalTo(BAD_REQUEST)
     }
   }
 }

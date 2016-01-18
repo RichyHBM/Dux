@@ -12,13 +12,18 @@ class PermissionControllerSpec extends Specification {
 
   "PermissionControllerSpec" should {
     "Fail to add new permission for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.PermissionController.newPermission().url, Statics.jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
+      val response = route(FakeRequest(POST, routes.PermissionController.newPermission().url, Statics.jsonHeaders, "{}")).get
+      status(response) must equalTo(BAD_REQUEST)
     }
 
     "Fail to edit permission for invalid json" in new WithApplication{
-      val add = route(FakeRequest(POST, routes.PermissionController.editPermission().url, Statics.jsonHeaders, "{}")).get
-      status(add) must equalTo(BAD_REQUEST)
+      val response = route(FakeRequest(POST, routes.PermissionController.editPermission().url, Statics.jsonHeaders, "{}")).get
+      status(response) must equalTo(BAD_REQUEST)
+    }
+
+    "Fail to delete permission for invalid json" in new WithApplication{
+      val response = route(FakeRequest(POST, routes.PermissionController.deletePermission().url, Statics.jsonHeaders, "{}")).get
+      status(response) must equalTo(BAD_REQUEST)
     }
   }
 }
