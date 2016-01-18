@@ -1,0 +1,84 @@
+@()
+
+<script type="text/javascript">
+var app = angular.module('DuxApp');
+
+app.controller("newUserModalCtrl", function($scope, $http, $modalInstance) {
+    $scope.newName = "";
+    $scope.newEmail = "";
+    $scope.newPassword = "";
+    $scope.newConfirmationPassword = "";
+    $scope.errors = {};
+
+
+    $scope.ok = function () {
+        if($scope.newName == ''){
+            $scope.errors.newName = true;
+            return;
+        }
+
+        if($scope.newEmail == ''){
+            $scope.errors.newEmail = true;
+            return;
+        }
+
+        if($scope.newPassword == ''){
+            $scope.errors.newPassword = true;
+            return;
+        }
+
+        if($scope.newConfirmationPassword != $scope.newPassword){
+            $scope.errors.newConfirmationPassword = true;
+            return;
+        }
+
+        $http.post('/view-api/new-user', {
+            Name: $scope.newName,
+            Email: $scope.newEmail,
+            Password: $scope.newPassword,
+            Confirmation: $scope.newConfirmationPassword
+        }).then( function successCallback(response) {
+            $modalInstance.refresh();
+            $modalInstance.close();
+        });
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+});
+</script>
+
+
+<script type="text/ng-template" id="newUserModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">New User</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group {{ errors.newName ? 'has-error' : '' }}">
+            <label class="control-label" for="newName">Name</label>
+            <input type="text" class="form-control" id="newName" ng-model="newName" tooltip-trigger="focus">
+        </div>
+
+        <div class="form-group {{ errors.newEmail ? 'has-error' : '' }}">
+            <label class="control-label" for="newEmail">Email</label>
+            <input type="email" class="form-control" id="newEmail" ng-model="newEmail" tooltip-trigger="focus">
+        </div>
+
+        <div class="form-group {{ errors.newPassword ? 'has-error' : '' }}">
+            <label class="control-label" for="newPassword">Password</label>
+            <input type="password" class="form-control" id="newPassword" ng-model="newPassword" tooltip-trigger="focus">
+        </div>
+
+        <div class="form-group {{ errors.newConfirmationPassword ? 'has-error' : '' }}">
+            <label class="control-label" for="newConfirmationPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="newConfirmationPassword" ng-model="newConfirmationPassword" tooltip-trigger="focus">
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

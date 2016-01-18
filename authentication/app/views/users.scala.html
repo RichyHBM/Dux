@@ -21,40 +21,61 @@
             if(!confirm("Are you sure you want to delete '" + user.Email + "'?"))
                 return;
 
-            $http.post('/view-api/delete-user', app).then(
+            $http.post('/view-api/delete-user', user).then(
                 function successCallback(response) {
                     $scope.refresh();
                 });
           }
 
           $scope.refresh();
+
+          $scope.openNewModal = function () {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'newUserModal.html',
+                controller: 'newUserModalCtrl'
+            });
+
+            modalInstance.refresh = function() {
+                $scope.refresh();
+            }
+          }
         });
     </script>
 
 <div ng-controller="UsersCtrl" class="container">
 
-    <table class="table table-striped table-bordered">
-        <tr>
-            <th class="col-sm-1">ID</th>
-            <th class="col-sm-2">Name</th>
-            <th class="col-sm-2">Email</th>
-            <th class="col-sm-2">Api Key</th>
-            <th class="col-sm-2">Created</th>
-            <th class="col-sm-1">Failed Attempts</th>
-            <th class="col-sm-1">Blocked</th>
-            <th class="col-sm-1"></th>
-        </tr>
-        <tr ng-repeat="user in Users">
-            <td>{{user.Id}}</td>
-            <td>{{user.Name}}</td>
-            <td>{{user.Email}}</td>
-            <td>{{user.ApiKey}}</td>
-            <td>{{user.CreatedOn}}</td>
-            <td>{{user.FailedAttempts}}</td>
-            <td>{{user.Blocked}}</td>
-            <td><i class="fa fa-1-4x fa-trash" ng-click="delete(user)"></i></td>
-        </tr>
-    </table>
+    <div class="row">
+        <div class="col-sm-10"></div>
+        <button class="col-sm-2 btn btn-default" ng-click="openNewModal()">New User</button>
+    </div>
 
+    <br />
+
+    <div class="row">
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th class="col-sm-1">ID</th>
+                <th class="col-sm-2">Name</th>
+                <th class="col-sm-2">Email</th>
+                <th class="col-sm-2">Api Key</th>
+                <th class="col-sm-2">Created</th>
+                <th class="col-sm-1">Failed Attempts</th>
+                <th class="col-sm-1">Blocked</th>
+                <th class="col-sm-1"></th>
+            </tr>
+            <tr ng-repeat="user in Users">
+                <td>{{user.Id}}</td>
+                <td>{{user.Name}}</td>
+                <td>{{user.Email}}</td>
+                <td>{{user.ApiKey}}</td>
+                <td>{{user.CreatedOn}}</td>
+                <td>{{user.FailedAttempts}}</td>
+                <td>{{user.Blocked}}</td>
+                <td><i class="fa fa-1-4x fa-trash" ng-click="delete(user)"></i></td>
+            </tr>
+        </table>
+    </div>
+
+    @modals.newUser()
 </div>
 }
