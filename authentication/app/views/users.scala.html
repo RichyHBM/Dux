@@ -60,18 +60,19 @@
                 <th class="col-sm-2">Api Key</th>
                 <th class="col-sm-2">Created</th>
                 <th class="col-sm-1">Failed Attempts</th>
-                <th class="col-sm-1">Blocked</th>
                 <th class="col-sm-1"></th>
             </tr>
-            <tr ng-repeat="user in Users">
+            <tr ng-repeat="user in Users" class="{{ user.Blocked ? 'danger' : '' }}">
                 <td>{{user.Id}}</td>
                 <td>{{user.Name}}</td>
                 <td>{{user.Email}}</td>
                 <td>{{user.ApiKey}}</td>
                 <td>{{user.CreatedOn}}</td>
                 <td>{{user.FailedAttempts}}</td>
-                <td>{{user.Blocked}}</td>
-                <td><i class="fa fa-1-4x fa-trash" ng-click="delete(user)"></i></td>
+                <td>
+                    <i class="fa fa-1-4x fa-pencil"></i>
+                    <i class="fa fa-1-4x fa-trash" ng-click="delete(user)"></i>
+                </td>
             </tr>
         </table>
     </div>
