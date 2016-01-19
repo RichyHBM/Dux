@@ -2,7 +2,6 @@ package controllers
 
 import java.util.Date
 
-import database.FakeApp
 import models.{NewUser, UserSession}
 import models.view._
 import org.specs2.mutable._
@@ -39,4 +38,3 @@ class AuthenticationAPIv1Spec extends Specification {
     }
   }
 }
-

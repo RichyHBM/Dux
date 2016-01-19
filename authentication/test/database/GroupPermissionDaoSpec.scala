@@ -4,6 +4,7 @@ import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
 import play.api.test._
+import utilities._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @RunWith(classOf[JUnitRunner])
@@ -18,7 +19,7 @@ class GroupPermissionDaoSpec extends Specification {
   def permission3 = new Permission("Permission3", "Permission 3 Description")
 
   "GroupPermissionDaoSpec" should {
-    "Add group permission" in new WithApplication(FakeApp.fakeApp){
+    "Add group permission" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Groups.add(group2).map(r => r must equalTo(1))
       Groups.add(group3).map(r => r must equalTo(1))
@@ -33,7 +34,7 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.add(2, 3).map(r => r must equalTo(1))
     }
 
-    "Not add invalid" in new WithApplication(FakeApp.fakeApp){
+    "Not add invalid" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
 
       Permissions.add(permission1).map(r => r must equalTo(1))
@@ -42,7 +43,7 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.add(100, 1).map(r => r must equalTo(0))
     }
 
-    "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
+    "Not add duplicates" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Permissions.add(permission1).map(r => r must equalTo(1))
 
@@ -50,7 +51,7 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.add(1, 1).map(r => r must equalTo(0))
     }
 
-    "Delete group permissions" in new WithApplication(FakeApp.fakeApp){
+    "Delete group permissions" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Permissions.add(permission1).map(r => r must equalTo(1))
 
@@ -58,7 +59,7 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.delete(1).map(r => r must equalTo(1))
     }
 
-    "Delete by group" in new WithApplication(FakeApp.fakeApp){
+    "Delete by group" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Groups.add(group2).map(r => r must equalTo(1))
       Groups.add(group3).map(r => r must equalTo(1))
@@ -74,7 +75,7 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.deleteAllFromGroupId(1).map(r => r must equalTo(2))
     }
 
-    "Delete by permission" in new WithApplication(FakeApp.fakeApp){
+    "Delete by permission" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Groups.add(group2).map(r => r must equalTo(1))
       Groups.add(group3).map(r => r must equalTo(1))
@@ -90,7 +91,7 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.deleteAllFromPermissionId(1).map(r => r must equalTo(2))
     }
 
-    "List all permissions for group" in new WithApplication(FakeApp.fakeApp){
+    "List all permissions for group" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Groups.add(group2).map(r => r must equalTo(1))
       Groups.add(group3).map(r => r must equalTo(1))
@@ -109,7 +110,7 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.getAllPermissionIdsFromGroupId(1).map(r => r must not contain(3))
     }
 
-    "List all groups from permission" in new WithApplication(FakeApp.fakeApp){
+    "List all groups from permission" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Groups.add(group2).map(r => r must equalTo(1))
       Groups.add(group3).map(r => r must equalTo(1))
@@ -129,7 +130,7 @@ class GroupPermissionDaoSpec extends Specification {
       GroupPermissions.getAllGroupIdsFromPermissionId(1).map(r => r must not contain(3))
     }
 
-    "List all" in new WithApplication(FakeApp.fakeApp){
+    "List all" in new WithApplication(Statics.fakeApp){
       Groups.add(group1).map(r => r must equalTo(1))
       Groups.add(group2).map(r => r must equalTo(1))
       Groups.add(group3).map(r => r must equalTo(1))

@@ -5,6 +5,7 @@ import org.specs2.runner._
 import org.junit.runner._
 import java.sql.Timestamp
 import java.util.Date
+import utilities._
 import play.api.test._
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -21,7 +22,7 @@ class UserGroupDaoSpec extends Specification {
   def group2 = new Group("Group2", "Group 2 Description")
 
   "UserGroupDaoSpec" should {
-    "Add user group" in new WithApplication(FakeApp.fakeApp){
+    "Add user group" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
       Users.add(user3).map(r => r must equalTo(1))
@@ -34,7 +35,7 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.add(3, 2).map(r => r must equalTo(1))
     }
 
-    "Not add invalid" in new WithApplication(FakeApp.fakeApp){
+    "Not add invalid" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
       Groups.add(group1).map(r => r must equalTo(1))
@@ -43,7 +44,7 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.add(1, 200).map(r => r must equalTo(0))
     }
 
-    "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
+    "Not add duplicates" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Groups.add(group1).map(r => r must equalTo(1))
 
@@ -51,7 +52,7 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.add(1, 1).map(r => r must equalTo(0))
     }
 
-    "Delete user groups" in new WithApplication(FakeApp.fakeApp){
+    "Delete user groups" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Groups.add(group1).map(r => r must equalTo(1))
 
@@ -59,7 +60,7 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.delete(1).map(r => r must equalTo(1))
     }
 
-    "Delete user groups by user" in new WithApplication(FakeApp.fakeApp){
+    "Delete user groups by user" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
       Users.add(user3).map(r => r must equalTo(1))
@@ -73,7 +74,7 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.deleteAllFromUserId(1).map(r => r must equalTo(2))
     }
 
-    "Delete user groups by group" in new WithApplication(FakeApp.fakeApp){
+    "Delete user groups by group" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
       Users.add(user3).map(r => r must equalTo(1))
@@ -88,7 +89,7 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.deleteAllFromGroupId(2).map(r => r must equalTo(1))
     }
 
-    "List all users in group" in new WithApplication(FakeApp.fakeApp){
+    "List all users in group" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
       Users.add(user3).map(r => r must equalTo(1))
@@ -105,7 +106,7 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.getAllUserIdsFromGroupId(1).map(r => r must not contain(3))
     }
 
-    "List all groups for user" in new WithApplication(FakeApp.fakeApp){
+    "List all groups for user" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
       Users.add(user3).map(r => r must equalTo(1))
@@ -122,7 +123,7 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.getAllGroupIdsForUserId(1).map(r => r must not contain(2))
     }
 
-    "List all user groups" in new WithApplication(FakeApp.fakeApp){
+    "List all user groups" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
       Users.add(user3).map(r => r must equalTo(1))

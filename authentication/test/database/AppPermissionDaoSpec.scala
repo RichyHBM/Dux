@@ -4,6 +4,7 @@ import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
 import play.api.test._
+import utilities._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @RunWith(classOf[JUnitRunner])
@@ -18,7 +19,7 @@ class AppPermissionDaoSpec extends Specification {
   def permission3 = new Permission("Permission3", "Permission 3 Description")
 
   "AppPermissionDaoSpec" should {
-    "Add group permission" in new WithApplication(FakeApp.fakeApp){
+    "Add group permission" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Apps.add(app2).map(r => r must equalTo(1))
       Apps.add(app3).map(r => r must equalTo(1))
@@ -33,7 +34,7 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.add(2, 3).map(r => r must equalTo(1))
     }
 
-    "Not add invalid" in new WithApplication(FakeApp.fakeApp){
+    "Not add invalid" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Permissions.add(permission1).map(r => r must equalTo(1))
 
@@ -41,7 +42,7 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.add(100, 1).map(r => r must equalTo(0))
     }
 
-    "Not add duplicates" in new WithApplication(FakeApp.fakeApp){
+    "Not add duplicates" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Permissions.add(permission1).map(r => r must equalTo(1))
 
@@ -49,7 +50,7 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.add(1, 1).map(r => r must equalTo(0))
     }
 
-    "Delete app permissions" in new WithApplication(FakeApp.fakeApp){
+    "Delete app permissions" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Permissions.add(permission1).map(r => r must equalTo(1))
 
@@ -57,7 +58,7 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.delete(1).map(r => r must equalTo(1))
     }
 
-    "Delete by app" in new WithApplication(FakeApp.fakeApp){
+    "Delete by app" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Apps.add(app2).map(r => r must equalTo(1))
       Apps.add(app3).map(r => r must equalTo(1))
@@ -73,7 +74,7 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.deleteAllFromAppId(1).map(r => r must equalTo(2))
     }
 
-    "Delete by permission" in new WithApplication(FakeApp.fakeApp){
+    "Delete by permission" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Apps.add(app2).map(r => r must equalTo(1))
       Apps.add(app3).map(r => r must equalTo(1))
@@ -89,7 +90,7 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.deleteAllFromPermissionId(1).map(r => r must equalTo(2))
     }
 
-    "List all permissions for app" in new WithApplication(FakeApp.fakeApp){
+    "List all permissions for app" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Apps.add(app2).map(r => r must equalTo(1))
       Apps.add(app3).map(r => r must equalTo(1))
@@ -109,7 +110,7 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.getAllPermissionIdsFromAppId(1).map(r => r must not contain(3))
     }
 
-    "List all apps with permission" in new WithApplication(FakeApp.fakeApp){
+    "List all apps with permission" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Apps.add(app2).map(r => r must equalTo(1))
       Apps.add(app3).map(r => r must equalTo(1))
@@ -128,7 +129,7 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must not contain(3))
     }
 
-    "List all" in new WithApplication(FakeApp.fakeApp){
+    "List all" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Apps.add(app2).map(r => r must equalTo(1))
       Apps.add(app3).map(r => r must equalTo(1))
