@@ -1,0 +1,63 @@
+@()
+
+<script type="text/javascript">
+var app = angular.module('DuxApp');
+
+app.controller("newEditGroupModalCtrl", function($scope, $http, $modalInstance, Group) {
+    $scope.groupId = Group.Id;
+    $scope.groupName = Group.Name;
+    $scope.groupDescription = Group.Description;
+    $scope.errors = {};
+
+    $scope.ok = function () {
+        if($scope.groupName == ''){
+            $scope.errors.groupName = true;
+            return;
+        }
+
+        var url = '/view-api/new-group';
+        if($scope.groupId) {
+            url = '/view-api/edit-group';
+        }
+
+        var id = $scope.groupId;
+        if(!id) {
+            id = -1;
+        }
+
+        $http.post(url, {
+            Id: id,
+            Name: $scope.groupName,
+            Description: $scope.groupDescription
+        }).then( function successCallback(response) {
+            $modalInstance.refresh();
+            $modalInstance.close();
+        });
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+});
+</script>
+
+<script type="text/ng-template" id="newEditGroupModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{ groupId ? 'Editing group ' + groupId : 'New Group' }}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group {{ errors.groupName ? 'has-error' : '' }}">
+            <label class="control-label" for="groupName">Name</label>
+            <input type="text" class="form-control" id="groupName" ng-model="groupName" tooltip-trigger="focus">
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="groupDescription">Description</label>
+                <textarea type="text" class="form-control" rows="3" id="groupDescription" ng-model="groupDescription" tooltip-trigger="focus">
+                </textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

@@ -29,10 +29,17 @@
 
           $scope.refresh();
 
-          $scope.openNewModal = function () {
+          $scope.openNewEditModal = function (group) {
             var modalInstance = $uibModal.open({
-                templateUrl: 'newGroupModal.html',
-                controller: 'newGroupModalCtrl'
+                templateUrl: 'newEditGroupModal.html',
+                controller: 'newEditGroupModalCtrl',
+                resolve: {
+                    Group: function () {
+                        if (group === undefined)
+                            return {};
+                        return group;
+                    }
+                }
             });
 
             modalInstance.refresh = function() {
@@ -47,7 +54,7 @@
 
     <div class="row">
         <div class="col-sm-10"></div>
-        <button class="col-sm-2 btn btn-default" ng-click="openNewModal()">New Group</button>
+        <button class="col-sm-2 btn btn-default" ng-click="openNewEditModal()">New Group</button>
     </div>
 
     <br />
@@ -64,11 +71,14 @@
                 <td>{{group.Id}}</td>
                 <td>{{group.Name}}</td>
                 <td>{{group.Description}}</td>
-                <td><i class="fa fa-1-4x fa-trash" ng-click="delete(group)"></i></td>
+                <td>
+                    <i class="fa fa-1-4x fa-pencil" ng-click="openNewEditModal(group)"></i>
+                    <i class="fa fa-1-4x fa-trash" ng-click="delete(group)"></i>
+                </td>
             </tr>
         </table>
     </div>
 
-    @modals.newGroup()
+    @modals.newEditGroup()
 </div>
 }
