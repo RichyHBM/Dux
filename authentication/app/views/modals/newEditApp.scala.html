@@ -21,8 +21,13 @@ app.controller("newEditAppModalCtrl", function($scope, $http, $modalInstance, Ap
             url = '/view-api/edit-app';
         }
 
+        var id = $scope.appId;
+        if(!id) {
+            id = -1;
+        }
+
         $http.post(url, {
-            Id: $scope.appId,
+            Id: id,
             Name: $scope.appName,
             Description: $scope.appDescription
         }).then( function successCallback(response) {
