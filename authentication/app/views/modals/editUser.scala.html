@@ -1,0 +1,97 @@
+@()
+
+<script type="text/javascript">
+var app = angular.module('DuxApp');
+
+app.controller("editUserModalCtrl", function($scope, $http, $modalInstance, User) {
+    $scope.userId = User.Id;
+    $scope.userName = User.Name;
+    $scope.userEmail = User.Email;
+    $scope.userApiKey = User.ApiKey;
+    $scope.userCreatedOn = User.CreatedOn;
+    $scope.userFailedAttempts = User.FailedAttempts;
+    $scope.userBlocked = User.Blocked;
+
+    $scope.errors = {};
+
+    $scope.ok = function () {
+        if($scope.userName == ''){
+            $scope.errors.userName = true;
+            return;
+        }
+
+        if($scope.userEmail == ''){
+            $scope.errors.userEmail = true;
+            return;
+        }
+
+        if($scope.userFailedAttempts === ''){
+            $scope.errors.userFailedAttempts = true;
+            return;
+        }
+
+        $http.post('/view-api/edit-user', {
+            Id: $scope.userId,
+            Name: $scope.userName,
+            Email: $scope.userEmail,
+            ApiKey: $scope.userApiKey,
+            CreatedOn: $scope.userCreatedOn,
+            FailedAttempts: $scope.userFailedAttempts,
+            Blocked: $scope.userBlocked
+        }).then( function successCallback(response) {
+            $modalInstance.refresh();
+            $modalInstance.close();
+        });
+
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+});
+</script>
+
+
+<script type="text/ng-template" id="editUserModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Edit User {{userId}}</h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group {{ errors.userName ? 'has-error' : '' }}">
+            <label class="control-label" for="userName">Name</label>
+            <input type="text" class="form-control" id="userName" ng-model="userName" tooltip-trigger="focus">
+        </div>
+
+        <div class="form-group {{ errors.userEmail ? 'has-error' : '' }}">
+            <label class="control-label" for="userEmail">Email</label>
+            <input type="text" class="form-control" id="userEmail" ng-model="userEmail" tooltip-trigger="focus">
+        </div>
+
+        <div class="form-group {{ errors.userApiKey ? 'has-error' : '' }}">
+            <label class="control-label" for="userApiKey">Api Key</label>
+            <input type="text" class="form-control" id="userApiKey" ng-model="userApiKey" tooltip-trigger="focus" readonly>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label" for="userCreatedOn">Created On</label>
+            <strong class="control-label" name="userCreatedOn" id="userCreatedOn">{{userCreatedOn | date:"MM/dd/yyyy 'at' h:mma"}}</strong>
+        </div>
+
+        <div class="form-group {{ errors.userFailedAttempts ? 'has-error' : '' }}">
+            <label class="control-label" for="userFailedAttempts">Failed Attempts</label>
+            <input type="text" class="form-control" id="userFailedAttempts" ng-model="userFailedAttempts" tooltip-trigger="focus">
+        </div>
+
+        <div class="form-group checkbox {{ errors.userBlocked ? 'has-error' : '' }}">
+            <label class="control-label" for="userBlocked">
+                <input type="checkbox" id="userBlocked" ng-model="userBlocked" tooltip-trigger="focus"> Blocked
+            </label>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

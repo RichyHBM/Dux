@@ -47,6 +47,17 @@ class UserController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCac
     }
   }
 
+  def editUser = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewUser(request) {
+      viewUser => {
+        Users.get(viewUser.Id) map {
+          case Some(u) => Users.updateUser(viewUser.Id, User(u.Id, viewUser.Name, viewUser.Email, u.Password, u.Salt, u.ApiKey, u.CreatedOn, viewUser.FailedAttempts, viewUser.Blocked)).map(i => Ok(i.toString))
+          case None => Future(BadRequest("User %d not found!".format(viewUser.Id)))
+        }
+      }.flatMap(r => r)
+    }
+  }
+
   def deleteUser = AuthenticatedAction(authType).async(parse.json) { request =>
     RequestParser.parseViewUser(request) {
       viewUser => {

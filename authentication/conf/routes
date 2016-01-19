@@ -17,6 +17,7 @@ POST    /view-api/delete-session          controllers.AuthenticationAPIv1.remove
 
 POST    /view-api/get-all-users           controllers.UserController.getAllUsers
 POST    /view-api/new-user                controllers.UserController.newUser
+POST    /view-api/edit-user               controllers.UserController.editUser
 POST    /view-api/delete-user             controllers.UserController.deleteUser
 
 POST    /view-api/get-all-groups          controllers.GroupController.getAllGroups

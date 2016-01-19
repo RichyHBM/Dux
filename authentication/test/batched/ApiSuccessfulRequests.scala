@@ -116,6 +116,12 @@ class ApiSuccessfulRequests extends APIBatchRunner[ApiSuccessfulRequests] {
     status(response) must equalTo(OK)
   }
 
+  def EditUser = {
+    val u = new ViewUser(1, "Test2", "email@email","apikey", new Date(), 0, false)
+    val response = route(FakeRequest(POST, routes.UserController.editUser().url, Statics.jsonHeaders, u.toJson())).get
+    status(response) must equalTo(OK)
+  }
+
   def GetAllUsers = {
     val response = route(FakeRequest(POST, routes.UserController.getAllUsers().url)).get
     status(response) must equalTo(OK)

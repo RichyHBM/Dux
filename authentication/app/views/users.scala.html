@@ -39,6 +39,22 @@
                 $scope.refresh();
             }
           }
+
+          $scope.openEditModal = function (user) {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'editUserModal.html',
+                controller: 'editUserModalCtrl',
+                resolve: {
+                    User: function () {
+                        return user;
+                    }
+                }
+            });
+
+            modalInstance.refresh = function() {
+                $scope.refresh();
+            }
+          }
         });
     </script>
 
@@ -67,10 +83,10 @@
                 <td>{{user.Name}}</td>
                 <td>{{user.Email}}</td>
                 <td>{{user.ApiKey}}</td>
-                <td>{{user.CreatedOn}}</td>
+                <td>{{user.CreatedOn | date:"MM/dd/yyyy"}}</td>
                 <td>{{user.FailedAttempts}}</td>
                 <td>
-                    <i class="fa fa-1-4x fa-pencil"></i>
+                    <i class="fa fa-1-4x fa-pencil" ng-click="openEditModal(user)"></i>
                     <i class="fa fa-1-4x fa-trash" ng-click="delete(user)"></i>
                 </td>
             </tr>
@@ -78,5 +94,6 @@
     </div>
 
     @modals.newUser()
+    @modals.editUser()
 </div>
 }
