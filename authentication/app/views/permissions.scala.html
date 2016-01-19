@@ -29,10 +29,17 @@
 
           $scope.refresh();
 
-          $scope.openNewModal = function () {
+          $scope.openNewEditModal = function (permission) {
             var modalInstance = $uibModal.open({
-                templateUrl: 'newPermissionModal.html',
-                controller: 'newPermissionModalCtrl'
+                templateUrl: 'newEditPermissionModal.html',
+                controller: 'newEditPermissionModalCtrl',
+                resolve: {
+                    Permission: function () {
+                        if (permission === undefined)
+                            return {};
+                        return permission;
+                    }
+                }
             });
 
             modalInstance.refresh = function() {
@@ -46,7 +53,7 @@
 
     <div class="row">
         <div class="col-sm-10"></div>
-        <button class="col-sm-2 btn btn-default" ng-click="openNewModal()">New Permission</button>
+        <button class="col-sm-2 btn btn-default" ng-click="openNewEditModal()">New Permission</button>
     </div>
 
     <br />
@@ -63,11 +70,14 @@
                 <td>{{permission.Id}}</td>
                 <td>{{permission.Name}}</td>
                 <td>{{permission.Description}}</td>
-                <td><i class="fa fa-1-4x fa-trash" ng-click="delete(permission)"></i></td>
+                <td>
+                    <i class="fa fa-1-4x fa-pencil" ng-click="openNewEditModal(permission)"></i>
+                    <i class="fa fa-1-4x fa-trash" ng-click="delete(permission)"></i>
+                </td>
             </tr>
         </table>
     </div>
 
-    @modals.newPermission()
+    @modals.newEditPermission()
 </div>
 }

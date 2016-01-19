@@ -1,0 +1,65 @@
+@()
+
+<script type="text/javascript">
+var app = angular.module('DuxApp');
+
+app.controller("newEditPermissionModalCtrl", function($scope, $http, $modalInstance, Permission) {
+    $scope.permissionId = Permission.Id;
+    $scope.permissionName = Permission.Name;
+    $scope.permissionDescription = Permission.Description;
+    $scope.errors = {};
+
+
+    $scope.ok = function () {
+        if($scope.permissionName == ''){
+            $scope.errors.permissionName = true;
+            return;
+        }
+
+        var url = '/view-api/new-permission';
+        if($scope.permissionId) {
+            url = '/view-api/edit-permission';
+        }
+
+        var id = $scope.permissionId;
+        if(!id) {
+            id = -1;
+        }
+
+        $http.post(url, {
+            Id: id,
+            Name: $scope.permissionName,
+            Description: $scope.permissionDescription
+        }).then( function successCallback(response) {
+            $modalInstance.refresh();
+            $modalInstance.close();
+        });
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+});
+</script>
+
+
+<script type="text/ng-template" id="newEditPermissionModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{ permissionId ? 'Editing permission ' + permissionId : 'New Permission' }}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group {{ errors.permissionName ? 'has-error' : '' }}">
+            <label class="control-label" for="permissionName">Name</label>
+            <input type="text" class="form-control" id="permissionName" ng-model="permissionName" tooltip-trigger="focus">
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="permissionDescription">Description</label>
+                <textarea type="text" class="form-control" rows="3" id="permissionDescription" ng-model="permissionDescription" tooltip-trigger="focus">
+                </textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
