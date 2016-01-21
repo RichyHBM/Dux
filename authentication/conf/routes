@@ -14,6 +14,7 @@ GET     /users                            controllers.AuthenticationViews.users
 
 POST    /view-api/get-logged-in-users     controllers.AuthenticationAPIv1.listAllLoggedIn
 POST    /view-api/delete-session          controllers.AuthenticationAPIv1.removeSession
+POST    /view-api/log-in                  controllers.AuthenticationAPIv1.logIn
 
 POST    /view-api/get-all-users           controllers.UserController.getAllUsers
 POST    /view-api/new-user                controllers.UserController.newUser

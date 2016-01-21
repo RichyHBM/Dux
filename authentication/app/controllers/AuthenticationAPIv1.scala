@@ -41,4 +41,24 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
       case _ => BadRequest
     }
   }
+
+  def logIn = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseLogIn(request) { logIn => {
+        Users.getFromEmail(logIn.Email).map {
+          case Some(u) => {
+            Passwords.isExpectedPassword(logIn.Password, u.Salt, u.Password) match {
+              case true => {
+                val userSession = new UserSession(u.Id, u.Name, u.Email, new Date(), new Date(), logIn.Service)
+                val session = authCache.createSession(userSession)
+
+                Ok.withCookies(Cookie("Session", session))
+              }
+              case false => BadRequest("Invalid password")
+            }
+          }
+          case None => BadRequest("User not found")
+        }
+      }
+    }
+  }
 }

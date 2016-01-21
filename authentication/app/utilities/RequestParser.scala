@@ -1,6 +1,6 @@
 package utilities
 
-import models.NewUser
+import models.{LogIn, NewUser}
 import models.view._
 import play.api._
 import play.api.data.validation.ValidationError
@@ -68,6 +68,18 @@ object RequestParser {
         }
       }, viewPermission => {
         block(viewPermission)
+      }
+    )
+  }
+
+  def parseLogIn(request: Request[JsValue])(block: (LogIn) => Future[Result] ):Future[Result] = {
+    request.body.validate[LogIn].fold(
+      errors => {
+        Future {
+          BadRequest(JsError.toJson(errors))
+        }
+      }, logIn => {
+        block(logIn)
       }
     )
   }

@@ -21,7 +21,7 @@ object NewUser {
       (JsPath \ "Confirmation").read[String]
     )(NewUser.apply _)
 
-  implicit val userSessionWrites: Writes[NewUser] = (
+  implicit val newUserWrites: Writes[NewUser] = (
       (JsPath \ "Name").write[String] and
       (JsPath \ "Email").write[String] and
       (JsPath \ "Password").write[String] and
