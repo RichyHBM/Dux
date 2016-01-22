@@ -110,6 +110,24 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.getAllPermissionIdsFromAppId(1).map(r => r must not contain(3))
     }
 
+    "List all permissions for apps" in new WithApplication(Statics.fakeApp){
+      Apps.add(app1).map(r => r must equalTo(1))
+      Apps.add(app2).map(r => r must equalTo(1))
+      Apps.add(app3).map(r => r must equalTo(1))
+
+      Permissions.add(permission1).map(r => r must equalTo(1))
+      Permissions.add(permission2).map(r => r must equalTo(1))
+      Permissions.add(permission3).map(r => r must equalTo(1))
+
+      AppPermissions.add(1, 1).map(r => r must equalTo(1))
+      AppPermissions.add(2, 2).map(r => r must equalTo(1))
+      AppPermissions.add(3, 3).map(r => r must equalTo(1))
+
+      AppPermissions.getAllPermissionIdsFromAppIds(List(1, 2)).map(r => r must contain(1))
+      AppPermissions.getAllPermissionIdsFromAppIds(List(1, 2)).map(r => r must contain(2))
+      AppPermissions.getAllPermissionIdsFromAppIds(List(1, 2)).map(r => r must not contain(3))
+    }
+
     "List all apps with permission" in new WithApplication(Statics.fakeApp){
       Apps.add(app1).map(r => r must equalTo(1))
       Apps.add(app2).map(r => r must equalTo(1))
@@ -127,6 +145,24 @@ class AppPermissionDaoSpec extends Specification {
       AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must contain(1))
       AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must contain(2))
       AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must not contain(3))
+    }
+
+    "List all apps with permissions" in new WithApplication(Statics.fakeApp){
+      Apps.add(app1).map(r => r must equalTo(1))
+      Apps.add(app2).map(r => r must equalTo(1))
+      Apps.add(app3).map(r => r must equalTo(1))
+
+      Permissions.add(permission1).map(r => r must equalTo(1))
+      Permissions.add(permission2).map(r => r must equalTo(1))
+      Permissions.add(permission3).map(r => r must equalTo(1))
+
+      AppPermissions.add(1, 1).map(r => r must equalTo(1))
+      AppPermissions.add(2, 2).map(r => r must equalTo(1))
+      AppPermissions.add(3, 3).map(r => r must equalTo(1))
+
+      AppPermissions.getAllAppIdsFromPermissionIds(List(1, 2)).map(r => r must contain(1))
+      AppPermissions.getAllAppIdsFromPermissionIds(List(1, 2)).map(r => r must contain(2))
+      AppPermissions.getAllAppIdsFromPermissionIds(List(1, 2)).map(r => r must not contain(3))
     }
 
     "List all" in new WithApplication(Statics.fakeApp){

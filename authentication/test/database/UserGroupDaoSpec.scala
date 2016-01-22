@@ -20,6 +20,7 @@ class UserGroupDaoSpec extends Specification {
 
   def group1 = new Group("Group1", "Group 1 Description")
   def group2 = new Group("Group2", "Group 2 Description")
+  def group3 = new Group("Group3", "Group 3 Description")
 
   "UserGroupDaoSpec" should {
     "Add user group" in new WithApplication(Statics.fakeApp){
@@ -106,6 +107,24 @@ class UserGroupDaoSpec extends Specification {
       UserGroups.getAllUserIdsFromGroupId(1).map(r => r must not contain(3))
     }
 
+    "List all users in groups" in new WithApplication(Statics.fakeApp){
+      Users.add(user1).map(r => r must equalTo(1))
+      Users.add(user2).map(r => r must equalTo(1))
+      Users.add(user3).map(r => r must equalTo(1))
+
+      Groups.add(group1).map(r => r must equalTo(1))
+      Groups.add(group2).map(r => r must equalTo(1))
+      Groups.add(group3).map(r => r must equalTo(1))
+
+      UserGroups.add(1, 1).map(r => r must equalTo(1))
+      UserGroups.add(2, 2).map(r => r must equalTo(1))
+      UserGroups.add(3, 3).map(r => r must equalTo(1))
+
+      UserGroups.getAllUserIdsFromGroupIds(List(1, 2)).map(r => r must contain(1))
+      UserGroups.getAllUserIdsFromGroupIds(List(1, 2)).map(r => r must contain(2))
+      UserGroups.getAllUserIdsFromGroupIds(List(1, 2)).map(r => r must not contain(3))
+    }
+
     "List all groups for user" in new WithApplication(Statics.fakeApp){
       Users.add(user1).map(r => r must equalTo(1))
       Users.add(user2).map(r => r must equalTo(1))
@@ -120,7 +139,25 @@ class UserGroupDaoSpec extends Specification {
 
       UserGroups.getAllGroupIdsForUserId(2).map(r => r must contain(1))
       UserGroups.getAllGroupIdsForUserId(2).map(r => r must contain(2))
-      UserGroups.getAllGroupIdsForUserId(1).map(r => r must not contain(2))
+      UserGroups.getAllGroupIdsForUserId(1).map(r => r must not contain(3))
+    }
+
+    "List all groups for user" in new WithApplication(Statics.fakeApp){
+      Users.add(user1).map(r => r must equalTo(1))
+      Users.add(user2).map(r => r must equalTo(1))
+      Users.add(user3).map(r => r must equalTo(1))
+
+      Groups.add(group1).map(r => r must equalTo(1))
+      Groups.add(group2).map(r => r must equalTo(1))
+      Groups.add(group3).map(r => r must equalTo(1))
+
+      UserGroups.add(1, 1).map(r => r must equalTo(1))
+      UserGroups.add(2, 2).map(r => r must equalTo(1))
+      UserGroups.add(3, 3).map(r => r must equalTo(1))
+
+      UserGroups.getAllGroupIdsForUserIds(List(1, 2)).map(r => r must contain(1))
+      UserGroups.getAllGroupIdsForUserIds(List(1, 2)).map(r => r must contain(2))
+      UserGroups.getAllGroupIdsForUserIds(List(1, 2)).map(r => r must not contain(3))
     }
 
     "List all user groups" in new WithApplication(Statics.fakeApp){

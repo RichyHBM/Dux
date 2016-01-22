@@ -80,7 +80,7 @@ object Users {
   }
 
   def get(ids: List[Long]): Future[Seq[User]] = {
-    dbConfig.db.run(users.withFilter(u => ids.contains( u.Id )).result)
+    dbConfig.db.run(users.filter(_.Id.inSet(ids)).result)
   }
 
   def listAll(): Future[Seq[User]] = {

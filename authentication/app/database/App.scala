@@ -51,7 +51,7 @@ object Apps {
   }
 
   def get(ids: List[Long]): Future[Seq[App]] = {
-    dbConfig.db.run(apps.withFilter(a => ids.contains( a.Id )).result)
+    dbConfig.db.run(apps.filter(_.Id.inSet(ids)).result)
   }
 
   def listAll(): Future[Seq[App]] = {

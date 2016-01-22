@@ -51,7 +51,7 @@ object Permissions {
   }
 
   def get(ids: List[Long]): Future[Seq[Permission]] = {
-    dbConfig.db.run(permissions.withFilter(p => ids.contains( p.Id )).result)
+    dbConfig.db.run(permissions.filter(_.Id.inSet(ids)).result)
   }
 
   def listAll(): Future[Seq[Permission]] = {
