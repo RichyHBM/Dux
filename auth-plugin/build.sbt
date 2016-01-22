@@ -2,11 +2,11 @@ name := """auth-plugin"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val common = RootProject(file("../common"))
-
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val authPlugin = (project in file(".")).enablePlugins(PlayScala)
     .aggregate(common)
     .dependsOn(common % "test->test;compile->compile")
+
+lazy val common = RootProject(file("../common"))
 
 scalaVersion := "2.11.6"
 

@@ -2,13 +2,13 @@ name := """leaderboards"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val common = RootProject(file("../common"))
-
-lazy val auth = RootProject(file("../auth-plugin"))
-
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
     .aggregate(auth, common)
     .dependsOn(auth % "test->test;compile->compile", common % "test->test;compile->compile")
+
+lazy val common = RootProject(file("../common"))
+
+lazy val auth = RootProject(file("../auth-plugin"))
 
 lazy val setup = taskKey[Unit]("Setup dependencies")
 
