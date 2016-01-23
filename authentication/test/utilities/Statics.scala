@@ -16,8 +16,10 @@ object Statics {
 
   def WithFreshDatabase[T](block: => T) = {
     val dbApi = Play.current.injector.instanceOf[DBApi]
-    Evolutions.cleanupEvolutions(dbApi.database("default"))
-    Evolutions.applyEvolutions(dbApi.database("default"))
+    for(db <- dbApi.databases()) {
+      Evolutions.cleanupEvolutions(db)
+      Evolutions.applyEvolutions(db)
+    }
     block
   }
 
