@@ -5,6 +5,8 @@ import org.specs2.runner._
 import org.junit.runner._
 import play.api.test._
 import utilities._
+import scala.concurrent.duration._
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @RunWith(classOf[JUnitRunner])
@@ -19,169 +21,178 @@ class AppPermissionDaoSpec extends Specification {
   def permission3 = new Permission("Permission3", "Permission 3 Description")
 
   "AppPermissionDaoSpec" should {
-    "Add group permission" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Apps.add(app2).map(r => r must equalTo(1))
-      Apps.add(app3).map(r => r must equalTo(1))
+    "Add group permission" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
 
-      Permissions.add(permission1).map(r => r must equalTo(1))
-      Permissions.add(permission2).map(r => r must equalTo(1))
-      Permissions.add(permission3).map(r => r must equalTo(1))
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.add(1, 2).map(r => r must equalTo(1))
-      AppPermissions.add(2, 1).map(r => r must equalTo(1))
-      AppPermissions.add(2, 3).map(r => r must equalTo(1))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 3), 2.seconds) must equalTo(1)
     }
 
-    "Not add invalid" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Permissions.add(permission1).map(r => r must equalTo(1))
+    "Not add invalid" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 100).map(r => r must equalTo(0))
-      AppPermissions.add(100, 1).map(r => r must equalTo(0))
+      Await.result(AppPermissions.add(1, 100), 2.seconds) must equalTo(0)
+      Await.result(AppPermissions.add(100, 1), 2.seconds) must equalTo(0)
     }
 
-    "Not add duplicates" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Permissions.add(permission1).map(r => r must equalTo(1))
+    "Not add duplicates" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.add(1, 1).map(r => r must equalTo(0))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      try {
+        Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(0)
+        false must equalTo(true)
+      } catch {
+        case _: Exception => true must equalTo(true)
+      }
     }
 
-    "Delete app permissions" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Permissions.add(permission1).map(r => r must equalTo(1))
+    "Delete app permissions" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.delete(1).map(r => r must equalTo(1))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.delete(1), 2.seconds) must equalTo(1)
     }
 
-    "Delete by app" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Apps.add(app2).map(r => r must equalTo(1))
-      Apps.add(app3).map(r => r must equalTo(1))
+    "Delete by app" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
 
-      Permissions.add(permission1).map(r => r must equalTo(1))
-      Permissions.add(permission2).map(r => r must equalTo(1))
-      Permissions.add(permission3).map(r => r must equalTo(1))
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.add(1, 2).map(r => r must equalTo(1))
-      AppPermissions.add(2, 1).map(r => r must equalTo(1))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 1), 2.seconds) must equalTo(1)
 
-      AppPermissions.deleteAllFromAppId(1).map(r => r must equalTo(2))
+      Await.result(AppPermissions.deleteAllFromAppId(1), 2.seconds) must equalTo(2)
     }
 
-    "Delete by permission" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Apps.add(app2).map(r => r must equalTo(1))
-      Apps.add(app3).map(r => r must equalTo(1))
+    "Delete by permission" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
 
-      Permissions.add(permission1).map(r => r must equalTo(1))
-      Permissions.add(permission2).map(r => r must equalTo(1))
-      Permissions.add(permission3).map(r => r must equalTo(1))
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.add(1, 2).map(r => r must equalTo(1))
-      AppPermissions.add(2, 1).map(r => r must equalTo(1))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 1), 2.seconds) must equalTo(1)
 
-      AppPermissions.deleteAllFromPermissionId(1).map(r => r must equalTo(2))
+      Await.result(AppPermissions.deleteAllFromPermissionId(1), 2.seconds) must equalTo(2)
     }
 
-    "List all permissions for app" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Apps.add(app2).map(r => r must equalTo(1))
-      Apps.add(app3).map(r => r must equalTo(1))
+    "List all permissions for app" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
 
-      Permissions.add(permission1).map(r => r must equalTo(1))
-      Permissions.add(permission2).map(r => r must equalTo(1))
-      Permissions.add(permission3).map(r => r must equalTo(1))
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.add(1, 2).map(r => r must equalTo(1))
-      AppPermissions.add(2, 1).map(r => r must equalTo(1))
-      AppPermissions.add(2, 3).map(r => r must equalTo(1))
-      AppPermissions.add(3, 3).map(r => r must equalTo(1))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 3), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(3, 3), 2.seconds) must equalTo(1)
 
-      AppPermissions.getAllPermissionIdsFromAppId(1).map(r => r must contain(1))
-      AppPermissions.getAllPermissionIdsFromAppId(1).map(r => r must contain(2))
-      AppPermissions.getAllPermissionIdsFromAppId(1).map(r => r must not contain(3))
+      val r = Await.result(AppPermissions.getAllPermissionIdsFromAppId(1), 2.seconds)
+      r must contain(1)
+      r must contain(2)
+      r must not contain(3)
     }
 
-    "List all permissions for apps" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Apps.add(app2).map(r => r must equalTo(1))
-      Apps.add(app3).map(r => r must equalTo(1))
+    "List all permissions for apps" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
 
-      Permissions.add(permission1).map(r => r must equalTo(1))
-      Permissions.add(permission2).map(r => r must equalTo(1))
-      Permissions.add(permission3).map(r => r must equalTo(1))
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.add(2, 2).map(r => r must equalTo(1))
-      AppPermissions.add(3, 3).map(r => r must equalTo(1))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 2), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(3, 3), 2.seconds) must equalTo(1)
 
-      AppPermissions.getAllPermissionIdsFromAppIds(List(1, 2)).map(r => r must contain(1))
-      AppPermissions.getAllPermissionIdsFromAppIds(List(1, 2)).map(r => r must contain(2))
-      AppPermissions.getAllPermissionIdsFromAppIds(List(1, 2)).map(r => r must not contain(3))
+      val r = Await.result(AppPermissions.getAllPermissionIdsFromAppIds(List(1, 2)), 2.seconds)
+      r must contain(1)
+      r must contain(2)
+      r must not contain(3)
     }
 
-    "List all apps with permission" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Apps.add(app2).map(r => r must equalTo(1))
-      Apps.add(app3).map(r => r must equalTo(1))
+    "List all apps with permission" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
 
-      Permissions.add(permission1).map(r => r must equalTo(1))
-      Permissions.add(permission2).map(r => r must equalTo(1))
-      Permissions.add(permission3).map(r => r must equalTo(1))
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.add(1, 2).map(r => r must equalTo(1))
-      AppPermissions.add(2, 1).map(r => r must equalTo(1))
-      AppPermissions.add(2, 3).map(r => r must equalTo(1))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 3), 2.seconds) must equalTo(1)
 
-      AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must contain(1))
-      AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must contain(2))
-      AppPermissions.getAllAppIdsFromPermissionId(1).map(r => r must not contain(3))
+      val r = Await.result(AppPermissions.getAllAppIdsFromPermissionId(1), 2.seconds)
+      r must contain(1)
+      r must contain(2)
+      r must not contain(3)
     }
 
-    "List all apps with permissions" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Apps.add(app2).map(r => r must equalTo(1))
-      Apps.add(app3).map(r => r must equalTo(1))
+    "List all apps with permissions" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
 
-      Permissions.add(permission1).map(r => r must equalTo(1))
-      Permissions.add(permission2).map(r => r must equalTo(1))
-      Permissions.add(permission3).map(r => r must equalTo(1))
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.add(2, 2).map(r => r must equalTo(1))
-      AppPermissions.add(3, 3).map(r => r must equalTo(1))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(2, 2), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(3, 3), 2.seconds) must equalTo(1)
 
-      AppPermissions.getAllAppIdsFromPermissionIds(List(1, 2)).map(r => r must contain(1))
-      AppPermissions.getAllAppIdsFromPermissionIds(List(1, 2)).map(r => r must contain(2))
-      AppPermissions.getAllAppIdsFromPermissionIds(List(1, 2)).map(r => r must not contain(3))
+      val r = Await.result(AppPermissions.getAllAppIdsFromPermissionIds(List(1, 2)), 2.seconds)
+      r must contain(1)
+      r must contain(2)
+      r must not contain(3)
     }
 
-    "List all" in new WithApplication(Statics.fakeApp){
-      Apps.add(app1).map(r => r must equalTo(1))
-      Apps.add(app2).map(r => r must equalTo(1))
-      Apps.add(app3).map(r => r must equalTo(1))
+    "List all" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
 
-      Permissions.add(permission1).map(r => r must equalTo(1))
-      Permissions.add(permission2).map(r => r must equalTo(1))
-      Permissions.add(permission3).map(r => r must equalTo(1))
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
 
-      AppPermissions.add(1, 1).map(r => r must equalTo(1))
-      AppPermissions.listAll().map(r => r must equalTo(1))
-      AppPermissions.add(1, 2).map(r => r must equalTo(1))
-      AppPermissions.listAll().map(r => r must equalTo(2))
-      AppPermissions.add(2, 1).map(r => r must equalTo(1))
-      AppPermissions.listAll().map(r => r must equalTo(3))
-      AppPermissions.add(2, 3).map(r => r must equalTo(1))
-      AppPermissions.listAll().map(r => r must equalTo(4))
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.listAll(), 2.seconds).length must equalTo(1)
+      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.listAll(), 2.seconds).length must equalTo(2)
+      Await.result(AppPermissions.add(2, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.listAll(), 2.seconds).length must equalTo(3)
+      Await.result(AppPermissions.add(2, 3), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.listAll(), 2.seconds).length must equalTo(4)
     }
   }
 }

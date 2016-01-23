@@ -10,40 +10,38 @@ import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
 import org.specs2.specification.BeforeEach
+import play.api.Play
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import play.api.test._
 import play.api.test.Helpers._
+import utilities.Statics
 
 @RunWith(classOf[JUnitRunner])
 class AuthenticationCacheSpec extends Specification with BeforeEach{
 
-  val injector = new GuiceApplicationBuilder()
-    .bindings(new AuthenticationModule)
-    .injector
-
   val user = new UserSession(0, "test", "test@test", new Date(), new Date(), "test")
 
   def before = {
-    val pool = new GuiceApplicationBuilder().injector.instanceOf[Pool]
+    val pool = Play.current.injector.instanceOf[Pool]
     pool.withJedisClient(c => c.flushAll())
   }
 
   "Authentication Cache" should {
-    "Empty cache should not return users" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Empty cache should not return users" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
     }
 
-    "Contain a user after adding one" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Contain a user after adding one" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
       cache.createSession(user) mustNotEqual ""
       cache.getAllLoggedIn().length must equalTo(1)
     }
 
-    "Get a user session from the session key" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Get a user session from the session key" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
       val session = cache.createSession(user)
       session mustNotEqual ""
@@ -56,8 +54,8 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       }
     }
 
-    "Get a user session from the user email" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Get a user session from the user email" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
       cache.createSession(user) mustNotEqual ""
       cache.getAllLoggedIn().length must equalTo(1)
@@ -69,20 +67,20 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       }
     }
 
-    "Do nothing when getting a user session from the session key" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Do nothing when getting a user session from the session key" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       val u = cache.getSession("abc")
       u mustEqual None
     }
 
-    "Do nothing when getting a user session from the user email" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Do nothing when getting a user session from the user email" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       val u = cache.getSessionFromEmail("abc")
       u mustEqual None
     }
 
-    "Renew a user session" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Renew a user session" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
       val session = cache.createSession(user)
       session mustNotEqual ""
@@ -98,8 +96,8 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       }
     }
 
-    "Renew a user session from email" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Renew a user session from email" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
       val session = cache.createSession(user)
       session mustNotEqual ""
@@ -115,15 +113,15 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       }
     }
 
-    "Renew a user session from email should do nothing with invalid email" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Renew a user session from email should do nothing with invalid email" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
       cache.renewSessionFromEmail(user.email, user)
       cache.getAllLoggedIn().length must equalTo(0)
     }
 
-    "Remove user session from the session key" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Remove user session from the session key" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
       val session = cache.createSession(user)
       session mustNotEqual ""
@@ -132,8 +130,8 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       cache.getAllLoggedIn().length must equalTo(0)
     }
 
-    "Remove user session from the user email" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Remove user session from the user email" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.getAllLoggedIn().length must equalTo(0)
       cache.createSession(user) mustNotEqual ""
       cache.getAllLoggedIn().length must equalTo(1)
@@ -141,29 +139,29 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       cache.getAllLoggedIn().length must equalTo(0)
     }
 
-    "Do nothing removing invalid user session from the session key" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Do nothing removing invalid user session from the session key" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.createSession(user)
       cache.getAllLoggedIn().length must equalTo(1)
       cache.removeSession("abc")
       cache.getAllLoggedIn().length must equalTo(1)
     }
 
-    "Do nothing removing invalid  user session from the user email" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Do nothing removing invalid  user session from the user email" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.createSession(user)
       cache.getAllLoggedIn().length must equalTo(1)
       cache.removeSessionWithEmail("abc")
       cache.getAllLoggedIn().length must equalTo(1)
     }
 
-    "Add email token" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Add email token" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       cache.createToken(user.email) mustNotEqual ""
     }
 
-    "Get email from token" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Get email from token" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       val token = cache.createToken(user.email)
       token mustNotEqual ""
       cache.getEmailFromToken(token) match {
@@ -172,8 +170,8 @@ class AuthenticationCacheSpec extends Specification with BeforeEach{
       }
     }
 
-    "Remove email from token" in new WithApplication{
-      val cache = injector.instanceOf[AuthenticationCache]
+    "Remove email from token" in Statics.WithFreshDatabase {
+      val cache = Play.current.injector.instanceOf[AuthenticationCache]
       val token = cache.createToken(user.email)
       token mustNotEqual ""
       cache.removeEmailFromToken(token)

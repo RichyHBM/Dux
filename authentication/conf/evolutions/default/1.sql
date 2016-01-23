@@ -55,7 +55,7 @@ CREATE TABLE GroupsPermissions (
   UNIQUE (GroupId, PermissionId)
 );
 
-CREATE TABLE PermissionsApps (
+CREATE TABLE AppsPermissions (
   Id BIGINT NOT NULL AUTO_INCREMENT,
   PermissionId BIGINT NOT NULL ,
   AppId BIGINT NOT NULL ,
@@ -72,4 +72,4 @@ DROP TABLE Apps;
 
 DROP TABLE UsersGroups;
 DROP TABLE GroupsPermissions;
-DROP TABLE PermissionsApps;
+DROP TABLE AppsPermissions;

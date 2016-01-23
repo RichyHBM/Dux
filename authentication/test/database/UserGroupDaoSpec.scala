@@ -3,11 +3,10 @@ package database
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
-import java.sql.Timestamp
-import java.util.Date
 import utilities._
-import play.api.test._
-import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 @RunWith(classOf[JUnitRunner])
 class UserGroupDaoSpec extends Specification {
@@ -23,158 +22,173 @@ class UserGroupDaoSpec extends Specification {
   def group3 = new Group("Group3", "Group 3 Description")
 
   "UserGroupDaoSpec" should {
-    "Add user group" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Users.add(user3).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
-      Groups.add(group2).map(r => r must equalTo(1))
+    "Add user group" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.add(2, 1).map(r => r must equalTo(1))
-      UserGroups.add(2, 2).map(r => r must equalTo(1))
-      UserGroups.add(3, 2).map(r => r must equalTo(1))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(3, 2), 2.seconds) must equalTo(1)
     }
 
-    "Not add invalid" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
+    "Not add invalid" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
 
-      UserGroups.add(100, 1).map(r => r must equalTo(0))
-      UserGroups.add(1, 200).map(r => r must equalTo(0))
+      Await.result(UserGroups.add(100, 1), 2.seconds) must equalTo(0)
+      Await.result(UserGroups.add(1, 200), 2.seconds) must equalTo(0)
     }
 
-    "Not add duplicates" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
-
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.add(1, 1).map(r => r must equalTo(0))
+    "Not add duplicates" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      try {
+        Await.result(UserGroups.add(1, 1), 2.seconds)
+        false must equalTo(true)
+      } catch {
+        case _: Exception => true must equalTo(true)
+      }
     }
 
-    "Delete user groups" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
+    "Delete user groups" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.delete(1).map(r => r must equalTo(1))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.delete(1), 2.seconds) must equalTo(1)
     }
 
-    "Delete user groups by user" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Users.add(user3).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
-      Groups.add(group2).map(r => r must equalTo(1))
+    "Delete user groups by user" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.add(1, 2).map(r => r must equalTo(1))
-      UserGroups.add(2, 1).map(r => r must equalTo(1))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(1, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
 
-      UserGroups.deleteAllFromUserId(1).map(r => r must equalTo(2))
+      Await.result(UserGroups.deleteAllFromUserId(1), 2.seconds) must equalTo(2)
     }
 
-    "Delete user groups by group" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Users.add(user3).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
-      Groups.add(group2).map(r => r must equalTo(1))
+    "Delete user groups by group" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.add(1, 2).map(r => r must equalTo(1))
-      UserGroups.add(2, 1).map(r => r must equalTo(1))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(1, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
 
-      UserGroups.deleteAllFromGroupId(1).map(r => r must equalTo(2))
-      UserGroups.deleteAllFromGroupId(2).map(r => r must equalTo(1))
+      Await.result(UserGroups.deleteAllFromGroupId(1), 2.seconds) must equalTo(2)
+      Await.result(UserGroups.deleteAllFromGroupId(2), 2.seconds) must equalTo(1)
     }
 
-    "List all users in group" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Users.add(user3).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
-      Groups.add(group2).map(r => r must equalTo(1))
+    "List all users in group" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.add(2, 1).map(r => r must equalTo(1))
-      UserGroups.add(2, 2).map(r => r must equalTo(1))
-      UserGroups.add(3, 2).map(r => r must equalTo(1))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(3, 2), 2.seconds) must equalTo(1)
 
-      UserGroups.getAllUserIdsFromGroupId(1).map(r => r must contain(1))
-      UserGroups.getAllUserIdsFromGroupId(1).map(r => r must contain(2))
-      UserGroups.getAllUserIdsFromGroupId(1).map(r => r must not contain(3))
+      val values = Await.result(UserGroups.getAllUserIdsFromGroupId(1), 2.seconds).toList
+
+      values must contain(1)
+      values must contain(2)
+      values must not contain(3)
     }
 
-    "List all users in groups" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Users.add(user3).map(r => r must equalTo(1))
+    "List all users in groups" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
 
-      Groups.add(group1).map(r => r must equalTo(1))
-      Groups.add(group2).map(r => r must equalTo(1))
-      Groups.add(group3).map(r => r must equalTo(1))
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group3), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.add(2, 2).map(r => r must equalTo(1))
-      UserGroups.add(3, 3).map(r => r must equalTo(1))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(3, 3), 2.seconds) must equalTo(1)
 
-      UserGroups.getAllUserIdsFromGroupIds(List(1, 2)).map(r => r must contain(1))
-      UserGroups.getAllUserIdsFromGroupIds(List(1, 2)).map(r => r must contain(2))
-      UserGroups.getAllUserIdsFromGroupIds(List(1, 2)).map(r => r must not contain(3))
+      val values = Await.result(UserGroups.getAllUserIdsFromGroupIds(List(1, 2)), 2.seconds).toList
+
+      values must contain(1)
+      values must contain(2)
+      values must not contain(3)
     }
 
-    "List all groups for user" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Users.add(user3).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
-      Groups.add(group2).map(r => r must equalTo(1))
+    "List all groups for user" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.add(2, 1).map(r => r must equalTo(1))
-      UserGroups.add(2, 2).map(r => r must equalTo(1))
-      UserGroups.add(3, 2).map(r => r must equalTo(1))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(3, 2), 2.seconds) must equalTo(1)
 
-      UserGroups.getAllGroupIdsForUserId(2).map(r => r must contain(1))
-      UserGroups.getAllGroupIdsForUserId(2).map(r => r must contain(2))
-      UserGroups.getAllGroupIdsForUserId(1).map(r => r must not contain(3))
+      val values = Await.result(UserGroups.getAllGroupIdsForUserId(2), 2.seconds).toList
+
+      values must contain(1)
+      values must contain(2)
+      values must not contain(3)
     }
 
-    "List all groups for user" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Users.add(user3).map(r => r must equalTo(1))
+    "List all groups for user" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
 
-      Groups.add(group1).map(r => r must equalTo(1))
-      Groups.add(group2).map(r => r must equalTo(1))
-      Groups.add(group3).map(r => r must equalTo(1))
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group3), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.add(2, 2).map(r => r must equalTo(1))
-      UserGroups.add(3, 3).map(r => r must equalTo(1))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(3, 3), 2.seconds) must equalTo(1)
 
-      UserGroups.getAllGroupIdsForUserIds(List(1, 2)).map(r => r must contain(1))
-      UserGroups.getAllGroupIdsForUserIds(List(1, 2)).map(r => r must contain(2))
-      UserGroups.getAllGroupIdsForUserIds(List(1, 2)).map(r => r must not contain(3))
+      val values = Await.result(UserGroups.getAllGroupIdsForUserIds(List(1, 2)), 2.seconds).toList
+
+      values must contain(1)
+      values must contain(2)
+      values must not contain(3)
     }
 
-    "List all user groups" in new WithApplication(Statics.fakeApp){
-      Users.add(user1).map(r => r must equalTo(1))
-      Users.add(user2).map(r => r must equalTo(1))
-      Users.add(user3).map(r => r must equalTo(1))
-      Groups.add(group1).map(r => r must equalTo(1))
-      Groups.add(group2).map(r => r must equalTo(1))
+    "List all user groups" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
 
-      UserGroups.add(1, 1).map(r => r must equalTo(1))
-      UserGroups.listAll.map(r => r.length must equalTo(1))
-      UserGroups.add(2, 1).map(r => r must equalTo(1))
-      UserGroups.listAll.map(r => r.length must equalTo(2))
-      UserGroups.add(2, 2).map(r => r must equalTo(1))
-      UserGroups.listAll.map(r => r.length must equalTo(3))
-      UserGroups.add(3, 2).map(r => r must equalTo(1))
-      UserGroups.listAll.map(r => r.length must equalTo(4))
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.listAll, 2.seconds).length must equalTo(1)
+
+      Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.listAll, 2.seconds).length must equalTo(2)
+
+      Await.result(UserGroups.add(2, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.listAll, 2.seconds).length must equalTo(3)
+
+      Await.result(UserGroups.add(3, 2), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.listAll, 2.seconds).length must equalTo(4)
     }
   }
 }
