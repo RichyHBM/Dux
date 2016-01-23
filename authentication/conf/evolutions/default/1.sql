@@ -41,24 +41,24 @@ CREATE TABLE Apps (
 
 CREATE TABLE UsersGroups (
   Id BIGINT NOT NULL AUTO_INCREMENT,
-  UserId BIGINT NOT NULL ,
-  GroupId BIGINT NOT NULL ,
+  UserId BIGINT NOT NULL REFERENCES Users (Id),
+  GroupId BIGINT NOT NULL REFERENCES Groups (Id),
   PRIMARY KEY (Id),
   UNIQUE (UserId, GroupId)
 );
 
 CREATE TABLE GroupsPermissions (
   Id BIGINT NOT NULL AUTO_INCREMENT,
-  GroupId BIGINT NOT NULL ,
-  PermissionId BIGINT NOT NULL ,
+  GroupId BIGINT NOT NULL REFERENCES Groups (Id),
+  PermissionId BIGINT NOT NULL REFERENCES Permissions (Id),
   PRIMARY KEY (Id),
   UNIQUE (GroupId, PermissionId)
 );
 
 CREATE TABLE AppsPermissions (
   Id BIGINT NOT NULL AUTO_INCREMENT,
-  PermissionId BIGINT NOT NULL ,
-  AppId BIGINT NOT NULL ,
+  PermissionId BIGINT NOT NULL REFERENCES Permissions (Id),
+  AppId BIGINT NOT NULL REFERENCES Apps (Id),
   PRIMARY KEY (Id),
   UNIQUE (PermissionId, AppId)
 );

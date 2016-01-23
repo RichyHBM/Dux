@@ -17,8 +17,8 @@ class AppPermissionTableDef(tag: Tag) extends Table[AppPermission](tag, Structur
   def PermissionId = column[Long](Structure.AppPermission.Columns.PermissionId)
 
   override def * = (Id, AppId, PermissionId) <>(AppPermission.tupled, AppPermission.unapply)
-  def app = foreignKey(Structure.Apps.Name, AppId, Apps.apps)(_.Id)
-  def permission = foreignKey(Structure.Permissions.Name, PermissionId, Permissions.permissions)(_.Id)
+  def app = foreignKey(Structure.Apps.Name + "_FK", AppId, Apps.apps)(_.Id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+  def permission = foreignKey(Structure.Permissions.Name + "_FK", PermissionId, Permissions.permissions)(_.Id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
   def appPermissionIndex = index(Structure.Apps.Name + "_" + Structure.Permissions.Name + "_IDX", (AppId, PermissionId), unique = true)
 }
 

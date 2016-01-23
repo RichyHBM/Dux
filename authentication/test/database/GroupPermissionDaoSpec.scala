@@ -41,8 +41,18 @@ class GroupPermissionDaoSpec extends Specification {
 
       Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
 
-      Await.result(GroupPermissions.add(1, 100), 2.seconds) must equalTo(0)
-      Await.result(GroupPermissions.add(100, 1), 2.seconds) must equalTo(0)
+      try {
+        Await.result(GroupPermissions.add(1, 100), 2.seconds) must equalTo(0)
+        false must equalTo(true)
+      } catch {
+        case _: Exception => true must equalTo(true)
+      }
+      try {
+        Await.result(GroupPermissions.add(100, 1), 2.seconds) must equalTo(0)
+        false must equalTo(true)
+      } catch {
+        case _: Exception => true must equalTo(true)
+      }
     }
 
     "Not add duplicates" in Statics.WithFreshDatabase {

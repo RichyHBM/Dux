@@ -39,9 +39,18 @@ class AppPermissionDaoSpec extends Specification {
     "Not add invalid" in Statics.WithFreshDatabase {
       Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
       Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
-
-      Await.result(AppPermissions.add(1, 100), 2.seconds) must equalTo(0)
-      Await.result(AppPermissions.add(100, 1), 2.seconds) must equalTo(0)
+      try {
+        Await.result(AppPermissions.add(1, 100), 2.seconds) must equalTo(0)
+        false must equalTo(true)
+      } catch {
+        case _: Exception => true must equalTo(true)
+      }
+      try {
+        Await.result(AppPermissions.add(100, 1), 2.seconds) must equalTo(0)
+        false must equalTo(true)
+      } catch {
+        case _: Exception => true must equalTo(true)
+      }
     }
 
     "Not add duplicates" in Statics.WithFreshDatabase {

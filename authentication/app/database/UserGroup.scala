@@ -17,8 +17,8 @@ class UserGroupTableDef(tag: Tag) extends Table[UserGroup](tag, Structure.UserGr
   def GroupId = column[Long](Structure.UserGroup.Columns.GroupId)
 
   override def * = (Id, UserId, GroupId) <>(UserGroup.tupled, UserGroup.unapply)
-  def user = foreignKey(Structure.Users.Name, UserId, Users.users)(_.Id)
-  def group = foreignKey(Structure.Groups.Name, GroupId, Groups.groups)(_.Id)
+  def user = foreignKey(Structure.Users.Name + "_FK", UserId, Users.users)(_.Id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+  def group = foreignKey(Structure.Groups.Name + "_FK", GroupId, Groups.groups)(_.Id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
   def userGroupIndex = index(Structure.Users.Name + "_" + Structure.Groups.Name + "_IDX", (UserId, GroupId), unique = true)
 }
 

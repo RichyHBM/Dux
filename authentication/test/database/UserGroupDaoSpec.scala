@@ -40,8 +40,18 @@ class UserGroupDaoSpec extends Specification {
       Await.result(Users.add(user2), 2.seconds) must equalTo(1)
       Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
 
-      Await.result(UserGroups.add(100, 1), 2.seconds) must equalTo(0)
-      Await.result(UserGroups.add(1, 200), 2.seconds) must equalTo(0)
+      try {
+        Await.result(UserGroups.add(100, 1), 2.seconds) must equalTo(0)
+        false must equalTo(true)
+      } catch {
+        case _: Exception => true must equalTo(true)
+      }
+      try {
+        Await.result(UserGroups.add(1, 200), 2.seconds) must equalTo(0)
+        false must equalTo(true)
+      } catch {
+        case _: Exception => true must equalTo(true)
+      }
     }
 
     "Not add duplicates" in Statics.WithFreshDatabase {

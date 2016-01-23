@@ -17,8 +17,8 @@ class GroupPermissionTableDef(tag: Tag) extends Table[GroupPermission](tag, Stru
   def PermissionId = column[Long](Structure.GroupPermission.Columns.PermissionId)
 
   override def * = (Id, GroupId, PermissionId) <>(GroupPermission.tupled, GroupPermission.unapply)
-  def group = foreignKey(Structure.Groups.Name, GroupId, Groups.groups)(_.Id)
-  def permission = foreignKey(Structure.Permissions.Name, PermissionId, Permissions.permissions)(_.Id)
+  def group = foreignKey(Structure.Groups.Name + "_FK", GroupId, Groups.groups)(_.Id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+  def permission = foreignKey(Structure.Permissions.Name + "_FK", PermissionId, Permissions.permissions)(_.Id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
   def groupPermissionIndex = index(Structure.Groups.Name + "_" + Structure.Permissions.Name + "_IDX", (GroupId, PermissionId), unique = true)
 }
 
