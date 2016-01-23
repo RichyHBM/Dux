@@ -44,19 +44,31 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
 
   def logIn = AuthenticatedAction(authType).async(parse.json) { request =>
     RequestParser.parseLogIn(request) { logIn => {
-        Users.getFromEmail(logIn.Email).map {
+        Users.getFromEmail(logIn.Email).flatMap {
           case Some(u) => {
             Passwords.isExpectedPassword(logIn.Password, u.Salt, u.Password) match {
               case true => {
-                val userSession = new UserSession(u.Id, u.Name, u.Email, new Date(), new Date(), logIn.Service)
-                val session = authCache.createSession(userSession)
-
-                Ok.withCookies(Cookie("Session", session))
+                UserGroups.getAllGroupIdsForUserId(u.Id).flatMap(groupIds => {
+                  GroupPermissions.getAllPermissionIdsFromGroupIds(groupIds).flatMap(permissionIds => {
+                    AppPermissions.getAllAppIdsFromPermissionIds(permissionIds).flatMap(appIds => {
+                      Apps.get(appIds.toList).flatMap(apps => {
+                        apps.exists(app => app.Name == logIn.Service) match {
+                          case true => {
+                            val userSession = new UserSession(u.Id, u.Name, u.Email, new Date(), new Date(), logIn.Service)
+                            val session = authCache.createSession(userSession)
+                            Future { Ok.withCookies(Cookie("Session", session)) }
+                          }
+                          case false => Future {BadRequest("User doesn't have permissions") }
+                        }
+                      })
+                    })
+                  })
+                })
               }
-              case false => BadRequest("Invalid password")
+              case false => Future { BadRequest("Invalid password") }
             }
           }
-          case None => BadRequest("User not found")
+          case None => Future { BadRequest("User not found") }
         }
       }
     }
