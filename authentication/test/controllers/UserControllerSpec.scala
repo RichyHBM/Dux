@@ -2,9 +2,9 @@ package controllers
 
 import java.util.Date
 
-import database.{Users, User}
+import database._
 import models.NewUser
-import models.view.ViewUser
+import models.view.{ViewId, ViewUser}
 import org.junit.runner.RunWith
 import org.specs2.mutable._
 import org.specs2.runner._
@@ -20,6 +20,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserControllerSpec extends Specification {
   val bytes = Array.fill[Byte](5)(0)
   val user1 = new User("Test User", "test1@test.com", bytes, bytes, "test_api_key_1")
+  val user2 = new User("Test User 2", "test2@test.com", bytes, bytes, "test_api_key_2")
+  val user3 = new User("Test User 3", "test3@test.com", bytes, bytes, "test_api_key_3")
 
   "UserControllerSpec" should {
 
@@ -43,6 +45,29 @@ class UserControllerSpec extends Specification {
       Json.fromJson[Array[ViewUser]](contentAsJson(response)).fold(
         e => 1 must equalTo(0),
         ar => ar.length must equalTo(1)
+      )
+    }
+
+    "Get all users in group" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
+
+      Await.result(Groups.add(new Group("Group1", "Group 1 Description")), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
+
+      val e = new ViewId(1)
+      println(e.toJson())
+      val response = route(FakeRequest(POST, routes.UserController.getAllUsersInGroup().url, Statics.jsonHeaders, e.toJson())).get
+      status(response) must equalTo(OK)
+      Json.fromJson[Array[ViewUser]](contentAsJson(response)).fold(
+        e => 1 must equalTo(0),
+        ar => {
+          ar.length must equalTo(2)
+          ar.head.Name must equalTo("Test User")
+          ar(1).Name must equalTo("Test User 2")
+        }
       )
     }
 

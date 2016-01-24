@@ -11,6 +11,8 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/css/font-awesome.min.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/css/paper-bootstrap.min.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/common/css/common.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/common/css/ng-tags-input.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("lib/common/css/ng-tags-input.bootstrap.min.css")">
 
         <link rel="apple-touch-icon-precomposed" sizes="57x57" href="@routes.Assets.versioned("lib/common/images/favicons/apple-touch-icon-57x57.png")" />
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="@routes.Assets.versioned("lib/common/images/favicons/apple-touch-icon-114x114.png")" />
@@ -37,11 +39,13 @@
         <script src="@routes.Assets.versioned("lib/common/js/angular-animate.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("lib/common/js/ui-bootstrap-tpls-0.14.2.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("lib/common/js/utilities.js")" type="text/javascript"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("lib/common/js/ng-tags-input.min.js")"></script>
 
         <script>
             angular.module('DuxApp', [
                 'ngAnimate',
-                'ui.bootstrap'
+                'ui.bootstrap',
+                'ngTagsInput'
             ]);
         </script>
     </head>

@@ -3,7 +3,7 @@ package controllers
 import java.util.{UUID, Date}
 import javax.inject.Inject
 
-import database.{User, Users}
+import database.{UserGroups, User, Users}
 import interfaces.IAuthenticationCache
 import models.view
 import play.api.Logger
@@ -21,6 +21,16 @@ class UserController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCac
   val authType = auth.AuthenticationType.None
 
   def cache = cacheApi
+
+  def getAllUsersInGroup = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewId(request) { viewId => {
+      UserGroups.getAllUserIdsFromGroupId(viewId.Id).flatMap( users =>
+        Users.get(users.toList).map(l => {
+          Ok(Json.toJson(l.map(u => view.ViewUser(u.Id, u.Name, u.Email, u.ApiKey, u.CreatedOn.asInstanceOf[Date], u.FailedAttempts, u.Blocked)).toList))
+        })
+      )
+    }}
+  }
 
   def getAllUsers = AuthenticatedAction(authType).async {
     Users.listAll().map(l => {
