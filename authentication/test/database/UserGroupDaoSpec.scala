@@ -35,6 +35,23 @@ class UserGroupDaoSpec extends Specification {
       Await.result(UserGroups.add(3, 2), 2.seconds) must equalTo(1)
     }
 
+    "Add user groups" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user3), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group1), 2.seconds) must equalTo(1)
+      Await.result(Groups.add(group2), 2.seconds) must equalTo(1)
+
+      val userGroups = Seq(
+        UserGroup(0, 1, 1),
+        UserGroup(0, 2, 1),
+        UserGroup(0, 2, 2),
+        UserGroup(0, 3, 2)
+      )
+
+      Await.result(UserGroups.add(userGroups), 2.seconds) must equalTo(4)
+    }
+
     "Not add invalid" in Statics.WithFreshDatabase {
       Await.result(Users.add(user1), 2.seconds) must equalTo(1)
       Await.result(Users.add(user2), 2.seconds) must equalTo(1)

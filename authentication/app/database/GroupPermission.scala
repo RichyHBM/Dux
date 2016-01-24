@@ -31,6 +31,10 @@ object GroupPermissions {
     dbConfig.db.run(groupPermissions += groupPermission)
   }
 
+  def add(groupPermissions: Seq[GroupPermission]): Future[Int] = {
+    dbConfig.db.run(this.groupPermissions ++= groupPermissions).map(r => r.get)
+  }
+
   def add(groupId: Long, permissionId: Long): Future[Int] = {
     dbConfig.db.run(groupPermissions += GroupPermission(0, groupId, permissionId))
   }

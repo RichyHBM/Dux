@@ -31,6 +31,10 @@ object AppPermissions {
     dbConfig.db.run(appPermissions += appPermission)
   }
 
+  def add(appPermissions: Seq[AppPermission]): Future[Int] = {
+    dbConfig.db.run(this.appPermissions ++= appPermissions).map(r => r.get)
+  }
+
   def add(appId: Long, permissionId: Long): Future[Int] = {
     dbConfig.db.run(appPermissions += AppPermission(0, appId, permissionId))
   }

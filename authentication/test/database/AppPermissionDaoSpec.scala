@@ -36,6 +36,25 @@ class AppPermissionDaoSpec extends Specification {
       Await.result(AppPermissions.add(2, 3), 2.seconds) must equalTo(1)
     }
 
+    "Add group permissions" in Statics.WithFreshDatabase {
+      Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app2), 2.seconds) must equalTo(1)
+      Await.result(Apps.add(app3), 2.seconds) must equalTo(1)
+
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
+
+      val appPermissions = Seq(
+        AppPermission(0, 1, 1),
+        AppPermission(0, 1, 2),
+        AppPermission(0, 2, 1),
+        AppPermission(0, 2, 3)
+      )
+
+      Await.result(AppPermissions.add(appPermissions), 2.seconds) must equalTo(4)
+    }
+
     "Not add invalid" in Statics.WithFreshDatabase {
       Await.result(Apps.add(app1), 2.seconds) must equalTo(1)
       Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
