@@ -31,6 +31,10 @@ object UserGroups {
     dbConfig.db.run(userGroups += userGroup)
   }
 
+  def add(userGroups: Seq[UserGroup]): Future[Int] = {
+    dbConfig.db.run(this.userGroups ++= userGroups).map(r => r.get)
+  }
+
   def add(userId: Long, groupId: Long): Future[Int] = {
     dbConfig.db.run(userGroups += UserGroup(0, userId, groupId))
   }

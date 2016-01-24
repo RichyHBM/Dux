@@ -46,23 +46,6 @@
                 $scope.refresh();
             }
           }
-
-          $scope.openEditGroupUsersModal = function (group) {
-            var modalInstance = $uibModal.open({
-                templateUrl: 'editGroupUsersModal.html',
-                controller: 'editGroupUsersModalCtrl',
-                resolve: {
-                    Group: function () {
-                        return group;
-                    }
-                }
-            });
-
-            modalInstance.refresh = function() {
-                $scope.refresh();
-            }
-          }
-
         });
 
 </script>
@@ -90,7 +73,6 @@
                 <td>{{group.Description}}</td>
                 <td>
                     <i class="fa fa-1-4x fa-pencil" ng-click="openNewEditModal(group)"></i>
-                    <i class="fa fa-1-4x fa-plus" ng-click="openEditGroupUsersModal(group)"></i>
                     <i class="fa fa-1-4x fa-trash" ng-click="delete(group)"></i>
                 </td>
             </tr>
@@ -98,7 +80,5 @@
     </div>
 
     @modals.newEditGroup()
-
-    @modals.editGroupUsers()
 </div>
 }

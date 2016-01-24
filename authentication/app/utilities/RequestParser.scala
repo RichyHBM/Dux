@@ -96,4 +96,16 @@ object RequestParser {
     )
   }
 
+  def parseViewIdToIds(request: Request[JsValue])(block: (ViewIdToIds) => Future[Result] ):Future[Result] = {
+    request.body.validate[ViewIdToIds].fold(
+      errors => {
+        Future {
+          BadRequest(JsError.toJson(errors))
+        }
+      }, viewIdToIds => {
+        block(viewIdToIds)
+      }
+    )
+  }
+
 }

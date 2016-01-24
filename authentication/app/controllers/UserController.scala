@@ -3,7 +3,7 @@ package controllers
 import java.util.{UUID, Date}
 import javax.inject.Inject
 
-import database.{UserGroups, User, Users}
+import database.{UserGroup, UserGroups, User, Users}
 import interfaces.IAuthenticationCache
 import models.view
 import play.api.Logger
@@ -31,6 +31,18 @@ class UserController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCac
       )
     }}
   }
+
+  def addUsersToGroup = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewIdToIds(request) { viewIdToIds => {
+      UserGroups.deleteAllFromGroupId(viewIdToIds.Id).flatMap(_ => {
+        val userGroups = viewIdToIds.Ids.map(id => new UserGroup(-1, id, viewIdToIds.Id))
+        UserGroups.add(userGroups).map(r =>
+          Ok(r.toString)
+        )
+      })
+    }}
+  }
+
 
   def getAllUsers = AuthenticatedAction(authType).async {
     Users.listAll().map(l => {

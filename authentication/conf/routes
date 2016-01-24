@@ -16,8 +16,9 @@ POST    /view-api/get-logged-in-users     controllers.AuthenticationAPIv1.listAl
 POST    /view-api/delete-session          controllers.AuthenticationAPIv1.removeSession
 POST    /view-api/log-in                  controllers.AuthenticationAPIv1.logIn
 
-
+POST    /view-api/add-users-to-group      controllers.UserController.addUsersToGroup
 POST    /view-api/get-all-users-in-group  controllers.UserController.getAllUsersInGroup
+
 POST    /view-api/get-all-users           controllers.UserController.getAllUsers
 POST    /view-api/new-user                controllers.UserController.newUser
 POST    /view-api/edit-user               controllers.UserController.editUser

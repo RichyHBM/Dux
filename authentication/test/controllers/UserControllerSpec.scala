@@ -4,7 +4,7 @@ import java.util.Date
 
 import database._
 import models.NewUser
-import models.view.{ViewId, ViewUser}
+import models.view.{ViewIdToIds, ViewId, ViewUser}
 import org.junit.runner.RunWith
 import org.specs2.mutable._
 import org.specs2.runner._
@@ -58,7 +58,6 @@ class UserControllerSpec extends Specification {
       Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
 
       val e = new ViewId(1)
-      println(e.toJson())
       val response = route(FakeRequest(POST, routes.UserController.getAllUsersInGroup().url, Statics.jsonHeaders, e.toJson())).get
       status(response) must equalTo(OK)
       Json.fromJson[Array[ViewUser]](contentAsJson(response)).fold(
@@ -69,6 +68,22 @@ class UserControllerSpec extends Specification {
           ar(1).Name must equalTo("Test User 2")
         }
       )
+    }
+
+    "Add users to group" in Statics.WithFreshDatabase {
+      Await.result(Users.add(user1), 2.seconds) must equalTo(1)
+      Await.result(Users.add(user2), 2.seconds) must equalTo(1)
+
+      Await.result(Groups.add(new Group("Group1", "Group 1 Description")), 2.seconds) must equalTo(1)
+
+      Await.result(UserGroups.add(2, 1), 2.seconds) must equalTo(1)
+
+      val e = new ViewIdToIds(1, Seq(1,2))
+      val response = route(FakeRequest(POST, routes.UserController.addUsersToGroup().url, Statics.jsonHeaders, e.toJson())).get
+      status(response) must equalTo(OK)
+      contentAsString(response) must equalTo("2")
+
+      Await.result(UserGroups.listAll(), 2.seconds).length must equalTo(2)
     }
 
     "Delete user" in Statics.WithFreshDatabase {
