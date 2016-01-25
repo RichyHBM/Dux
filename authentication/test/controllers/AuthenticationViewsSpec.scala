@@ -30,14 +30,6 @@ class AuthenticationViewsSpec extends Specification {
       contentAsString(home) must contain ("Authentication")
     }
 
-    "render the apps page" in Statics.WithFreshDatabase {
-      val home = route(FakeRequest(GET, "/apps")).get
-
-      status(home) must equalTo(OK)
-      contentType(home) must beSome.which(_ == "text/html")
-      contentAsString(home) must contain ("Authentication")
-    }
-
     "render the groups page" in Statics.WithFreshDatabase {
       val home = route(FakeRequest(GET, "/groups")).get
 

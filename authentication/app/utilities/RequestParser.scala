@@ -48,18 +48,6 @@ object RequestParser {
     )
   }
 
-  def parseViewApp(request: Request[JsValue])(block: (ViewApp) => Future[Result] ):Future[Result] = {
-    request.body.validate[ViewApp].fold(
-      errors => {
-        Future {
-          BadRequest(JsError.toJson(errors))
-        }
-      }, viewApp => {
-        block(viewApp)
-      }
-    )
-  }
-
   def parseViewPermission(request: Request[JsValue])(block: (ViewPermission) => Future[Result] ):Future[Result] = {
     request.body.validate[ViewPermission].fold(
       errors => {

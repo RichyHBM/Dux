@@ -7,7 +7,6 @@
 
 # Home page
 GET     /                                 controllers.AuthenticationViews.index
-GET     /apps                             controllers.AuthenticationViews.apps
 GET     /groups                           controllers.AuthenticationViews.groups
 GET     /permissions                      controllers.AuthenticationViews.permissions
 GET     /users                            controllers.AuthenticationViews.users
@@ -31,14 +30,6 @@ POST    /view-api/get-all-groups          controllers.GroupController.getAllGrou
 POST    /view-api/new-group               controllers.GroupController.newGroup
 POST    /view-api/edit-group              controllers.GroupController.editGroup
 POST    /view-api/delete-group            controllers.GroupController.deleteGroup
-
-POST    /view-api/get-all-apps            controllers.AppController.getAllApps
-POST    /view-api/new-app                 controllers.AppController.newApp
-POST    /view-api/edit-app                controllers.AppController.editApp
-POST    /view-api/delete-app              controllers.AppController.deleteApp
-
-POST    /view-api/add-permissions-for-app       controllers.PermissionController.addPermissionsForApp
-POST    /view-api/get-all-permissions-for-app   controllers.PermissionController.getAllPermissionsForApp
 
 POST    /view-api/get-all-permissions     controllers.PermissionController.getAllPermissions
 POST    /view-api/new-permission          controllers.PermissionController.newPermission

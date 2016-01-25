@@ -31,14 +31,6 @@ CREATE TABLE Permissions (
   UNIQUE ( Name )
 );
 
-CREATE TABLE Apps (
-  Id BIGINT NOT NULL AUTO_INCREMENT,
-  Name VARCHAR(50) NOT NULL,
-  Description VARCHAR(255) NOT NULL,
-  PRIMARY KEY (Id),
-  UNIQUE ( Name )
-);
-
 CREATE TABLE UsersGroups (
   Id BIGINT NOT NULL AUTO_INCREMENT,
   UserId BIGINT NOT NULL REFERENCES Users (Id),
@@ -55,21 +47,11 @@ CREATE TABLE GroupsPermissions (
   UNIQUE (GroupId, PermissionId)
 );
 
-CREATE TABLE AppsPermissions (
-  Id BIGINT NOT NULL AUTO_INCREMENT,
-  PermissionId BIGINT NOT NULL REFERENCES Permissions (Id),
-  AppId BIGINT NOT NULL REFERENCES Apps (Id),
-  PRIMARY KEY (Id),
-  UNIQUE (PermissionId, AppId)
-);
-
 # --- !Downs
 
 DROP TABLE Users;
 DROP TABLE Groups;
 DROP TABLE Permissions;
-DROP TABLE Apps;
 
 DROP TABLE UsersGroups;
 DROP TABLE GroupsPermissions;
-DROP TABLE AppsPermissions;

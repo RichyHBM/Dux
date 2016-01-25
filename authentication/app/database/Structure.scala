@@ -34,15 +34,6 @@ object Structure {
     }
   }
 
-  object Apps {
-    val Name = "Apps"
-    object Columns {
-      val Id = "Id"
-      val Name = "Name"
-      val Description = "Description"
-    }
-  }
-
   object UserGroup {
     val Name = "UsersGroups"
     object Columns {
@@ -57,15 +48,6 @@ object Structure {
     object Columns {
       val Id = "Id"
       val GroupId = "GroupId"
-      val PermissionId = "PermissionId"
-    }
-  }
-
-  object AppPermission {
-    val Name = "AppsPermissions"
-    object Columns {
-      val Id = "Id"
-      val AppId = "AppId"
       val PermissionId = "PermissionId"
     }
   }

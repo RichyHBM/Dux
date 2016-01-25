@@ -50,14 +50,12 @@ class AuthenticationAPIv1Spec extends Specification {
 
       Await.result(Users.add(user), 2.seconds) must equalTo(1)
       Await.result(Groups.add(new Group("TEST", "Description")), 2.seconds) must equalTo(1)
-      Await.result(Permissions.add(new Permission("TEST", "Description")), 2.seconds) must equalTo(1)
-      Await.result(Apps.add(new App("service", "Description")), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(new Permission("Permission", "Description")), 2.seconds) must equalTo(1)
 
       Await.result(UserGroups.add(1, 1), 2.seconds) must equalTo(1)
       Await.result(GroupPermissions.add(1, 1), 2.seconds) must equalTo(1)
-      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
 
-      val login = new LogIn(user.Email, password, "service")
+      val login = new LogIn(user.Email, password, "Permission")
       val response = route(FakeRequest(POST, routes.AuthenticationAPIv1.logIn().url, Statics.jsonHeaders, login.toJson())).get
       status(response) must equalTo(OK)
     }

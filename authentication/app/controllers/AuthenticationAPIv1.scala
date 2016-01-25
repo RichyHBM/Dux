@@ -3,7 +3,7 @@ package controllers
 import java.util.{UUID, Date}
 
 import com.fasterxml.jackson.databind.node.ObjectNode
-import models.view.{ViewApp, ViewPermission, ViewGroup}
+import models.view.{ViewPermission, ViewGroup}
 import models.{NewUser, view, UserSession}
 import play.api._
 import play.api.mvc._
@@ -50,17 +50,15 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
               case true => {
                 UserGroups.getAllGroupIdsForUserId(u.Id).flatMap(groupIds => {
                   GroupPermissions.getAllPermissionIdsFromGroupIds(groupIds).flatMap(permissionIds => {
-                    AppPermissions.getAllAppIdsFromPermissionIds(permissionIds).flatMap(appIds => {
-                      Apps.get(appIds.toList).flatMap(apps => {
-                        apps.exists(app => app.Name == logIn.Service) match {
-                          case true => {
-                            val userSession = new UserSession(u.Id, u.Name, u.Email, new Date(), new Date(), logIn.Service)
-                            val session = authCache.createSession(userSession)
-                            Future { Ok.withCookies(Cookie("Session", session)) }
-                          }
-                          case false => Future {BadRequest("User doesn't have permissions") }
+                    Permissions.get(permissionIds.toList).flatMap(permissions => {
+                      permissions.exists(permission => permission.Name == logIn.Permission) match {
+                        case true => {
+                          val userSession = new UserSession(u.Id, u.Name, u.Email, new Date(), new Date(), logIn.Permission)
+                          val session = authCache.createSession(userSession)
+                          Future { Ok.withCookies(Cookie("Session", session)) }
                         }
-                      })
+                        case false => Future {BadRequest("User doesn't have permissions") }
+                      }
                     })
                   })
                 })

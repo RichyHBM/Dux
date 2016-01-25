@@ -19,27 +19,6 @@ class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticat
 
   def cache = cacheApi
 
-  def getAllPermissionsForApp = AuthenticatedAction(authType).async(parse.json) { request =>
-    RequestParser.parseViewId(request) { viewId => {
-      AppPermissions.getAllPermissionIdsFromAppId(viewId.Id).flatMap(permissions =>
-        Permissions.get(permissions.toList).map(l => {
-          Ok(Json.toJson(l.map(p => view.ViewPermission(p.Id, p.Name, p.Description)).toList))
-        })
-      )
-    }}
-  }
-
-  def addPermissionsForApp = AuthenticatedAction(authType).async(parse.json) { request =>
-    RequestParser.parseViewIdToIds(request) { viewIdToIds => {
-      AppPermissions.deleteAllFromAppId(viewIdToIds.Id).flatMap(_ => {
-        val appPermissions = viewIdToIds.Ids.map(id => AppPermission(-1, viewIdToIds.Id, id))
-        AppPermissions.add(appPermissions).map(r =>
-          Ok(r.toString)
-        )
-      })
-    }}
-  }
-
   def getAllPermissions = AuthenticatedAction(authType).async {
     Permissions.listAll().map(l => {
       Ok(Json.toJson(l.map(p => view.ViewPermission(p.Id, p.Name, p.Description)).toList))
@@ -55,7 +34,7 @@ class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticat
   }
 
   def editPermission = AuthenticatedAction(authType).async(parse.json) { request =>
-    RequestParser.parseViewApp(request) {
+    RequestParser.parseViewPermission(request) {
       viewPermission => {
         Permissions.edit(viewPermission.Id, viewPermission.Name, viewPermission.Description).map(i => Ok(i.toString))
       }
@@ -63,7 +42,7 @@ class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticat
   }
 
   def deletePermission = AuthenticatedAction(authType).async(parse.json) { request =>
-    RequestParser.parseViewApp(request) {
+    RequestParser.parseViewPermission(request) {
       viewPermission => {
         Logger.info("Deleting permission %d: '%s' with description: %s".format(
             viewPermission.Id,

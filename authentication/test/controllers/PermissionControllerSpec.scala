@@ -44,45 +44,6 @@ class PermissionControllerSpec extends Specification {
       )
     }
 
-    "Get all permissions for app" in Statics.WithFreshDatabase {
-      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
-      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
-      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
-
-      Await.result(Apps.add(new App("TEST", "Description")), 2.seconds) must equalTo(1)
-
-      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
-      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
-
-      val e = new ViewId(1)
-      val response = route(FakeRequest(POST, routes.PermissionController.getAllPermissionsForApp().url, Statics.jsonHeaders, e.toJson())).get
-      status(response) must equalTo(OK)
-      Json.fromJson[Array[ViewPermission]](contentAsJson(response)).fold(
-        e => 1 must equalTo(0),
-        ar => {
-          ar.length must equalTo(2)
-          ar.head.Name must equalTo(permission1.Name)
-          ar(1).Name must equalTo(permission2.Name)
-        }
-      )
-    }
-
-    "Add permission for app" in Statics.WithFreshDatabase {
-      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
-      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
-
-      Await.result(Apps.add(new App("TEST", "Description")), 2.seconds) must equalTo(1)
-
-      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
-
-      val e = new ViewIdToIds(1, Seq(1,2))
-      val response = route(FakeRequest(POST, routes.PermissionController.addPermissionsForApp().url, Statics.jsonHeaders, e.toJson())).get
-      status(response) must equalTo(OK)
-      contentAsString(response) must equalTo("2")
-
-      Await.result(AppPermissions.listAll(), 2.seconds).length must equalTo(2)
-    }
-
     "Delete permission" in Statics.WithFreshDatabase {
       val e = new ViewPermission(1, "Test2", "Description2")
       val response = route(FakeRequest(POST, routes.PermissionController.deletePermission().url, Statics.jsonHeaders, e.toJson())).get
