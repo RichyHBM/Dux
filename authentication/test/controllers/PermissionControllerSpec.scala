@@ -1,7 +1,7 @@
 package controllers
 
-import database.{Permission, Permissions}
-import models.view.ViewPermission
+import database._
+import models.view.{ViewIdToIds, ViewId, ViewPermission}
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
@@ -16,6 +16,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @RunWith(classOf[JUnitRunner])
 class PermissionControllerSpec extends Specification {
   def permission1 = new Permission("Permission1", "Permission 1 Description")
+  def permission2 = new Permission("Permission2", "Permission 2 Description")
+  def permission3 = new Permission("Permission3", "Permission 3 Description")
 
   "PermissionControllerSpec" should {
 
@@ -40,6 +42,45 @@ class PermissionControllerSpec extends Specification {
         e => 1 must equalTo(0),
         ar => ar.length must equalTo(1)
       )
+    }
+
+    "Get all permissions for app" in Statics.WithFreshDatabase {
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission3), 2.seconds) must equalTo(1)
+
+      Await.result(Apps.add(new App("TEST", "Description")), 2.seconds) must equalTo(1)
+
+      Await.result(AppPermissions.add(1, 1), 2.seconds) must equalTo(1)
+      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
+
+      val e = new ViewId(1)
+      val response = route(FakeRequest(POST, routes.PermissionController.getAllPermissionsForApp().url, Statics.jsonHeaders, e.toJson())).get
+      status(response) must equalTo(OK)
+      Json.fromJson[Array[ViewPermission]](contentAsJson(response)).fold(
+        e => 1 must equalTo(0),
+        ar => {
+          ar.length must equalTo(2)
+          ar.head.Name must equalTo(permission1.Name)
+          ar(1).Name must equalTo(permission2.Name)
+        }
+      )
+    }
+
+    "Add permission for app" in Statics.WithFreshDatabase {
+      Await.result(Permissions.add(permission1), 2.seconds) must equalTo(1)
+      Await.result(Permissions.add(permission2), 2.seconds) must equalTo(1)
+
+      Await.result(Apps.add(new App("TEST", "Description")), 2.seconds) must equalTo(1)
+
+      Await.result(AppPermissions.add(1, 2), 2.seconds) must equalTo(1)
+
+      val e = new ViewIdToIds(1, Seq(1,2))
+      val response = route(FakeRequest(POST, routes.PermissionController.addPermissionsForApp().url, Statics.jsonHeaders, e.toJson())).get
+      status(response) must equalTo(OK)
+      contentAsString(response) must equalTo("2")
+
+      Await.result(AppPermissions.listAll(), 2.seconds).length must equalTo(2)
     }
 
     "Delete permission" in Statics.WithFreshDatabase {

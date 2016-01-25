@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import database.{Permission, Permissions}
+import database._
 import interfaces.IAuthenticationCache
 import models.view
 import play.api.Logger
@@ -18,6 +18,27 @@ class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticat
   val authType = auth.AuthenticationType.None
 
   def cache = cacheApi
+
+  def getAllPermissionsForApp = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewId(request) { viewId => {
+      AppPermissions.getAllPermissionIdsFromAppId(viewId.Id).flatMap(permissions =>
+        Permissions.get(permissions.toList).map(l => {
+          Ok(Json.toJson(l.map(p => view.ViewPermission(p.Id, p.Name, p.Description)).toList))
+        })
+      )
+    }}
+  }
+
+  def addPermissionsForApp = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseViewIdToIds(request) { viewIdToIds => {
+      AppPermissions.deleteAllFromAppId(viewIdToIds.Id).flatMap(_ => {
+        val appPermissions = viewIdToIds.Ids.map(id => AppPermission(-1, viewIdToIds.Id, id))
+        AppPermissions.add(appPermissions).map(r =>
+          Ok(r.toString)
+        )
+      })
+    }}
+  }
 
   def getAllPermissions = AuthenticatedAction(authType).async {
     Permissions.listAll().map(l => {

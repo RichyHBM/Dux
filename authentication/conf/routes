@@ -24,6 +24,9 @@ POST    /view-api/new-user                controllers.UserController.newUser
 POST    /view-api/edit-user               controllers.UserController.editUser
 POST    /view-api/delete-user             controllers.UserController.deleteUser
 
+POST    /view-api/add-groups-to-permission          controllers.GroupController.addGroupsToPermission
+POST    /view-api/get-all-groups-with-permission    controllers.GroupController.getAllGroupsWithPermission
+
 POST    /view-api/get-all-groups          controllers.GroupController.getAllGroups
 POST    /view-api/new-group               controllers.GroupController.newGroup
 POST    /view-api/edit-group              controllers.GroupController.editGroup
@@ -33,6 +36,9 @@ POST    /view-api/get-all-apps            controllers.AppController.getAllApps
 POST    /view-api/new-app                 controllers.AppController.newApp
 POST    /view-api/edit-app                controllers.AppController.editApp
 POST    /view-api/delete-app              controllers.AppController.deleteApp
+
+POST    /view-api/add-permissions-for-app       controllers.PermissionController.addPermissionsForApp
+POST    /view-api/get-all-permissions-for-app   controllers.PermissionController.getAllPermissionsForApp
 
 POST    /view-api/get-all-permissions     controllers.PermissionController.getAllPermissions
 POST    /view-api/new-permission          controllers.PermissionController.newPermission
