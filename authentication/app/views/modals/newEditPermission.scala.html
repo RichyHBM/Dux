@@ -8,6 +8,51 @@ app.controller("newEditPermissionModalCtrl", function($scope, $http, $modalInsta
     $scope.permissionName = Permission.Name;
     $scope.permissionDescription = Permission.Description;
     $scope.errors = {};
+    $scope.allGroups = [];
+    $scope.permissionGroups = [];
+
+
+    $scope.getAllGroups = function() {
+        $http.post('/view-api/get-all-groups').then( function successCallback(response) {
+                $scope.allGroups = [];
+                response.data.forEach(function(element, index, array) {
+                    var group = {}
+                    group.Id = element.Id;
+                    group.Name = element.Name;
+                    group.Description = element.Description;
+                    $scope.allGroups.push(group);
+                });
+            });
+
+        if($scope.permissionId) {
+            $http.post('/view-api/get-all-groups-with-permission', {Id: $scope.permissionId}).then(
+                function successCallback(response) {
+                    $scope.permissionGroups = [];
+                    response.data.forEach(function(element, index, array) {
+                        var group = {}
+                        group.Id = element.Id;
+                        group.Name = element.Name;
+                        group.Description = element.Description;
+                        $scope.permissionGroups.push(group);
+                    });
+                });
+        }
+    }
+
+    $scope.autoComplete = function(query) {
+        var queryGroups = [];
+
+        $scope.allGroups.forEach(function(element, index, array) {
+            if(element.Name.indexOf(query) > -1 || element.Description.indexOf(query) > -1) {
+                queryGroups.push( element );
+            }});
+
+        return queryGroups;
+    }
+
+    if($scope.permissionId) {
+        $scope.getAllGroups();
+    }
 
 
     $scope.ok = function () {
@@ -31,8 +76,26 @@ app.controller("newEditPermissionModalCtrl", function($scope, $http, $modalInsta
             Name: $scope.permissionName,
             Description: $scope.permissionDescription
         }).then( function successCallback(response) {
-            $modalInstance.refresh();
-            $modalInstance.close();
+
+            if($scope.permissionId) {
+
+                var groupIds = $scope.permissionGroups.map(function(obj){
+                    return obj.Id;
+                });
+
+                $http.post('/view-api/add-groups-to-permission', {
+                    Id: id,
+                    Ids: groupIds
+                }).then(
+                    function successCallback(response) {
+                        $modalInstance.refresh();
+                        $modalInstance.close();
+                    });
+            } else {
+                $modalInstance.refresh();
+                $modalInstance.close();
+            }
+
         });
     };
 
@@ -57,6 +120,18 @@ app.controller("newEditPermissionModalCtrl", function($scope, $http, $modalInsta
                 <textarea type="text" class="form-control" rows="3" id="permissionDescription" ng-model="permissionDescription" tooltip-trigger="focus">
                 </textarea>
         </div>
+
+        <div class="form-group" ng-show="permissionId">
+            <label class="control-label">Groups with permission</label>
+            <tags-input ng-model="permissionGroups"
+                        addFromAutocompleteOnly="true"
+                        display-property="Name"
+                        replaceSpacesWithDashes="false"
+                        placeholder="Add group">
+                <auto-complete source="autoComplete($query)"></auto-complete>
+            </tags-input>
+        </div>
+
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>

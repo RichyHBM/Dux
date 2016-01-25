@@ -117,7 +117,11 @@ app.controller("newEditGroupModalCtrl", function($scope, $http, $modalInstance, 
 
         <div class="form-group" ng-show="groupId">
             <label class="control-label">Users in Group</label>
-            <tags-input ng-model="groupUsers" addFromAutocompleteOnly="true" display-property="Name" placeholder="Add user">
+            <tags-input ng-model="groupUsers"
+                        addFromAutocompleteOnly="true"
+                        display-property="Name"
+                        replaceSpacesWithDashes="false"
+                        placeholder="Add user">
                 <auto-complete source="autoComplete($query)"></auto-complete>
             </tags-input>
         </div>
