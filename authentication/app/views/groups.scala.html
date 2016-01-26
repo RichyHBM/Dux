@@ -13,7 +13,24 @@
           $scope.refresh = function() {
             $http.post('/view-api/get-all-groups').then(
                 function successCallback(response) {
-                    $scope.Groups = response.data;
+                    $scope.Groups = [];
+                    response.data.forEach(function(element, index, array) {
+                        var group = element;
+                        $http.post('/view-api/get-all-users-in-group', {Id: group.Id}).then(
+                            function successCallback(response) {
+                                var users = [];
+                                response.data.forEach(function(element, index, array) {
+                                    var user = {}
+                                    user.Id = element.Id;
+                                    user.Name = element.Name;
+                                    user.Email = element.Email;
+                                    users.push(user);
+                                });
+                                group.Users = users;
+                                $scope.Groups.push(group);
+                            }
+                        );
+                    });
                 });
           }
 
@@ -63,14 +80,18 @@
         <table class="table table-striped table-bordered">
             <tr>
                 <th class="col-sm-2">ID</th>
-                <th class="col-sm-3">Name</th>
-                <th class="col-sm-5">Description</th>
-                <th class="col-sm-2"></th>
+                <th class="col-sm-2">Name</th>
+                <th class="col-sm-4">Description</th>
+                <th class="col-sm-3">Users in group</th>
+                <th class="col-sm-1"></th>
             </tr>
-            <tr ng-repeat="group in Groups">
+            <tr ng-repeat="group in Groups | orderBy : 'Id'">
                 <td>{{group.Id}}</td>
                 <td>{{group.Name}}</td>
                 <td>{{group.Description}}</td>
+                <td>
+                    <span class="label label-primary" style="margin: 0 0.2em" ng-repeat="user in group.Users">{{user.Name}}</span>
+                </td>
                 <td>
                     <i class="fa fa-1-4x fa-pencil" ng-click="openNewEditModal(group)"></i>
                     <i class="fa fa-1-4x fa-trash" ng-click="delete(group)"></i>

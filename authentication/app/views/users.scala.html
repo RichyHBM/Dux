@@ -78,7 +78,7 @@
                 <th class="col-sm-1">Failed Attempts</th>
                 <th class="col-sm-1"></th>
             </tr>
-            <tr ng-repeat="user in Users" class="{{ user.Blocked ? 'danger' : '' }}">
+            <tr ng-repeat="user in Users | orderBy : 'Id'" class="{{ user.Blocked ? 'danger' : '' }}">
                 <td>{{user.Id}}</td>
                 <td>{{user.Name}}</td>
                 <td>{{user.Email}}</td>

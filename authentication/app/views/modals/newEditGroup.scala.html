@@ -11,37 +11,29 @@ app.controller("newEditGroupModalCtrl", function($scope, $http, $modalInstance, 
     $scope.allUsers = [];
     $scope.groupUsers = [];
 
+    if(Group.Users) {
+        $scope.groupUsers = Group.Users;
+    }
+
     $scope.getAllUsers = function() {
         $http.post('/view-api/get-all-users').then( function successCallback(response) {
-                $scope.allUsers = [];
-                response.data.forEach(function(element, index, array) {
-                    var user = {}
-                    user.Id = element.Id;
-                    user.Name = element.Name;
-                    user.Email = element.Email;
-                    $scope.allUsers.push(user);
+            $scope.allUsers = [];
+            response.data.forEach(function(element, index, array) {
+                var user = {}
+                user.Id = element.Id;
+                user.Name = element.Name;
+                user.Email = element.Email;
+                $scope.allUsers.push(user);
                 });
-            });
-
-        if($scope.groupId) {
-            $http.post('/view-api/get-all-users-in-group', {Id: $scope.groupId}).then( function successCallback(response) {
-                    $scope.groupUsers = [];
-                    response.data.forEach(function(element, index, array) {
-                        var user = {}
-                        user.Id = element.Id;
-                        user.Name = element.Name;
-                        user.Email = element.Email;
-                        $scope.groupUsers.push(user);
-                    });
-                });
-        }
+        });
     }
 
     $scope.autoComplete = function(query) {
         var queryUsers = [];
 
         $scope.allUsers.forEach(function(element, index, array) {
-            if(element.Name.indexOf(query) > -1 || element.Email.indexOf(query) > -1) {
+            if(element.Name.toLowerCase().indexOf(query.toLowerCase()) > -1
+            || element.Email.toLowerCase().indexOf(query.toLowerCase()) > -1) {
                 queryUsers.push( element );
             }});
 

@@ -13,7 +13,24 @@
           $scope.refresh = function() {
             $http.post('/view-api/get-all-permissions').then(
                 function successCallback(response) {
-                    $scope.Permissions = response.data;
+                    $scope.Permissions = [];
+                    response.data.forEach(function(element, index, array) {
+                        var permission = element;
+                        $http.post('/view-api/get-all-groups-with-permission', {Id: permission.Id}).then(
+                            function successCallback(response) {
+                                var groups = [];
+                                response.data.forEach(function(element, index, array) {
+                                    var group = {}
+                                    group.Id = element.Id;
+                                    group.Name = element.Name;
+                                    group.Description = element.Description;
+                                    groups.push(group);
+                                });
+                                permission.Groups = groups;
+                                $scope.Permissions.push(permission);
+                            }
+                        );
+                    });
                 });
           }
 
@@ -62,14 +79,18 @@
         <table class="table table-striped table-bordered">
             <tr>
                 <th class="col-sm-2">ID</th>
-                <th class="col-sm-3">Name</th>
-                <th class="col-sm-5">Description</th>
-                <th class="col-sm-2"></th>
+                <th class="col-sm-2">Name</th>
+                <th class="col-sm-4">Description</th>
+                <th class="col-sm-3">Groups with permission</th>
+                <th class="col-sm-1"></th>
             </tr>
-            <tr ng-repeat="permission in Permissions">
+            <tr ng-repeat="permission in Permissions | orderBy : 'Id'">
                 <td>{{permission.Id}}</td>
                 <td>{{permission.Name}}</td>
                 <td>{{permission.Description}}</td>
+                <td>
+                    <span class="label label-primary" style="margin: 0 0.2em" ng-repeat="group in permission.Groups">{{group.Name}}</span>
+                </td>
                 <td>
                     <i class="fa fa-1-4x fa-pencil" ng-click="openNewEditModal(permission)"></i>
                     <i class="fa fa-1-4x fa-trash" ng-click="delete(permission)"></i>
