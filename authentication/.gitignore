@@ -8,3 +8,4 @@ target
 /RUNNING_PID
 dump.rdb
 database/*.sqlite
+conf/db
