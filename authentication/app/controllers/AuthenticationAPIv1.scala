@@ -1,25 +1,19 @@
 package controllers
 
-import java.util.{UUID, Date}
+import java.util.Date
+import javax.inject._
 
-import com.fasterxml.jackson.databind.node.ObjectNode
-import models.view.{ViewPermission, ViewGroup}
-import models.{NewUser, view, UserSession}
+import auth.scala._
+import database._
+import interfaces._
+import models.UserSession
 import play.api._
-import play.api.mvc._
 import play.api.cache.CacheApi
 import play.api.libs.json._
-import play.mvc.Http
-import utilities.{RequestParser, Passwords}
-import views.html._
-import javax.inject._
-import auth.scala._
-import auth.models._
-import database._
-import scala.concurrent.ExecutionContext.Implicits.global
-import common.models.BasicViewResponse
-import interfaces._
+import play.api.mvc._
+import utilities.{Passwords, RequestParser}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache) extends Controller with AuthenticatedActionBuilder {
@@ -40,6 +34,63 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
       }
       case _ => BadRequest
     }
+  }
+
+  def authenticateApiKey = AuthenticatedAction(authType).async(parse.json) { request =>
+      RequestParser.parseAuthToken(request) { authApiKey => {
+        Users.getFromApiKey(authApiKey.Token).flatMap {
+          case Some(u) => {
+            UserGroups.getAllGroupIdsForUserId(u.Id).flatMap(groupIds => {
+              GroupPermissions.getAllPermissionIdsFromGroupIds(groupIds).flatMap(permissionIds => {
+                Permissions.get(permissionIds.toList).flatMap(permissions => {
+                  permissions.exists(permission => permission.Name == authApiKey.Permission) match {
+                    case true => {
+                      val userSession = new UserSession(u.Id, u.Name, u.Email, new Date(), new Date(), authApiKey.Permission)
+                      val session = authCache.createSession(userSession)
+                      Future { Ok.withCookies(Cookie("Session", session)) }
+                    }
+                    case false => Future {BadRequest("User doesn't have permissions") }
+                  }
+                })
+              })
+            })
+          }
+          case None => Future { BadRequest("User not found") }
+        }
+      }
+    }
+  }
+
+  def authenticateSession = AuthenticatedAction(authType).async(parse.json) { request =>
+    RequestParser.parseAuthToken(request) { authSession => {
+      authCache.getSession(authSession.Token) match {
+        case Some((s, u)) => {
+          Users.getFromEmail(u.email).flatMap {
+            case Some(user) => {
+              UserGroups.getAllGroupIdsForUserId(user.Id).flatMap(groupIds => {
+                GroupPermissions.getAllPermissionIdsFromGroupIds(groupIds).flatMap(permissionIds => {
+                  Permissions.get(permissionIds.toList).flatMap(permissions => {
+                    permissions.exists(permission => permission.Name == authSession.Permission) match {
+                      case true => {
+                        authCache.renewSession(s, u)
+                        Future {
+                          Ok.withCookies(Cookie("Session", s))
+                        }
+                      }
+                      case false => Future {
+                        BadRequest("User doesn't have permissions")
+                      }
+                    }
+                  })
+                })
+              })
+            }
+            case None => Future { BadRequest("User not found") }
+          }
+        }
+        case None => Future { BadRequest("User not found") }
+      }
+    }}
   }
 
   def logIn = AuthenticatedAction(authType).async(parse.json) { request =>

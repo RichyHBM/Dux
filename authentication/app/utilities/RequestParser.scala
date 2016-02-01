@@ -1,14 +1,13 @@
 package utilities
 
-import models.{LogIn, NewUser}
+import models._
 import models.view._
-import play.api._
-import play.api.data.validation.ValidationError
-import play.api.libs.json.{JsValue, JsError}
-import play.api.mvc._
+import play.api.libs.json.{JsError, JsValue}
 import play.api.mvc.Results._
-import scala.concurrent.Future
+import play.api.mvc._
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object RequestParser {
 
@@ -92,6 +91,18 @@ object RequestParser {
         }
       }, viewIdToIds => {
         block(viewIdToIds)
+      }
+    )
+  }
+
+  def parseAuthToken(request: Request[JsValue])(block: (AuthToken) => Future[Result] ):Future[Result] = {
+    request.body.validate[AuthToken].fold(
+      errors => {
+        Future {
+          BadRequest(JsError.toJson(errors))
+        }
+      }, authToken => {
+        block(authToken)
       }
     )
   }
