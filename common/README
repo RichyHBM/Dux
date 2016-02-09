@@ -1,3 +1,6 @@
+Common
+======
+
 This is a common project containing base views, static files and common functionality
 
 To include in a project, add this project as a dependency to your project:

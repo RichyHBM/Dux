@@ -1,3 +1,6 @@
+Authentication Plugin
+=====================
+
 The Authentication plugin provides an easy way to use authentication for Dux (or any play applications)
 
 To add this to your project add it as a dependency in your build.sbt, this plugin also requires the common project.

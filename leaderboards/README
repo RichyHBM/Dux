@@ -8,6 +8,7 @@ It also provides a UI for managing, creating and editing leaderboards.
 The API consists of a very simple set of JSON REST endpoints:
 
 POST    /api/v1/get-leaderboard-count
+
     Takes:
         gameId: Int
         leaderboardName: String
@@ -17,6 +18,7 @@ POST    /api/v1/get-leaderboard-count
 
 
 POST    /api/v1/set-score
+
     Takes:
         gameId: Int
         leaderboardName: String
@@ -28,6 +30,7 @@ POST    /api/v1/set-score
         Boolean
 
 POST    /api/v1/increment-score
+
     Takes:
         gameId: Int
         leaderboardName: String
@@ -39,6 +42,7 @@ POST    /api/v1/increment-score
         Boolean
 
 POST    /api/v1/get-ranked-users
+
     Takes:
         gameId: Int
         leaderboardName: String
@@ -49,6 +53,7 @@ POST    /api/v1/get-ranked-users
         List<LeaderboardUser>
 
 POST    /api/v1/get-user
+
     Takes:
         gameId: Int
         leaderboardName: String
@@ -58,6 +63,7 @@ POST    /api/v1/get-user
         LeaderboardUser
 
 POST    /api/v1/get-user-score
+
     Takes:
         gameId: Int
         leaderboardName: String
@@ -67,6 +73,7 @@ POST    /api/v1/get-user-score
         Double
 
 POST    /api/v1/get-user-rank
+
     Takes:
         gameId: Int
         leaderboardName: String
@@ -76,6 +83,7 @@ POST    /api/v1/get-user-rank
         Long
 
 POST    /api/v1/get-active-leaderboards
+
     Takes:
         gameId: Int
 
