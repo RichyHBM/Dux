@@ -1,7 +1,7 @@
-package models
+package auth.models
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Writes, JsPath, Reads, Json}
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
 case class LogIn(Email: String, Password: String, Permission: String) {
 

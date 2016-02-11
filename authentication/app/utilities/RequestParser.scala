@@ -1,5 +1,6 @@
 package utilities
 
+import auth.models.{LogIn, AuthToken}
 import models._
 import models.view._
 import play.api.libs.json.{JsError, JsValue}

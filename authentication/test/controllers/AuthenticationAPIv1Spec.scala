@@ -2,9 +2,10 @@ package controllers
 
 import java.util.Date
 
+import auth.models.{LogIn, AuthToken}
 import database._
 import implementors.AuthenticationCache
-import models.{AuthToken, LogIn, UserSession}
+import models.UserSession
 import org.junit.runner._
 import org.sedis.Pool
 import org.specs2.mutable._
