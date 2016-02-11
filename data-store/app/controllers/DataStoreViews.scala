@@ -13,8 +13,9 @@ import auth.models._
 
 import common.models.BasicViewResponse
 
-class DataStoreViews @Inject()(cacheApi: CacheApi) extends Controller with AuthenticatedActionBuilder {
+class DataStoreViews @Inject()(cacheApi: CacheApi, configuration: Configuration) extends Controller with AuthenticatedActionBuilder {
   def cache = cacheApi
+  def config = configuration
 
   def index = AuthenticatedAction(auth.AuthenticationType.None) { request =>
     val response = new BasicAuthViewResponse("Data Store", request.user)

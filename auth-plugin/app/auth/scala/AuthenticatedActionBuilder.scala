@@ -4,7 +4,7 @@ import auth.implementors.PlayAuthCache
 import auth.models._
 import auth.{AuthenticationType, Authenticator}
 import common.utilities.StringUtils
-import play.api.{Logger, Configuration}
+import play.api.Configuration
 import play.api.cache.CacheApi
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -57,7 +57,6 @@ trait AuthenticatedActionBuilder {
     def authenticateSession[A](request: Request[A], url: String, privilege: String): Option[AuthenticatedRequest[A]] = {
       request.cookies.get(DefinedStrings.sessionCookieName) match {
         case Some(cookie) => {
-          Logger.warn(cookie.name)
           Authenticator.checkSession(url, cookie.value, privilege, new PlayAuthCache(cache)) match {
             case sessionUser: SessionUser => Option(AuthenticatedRequest(sessionUser.sessionKey, sessionUser.user, request))
             case null => None

@@ -1,20 +1,17 @@
 package controllers
 
+import javax.inject._
+
+import auth.models._
+import auth.scala._
 import com.fasterxml.jackson.databind.node.ObjectNode
 import play.api._
-import play.api.mvc._
 import play.api.cache.CacheApi
-import play.api.libs.json._
-import play.mvc.Http
-import views.html._
-import javax.inject._
-import auth.scala._
-import auth.models._
-import database._
-import common.models.BasicViewResponse
+import play.api.mvc._
 
-class AuthenticationViews @Inject()(cacheApi: CacheApi) extends Controller with AuthenticatedActionBuilder {
+class AuthenticationViews @Inject()(cacheApi: CacheApi, configuration: Configuration) extends Controller with AuthenticatedActionBuilder {
   def cache = cacheApi
+  def config = configuration
 
   def index = AuthenticatedAction(auth.AuthenticationType.None) { request =>
     val response = new BasicAuthViewResponse("Authentication", request.user)

@@ -1,15 +1,17 @@
 package controllers
 
 import javax.inject.Inject
-import play.Logger
+import play.api.{Configuration, Logger}
 import play.api.cache.CacheApi
 import play.api.mvc._
 import common.utilities._
 import auth.scala._
 import auth.models._
 
-class DataStoreAPIv1 @Inject() (cacheApi: CacheApi) extends Controller with AuthenticatedActionBuilder {
+class DataStoreAPIv1 @Inject() (cacheApi: CacheApi, configuration: Configuration) extends Controller with AuthenticatedActionBuilder {
   def cache = cacheApi
+  def config = configuration
+
 
   def put(name: String, data: String) = AuthenticatedAction(auth.AuthenticationType.None) {
     (name, data) match {

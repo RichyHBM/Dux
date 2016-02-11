@@ -6,7 +6,7 @@ import javax.inject.Inject
 import database.{UserGroup, UserGroups, User, Users}
 import interfaces.IAuthenticationCache
 import models.view
-import play.api.Logger
+import play.api.{Configuration, Logger}
 import play.api.cache.CacheApi
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -17,10 +17,11 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class UserController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache) extends Controller with AuthenticatedActionBuilder {
+class UserController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache, configuration: Configuration) extends Controller with AuthenticatedActionBuilder {
   val authType = auth.AuthenticationType.None
 
   def cache = cacheApi
+  def config = configuration
 
   def getAllUsersInGroup = AuthenticatedAction(authType).async(parse.json) { request =>
     RequestParser.parseViewId(request) { viewId => {

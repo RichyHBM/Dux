@@ -5,7 +5,7 @@ import javax.inject.Inject
 import database.{GroupPermission, GroupPermissions, Group, Groups}
 import interfaces.IAuthenticationCache
 import models.view
-import play.api.Logger
+import play.api.{Configuration, Logger}
 import play.api.cache.CacheApi
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -14,10 +14,11 @@ import auth.scala._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class GroupController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache) extends Controller with AuthenticatedActionBuilder {
+class GroupController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache, configuration: Configuration) extends Controller with AuthenticatedActionBuilder {
   val authType = auth.AuthenticationType.None
 
   def cache = cacheApi
+  def config = configuration
 
   def getAllGroupsWithPermission = AuthenticatedAction(authType).async(parse.json) { request =>
     RequestParser.parseViewId(request) { viewId => {

@@ -3,6 +3,7 @@ package controllers
 import java.util.Date
 import javax.inject._
 
+import auth.models.AuthenticatedUser
 import auth.scala._
 import database._
 import interfaces._
@@ -16,19 +17,30 @@ import utilities.{Passwords, RequestParser}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache) extends Controller with AuthenticatedActionBuilder {
+class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache, configuration: Configuration) extends Controller with AuthenticatedActionBuilder {
   val authType = auth.AuthenticationType.None
+
   def cache = cacheApi
+  def config = configuration
 
   def listAllLoggedIn = AuthenticatedAction(authType) {
     Ok(Json.toJson(authCache.getAllLoggedIn().map(kv => kv._2)))
+  }
+
+  def logOut = AuthenticatedAction(authType) { request =>
+    request.body.asText match {
+      case Some(session: String) => {
+        authCache.removeSession(session)
+        Ok
+      }
+      case _ => BadRequest
+    }
   }
 
   def removeSession = AuthenticatedAction(authType) { request =>
     request.body.asJson match {
       case Some(json: JsValue) => {
         val user = UserSession.fromJson(json.toString())
-        Logger.debug(user.email)
         authCache.removeSessionWithEmail(user.email)
         Ok
       }
@@ -47,7 +59,7 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
                     case true => {
                       val userSession = new UserSession(u.Id, u.Name, u.Email, new Date(), new Date(), authApiKey.Permission)
                       val session = authCache.createSession(userSession)
-                      Future { Ok.withCookies(Cookie("Session", session)) }
+                      Future { Ok(new AuthenticatedUser(u.Id, u.Name, u.Email).toJson()).withCookies(Cookie(DefinedStrings.sessionCookieName, session)) }
                     }
                     case false => Future {BadRequest("User doesn't have permissions") }
                   }
@@ -74,7 +86,7 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
                       case true => {
                         authCache.renewSession(s, u)
                         Future {
-                          Ok.withCookies(Cookie("Session", s))
+                          Ok(new AuthenticatedUser(u.id, u.name, u.email).toJson()).withCookies(Cookie(DefinedStrings.sessionCookieName, s))
                         }
                       }
                       case false => Future {
@@ -106,7 +118,7 @@ class AuthenticationAPIv1 @Inject()(cacheApi: CacheApi, authCache: IAuthenticati
                         case true => {
                           val userSession = new UserSession(u.Id, u.Name, u.Email, new Date(), new Date(), logIn.Permission)
                           val session = authCache.createSession(userSession)
-                          Future { Ok.withCookies(Cookie("Session", session)) }
+                          Future { Ok(new AuthenticatedUser(u.Id, u.Name, u.Email).toJson()).withCookies(Cookie(DefinedStrings.sessionCookieName, session)) }
                         }
                         case false => Future {BadRequest("User doesn't have permissions") }
                       }

@@ -5,7 +5,7 @@ import javax.inject.Inject
 import database._
 import interfaces.IAuthenticationCache
 import models.view
-import play.api.Logger
+import play.api.{Configuration, Logger}
 import play.api.cache.CacheApi
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -14,10 +14,11 @@ import utilities.RequestParser
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache) extends Controller with AuthenticatedActionBuilder {
+class PermissionController @Inject()(cacheApi: CacheApi, authCache: IAuthenticationCache, configuration: Configuration) extends Controller with AuthenticatedActionBuilder {
   val authType = auth.AuthenticationType.None
 
   def cache = cacheApi
+  def config = configuration
 
   def getAllPermissions = AuthenticatedAction(authType).async {
     Permissions.listAll().map(l => {

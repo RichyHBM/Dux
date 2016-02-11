@@ -12,6 +12,7 @@ GET     /permissions                      controllers.AuthenticationViews.permis
 GET     /users                            controllers.AuthenticationViews.users
 
 POST    /view-api/get-logged-in-users     controllers.AuthenticationAPIv1.listAllLoggedIn
+POST    /view-api/log-out                 controllers.AuthenticationAPIv1.logOut
 POST    /view-api/delete-session          controllers.AuthenticationAPIv1.removeSession
 POST    /view-api/log-in                  controllers.AuthenticationAPIv1.logIn
 POST    /view-api/auth-api-key            controllers.AuthenticationAPIv1.authenticateApiKey
