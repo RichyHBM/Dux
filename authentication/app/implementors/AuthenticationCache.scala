@@ -6,8 +6,8 @@ import javax.inject.Inject
 import interfaces.IAuthenticationCache
 import models.UserSession
 import org.sedis.Pool
-import scala.concurrent.duration._
-import collection.JavaConversions._
+
+import scala.collection.JavaConversions._
 
 class AuthenticationCache @Inject()(cache: Pool) extends IAuthenticationCache {
   val sessionCache = "SESSION_CACHE"
@@ -23,6 +23,7 @@ class AuthenticationCache @Inject()(cache: Pool) extends IAuthenticationCache {
 
   override def createSession(session: UserSession): String = {
     val sessionToken = UUID.randomUUID().toString
+    removeSessionWithEmail(session.email)
     cache.withJedisClient(c => c.hset(sessionCache, sessionToken, session.toJson()))
     cache.withJedisClient(c => c.hset(emailToSessionKeyCache, session.email, sessionToken))
     sessionToken

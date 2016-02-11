@@ -3,13 +3,17 @@
         <script type="text/javascript">
             var app = angular.module('DuxApp');
 
-            app.factory('httpInterceptor', function($q, $rootScope){
+            app.factory('httpInterceptor', function($q, $rootScope, $window){
                 $rootScope.ErrorMessages = [];
                 return {
                     'request': function(config) {
                         return config || $q.when(config);
                     },
                     'response': function(response) {
+                        if(response.headers().redirect){
+                            $window.location.href = response.headers().redirect
+                        }
+
                         return response || $q.when(response);
                     },
                     'responseError': function(response) {
