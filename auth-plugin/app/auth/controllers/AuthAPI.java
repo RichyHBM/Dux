@@ -1,18 +1,25 @@
 package auth.controllers;
 
+import auth.Authenticator;
 import auth.interfaces.IAuthCache;
+import auth.models.SessionUser;
+import auth.scala.DefinedStrings;
 import com.fasterxml.jackson.databind.JsonNode;
-import javax.inject.Inject;
-import play.*;
-import play.mvc.*;
-
-import views.html.*;
 import common.utilities.StringUtils;
+import play.Configuration;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
+
+import javax.inject.Inject;
 
 public class AuthAPI extends Controller {
 
     @Inject
     IAuthCache authCache;
+
+    @Inject
+    Configuration config;
 
     public Result signin() {
         JsonNode json = request().body().asJson();
@@ -26,14 +33,27 @@ public class AuthAPI extends Controller {
             return badRequest("Bad Email and Password");
 
         //Do log in
+        String authUrl = config.getString(DefinedStrings.duxConfigAuthUrl(), DefinedStrings.defaultAuthUrl());
+        String appPriviledge = config.getString(DefinedStrings.duxDefaultAuthPrivilege(), "");
 
+        SessionUser sessionUser = Authenticator.logIn(authUrl, email, password, appPriviledge, authCache);
+        if(sessionUser == null)
+            return badRequest("Log in failed");
 
-        return redirect("/");
+        response().setCookie(DefinedStrings.sessionCookieName(), sessionUser.sessionKey());
+        response().setHeader("REDIRECT", "/");
+        return ok();
     }
 
     public Result logout() {
-        authCache.removeUserFromCache((String) ctx().args.get("auth-session"));
-        response().discardCookie("session");
+        String authUrl = config.getString(DefinedStrings.duxConfigAuthUrl(), DefinedStrings.defaultAuthUrl());
+        Http.Cookie cookie = ctx().request().cookie(DefinedStrings.sessionCookieName());
+        if(cookie != null) {
+            String session = cookie.value();
+            Authenticator.logOut(authUrl, session);
+            authCache.removeUserFromCache(session);
+            response().discardCookie(DefinedStrings.sessionCookieName());
+        }
         return redirect("/");
     }
 

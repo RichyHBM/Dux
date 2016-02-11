@@ -1,44 +1,49 @@
 package auth.scala
 
 import auth.implementors.PlayAuthCache
-import auth.interfaces.IAuthCache
-import javax.inject.Inject
-import play.api.Logger
+import auth.models._
+import auth.{AuthenticationType, Authenticator}
+import common.utilities.StringUtils
+import play.api.{Logger, Configuration}
 import play.api.cache.CacheApi
 import play.api.mvc.Results._
 import play.api.mvc._
-import auth.models._
-import auth.AuthenticationType
-import auth.Authenticator
+
 import scala.concurrent.Future
 
 
 trait AuthenticatedActionBuilder {
   def cache: CacheApi
 
-  def AuthenticatedAction(authType: AuthenticationType) = new ActionBuilder[AuthenticatedRequest] {
+  def config: Configuration
+
+  def AuthenticatedAction(authType: AuthenticationType, privilege: String = "") = new ActionBuilder[AuthenticatedRequest] {
     override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]) = {
+      val authUrl: String = config.getString(DefinedStrings.duxConfigAuthUrl).getOrElse(DefinedStrings.defaultAuthUrl)
+      val correctPrivilege: String =
+        if (StringUtils.isEmpty(privilege)) config.getString(DefinedStrings.duxDefaultAuthPrivilege).getOrElse("") else privilege
+
       authType match {
         case AuthenticationType.None => {
           block(AuthenticatedRequest("", null, request))
         }
         case AuthenticationType.Session => {
-          authenticateSession(request) match {
+          authenticateSession(request, authUrl, correctPrivilege ) match {
             case Some(authenticatedRequest) => block(authenticatedRequest)
             case None => Future.successful(Unauthorized("You are not authorised to view this page"))
           }
         }
         case AuthenticationType.ApiKey => {
-          authenticateApiKey(request) match {
+          authenticateApiKey(request, authUrl, correctPrivilege) match {
             case Some(authenticatedRequest) => block(authenticatedRequest)
             case None => Future.successful(Unauthorized("You are not authorised to view this page"))
           }
         }
         case AuthenticationType.Either => {
-          authenticateSession(request) match {
+          authenticateSession(request, authUrl, correctPrivilege) match {
             case Some(authenticatedRequest) => block(authenticatedRequest)
             case None => {
-              authenticateApiKey(request) match {
+              authenticateApiKey(request, authUrl, correctPrivilege) match {
                 case Some(authenticatedRequest) => block(authenticatedRequest)
                 case None => Future.successful(Unauthorized("You are not authorised to view this page"))
               }
@@ -49,10 +54,11 @@ trait AuthenticatedActionBuilder {
       }
     }
 
-    def authenticateSession[A](request: Request[A]): Option[AuthenticatedRequest[A]] = {
-      request.cookies.get("session") match {
+    def authenticateSession[A](request: Request[A], url: String, privilege: String): Option[AuthenticatedRequest[A]] = {
+      request.cookies.get(DefinedStrings.sessionCookieName) match {
         case Some(cookie) => {
-          Authenticator.checkSession(cookie.value, new PlayAuthCache(cache)) match {
+          Logger.warn(cookie.name)
+          Authenticator.checkSession(url, cookie.value, privilege, new PlayAuthCache(cache)) match {
             case sessionUser: SessionUser => Option(AuthenticatedRequest(sessionUser.sessionKey, sessionUser.user, request))
             case null => None
           }
@@ -61,8 +67,8 @@ trait AuthenticatedActionBuilder {
       }
     }
 
-    def authenticateApiKey[A](request: Request[A]): Option[AuthenticatedRequest[A]] = {
-      Authenticator.checkApiKey("") match {
+    def authenticateApiKey[A](request: Request[A], url: String, privilege: String): Option[AuthenticatedRequest[A]] = {
+      Authenticator.checkApiKey(url, request.headers.get(DefinedStrings.duxApiHeader).getOrElse(""), privilege) match {
         case user: AuthenticatedUser => Option(AuthenticatedRequest("", user, request))
         case null => None
       }
