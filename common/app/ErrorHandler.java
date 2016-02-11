@@ -1,16 +1,17 @@
-package common;
-
+import common.LoggedException;
+import common.utilities.StringUtils;
+import play.Configuration;
+import play.Environment;
+import play.Logger;
 import play.api.OptionalSourceMapper;
 import play.api.routing.Router;
 import play.http.DefaultHttpErrorHandler;
-import play.*;
-import play.libs.F.*;
-import play.mvc.Http.*;
-import play.mvc.*;
-import javax.inject.*;
-import common.utilities.*;
+import play.libs.F.Promise;
+import play.mvc.Http.RequestHeader;
+import play.mvc.Result;
 
-import java.util.UUID;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import static play.mvc.Results.*;
 
@@ -45,6 +46,10 @@ public class ErrorHandler extends DefaultHttpErrorHandler {
             }
         }
 
+        if(request.method() == "POST") {
+            return Promise.<Result>pure(badRequest(message));
+        }
+
         return super.onClientError(request, statusCode, message);
     }
 
@@ -66,6 +71,9 @@ public class ErrorHandler extends DefaultHttpErrorHandler {
             }
         }
 
+        if(request.method() == "POST") {
+            return Promise.<Result>pure(internalServerError(rootException.getMessage()));
+        }
         // Implementation of 'GlobalSettings.onError'
         return super.onServerError(request, exception);
     }
